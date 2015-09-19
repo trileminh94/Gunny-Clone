@@ -21,6 +21,8 @@ MOVE_STATE     = 1
 LIE_STATE      = 2
 THROW_STATE    = 3
 PLAYER1FIREKEY = K_SPACE
+PLAYER1UPKEY = K_UP
+PLAYER1DOWNKey = K_DOWN
 
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
@@ -106,8 +108,8 @@ class Player(pygame.sprite.Sprite):
     state = LIE_STATE
     isBlock = False
     stepChopMat = 0.08
-    keydown = False
-    fireAngle = 10
+    firedown = False
+    angle = 30
     fireF = 0
     stepF = 0
     def __init__(self,folder,sprite_name,direction):
@@ -129,14 +131,11 @@ class Player(pygame.sprite.Sprite):
     def draw_move(self):
         self.frame = (self.frame + 0.2)
         if(self.direction > 0):
-            print ' lon hon 0'
             self.image = self.image_frame[int(round(self.frame))%7]
         elif(self.direction < 0):
-            print 'nho hon 0'
             self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))%7],1,0)
     
     def draw_throw(self):
-        print 'draw throw'
         if(self.state == THROW_STATE):
             self.isBlock = True
             if(self.direction > 0):
@@ -151,7 +150,6 @@ class Player(pygame.sprite.Sprite):
                 self.isBlock = False
 
     def draw_lie(self):
-        print 'draw lie'
         if(self.frame < 7 or self.frame > 10):
             self.frame = 7
         if(self.direction > 0):
@@ -163,7 +161,7 @@ class Player(pygame.sprite.Sprite):
             self.stepChopMat*=-1
 
     def update(self):
-        if self.keydown == True:
+        if self.firedown == True:
             self.stepF+=1
             self.fireF = 10*math.fabs(math.sin(self.stepF*math.pi/math.pow(10,3)))
             print "f = " + str(self.fireF)
@@ -175,10 +173,6 @@ class Player(pygame.sprite.Sprite):
             self.draw_throw()
         elif(self.state == MOVE_STATE):
             self.move(self.direction)
-
-    # def draw_throw(self):
-    #     if self.direction < 0:
-    #         self.frame =  
 
     def move(self, direction):
         if direction: 
@@ -198,15 +192,27 @@ class Player(pygame.sprite.Sprite):
     def check(self,keystate):
         direction = keystate[K_RIGHT] - keystate[K_LEFT]
         fire = keystate[K_SPACE]
+        up = keystate[PLAYER1UPKEY]
+        down = keystate[PLAYER1DOWNKey]
         if direction:
             self.direction = direction
         if(self.isBlock == False):
             if(direction == 0 and fire == 0):
+                print "lie"
                 self.state = LIE_STATE
-            # elif(direction == 0 and fire == 1):
-            #     self.state = THROW_STATE
             elif(direction != 0):
+                print "move"
                 self.state = MOVE_STATE
+            if up != 0:
+                if self.angle < 60:
+                    self.angle += 0.5
+                    print self.angle
+            elif down != 0:
+                if self.angle > 30:
+                    self.angle -= 0.5
+                    print self.angle
+            pygame.event.pump()
+
 
 
 class Alien(pygame.sprite.Sprite):
@@ -376,10 +382,10 @@ def main(winstyle = 0):
                     return
             elif event.type == KEYDOWN:
                 if event.key == PLAYER1FIREKEY:
-                    player1.keydown = True
+                    player1.firedown = True
             elif event.type == KEYUP:
                 if event.key == PLAYER1FIREKEY:
-                    player1.keydown = False
+                    player1.firedown = False
                     player1.state = THROW_STATE
 
         keystate = pygame.key.get_pressed()
