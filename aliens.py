@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import random, os.path
+import random, os.path, math
 
 #import basic pygame modules
 import pygame
@@ -20,6 +20,7 @@ SCORE          = 0
 MOVE_STATE     = 1
 LIE_STATE      = 2
 THROW_STATE    = 3
+PLAYER1FIREKEY = K_SPACE
 
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
@@ -105,6 +106,10 @@ class Player(pygame.sprite.Sprite):
     state = LIE_STATE
     isBlock = False
     stepChopMat = 0.08
+    keydown = False
+    fireAngle = 10
+    fireF = 0
+    stepF = 0
     def __init__(self,folder,sprite_name,direction):
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.reloading = 0
@@ -158,6 +163,12 @@ class Player(pygame.sprite.Sprite):
             self.stepChopMat*=-1
 
     def update(self):
+        if self.keydown == True:
+            self.stepF+=1
+            self.fireF = 10*math.fabs(math.sin(self.stepF*math.pi/math.pow(10,3)))
+            print "f = " + str(self.fireF)
+        else:
+            self.stepF = 0
         if(self.state == LIE_STATE):
             self.draw_lie()
         elif(self.state == THROW_STATE):
@@ -184,14 +195,16 @@ class Player(pygame.sprite.Sprite):
     def heath(self):
         return self.heath
 
-    def check(self,direction,fire):
+    def check(self,keystate):
+        direction = keystate[K_RIGHT] - keystate[K_LEFT]
+        fire = keystate[K_SPACE]
         if direction:
             self.direction = direction
         if(self.isBlock == False):
             if(direction == 0 and fire == 0):
                 self.state = LIE_STATE
-            elif(direction == 0 and fire == 1):
-                self.state = THROW_STATE
+            # elif(direction == 0 and fire == 1):
+            #     self.state = THROW_STATE
             elif(direction != 0):
                 self.state = MOVE_STATE
 
@@ -348,19 +361,27 @@ def main(winstyle = 0):
 
     #initialize our starting sprites
     global SCORE
-    player = Player('nhan vat 1','character',-1)
+    player1 = Player('nhan vat 1','character',-1)
     Alien() #note, this 'lives' because it goes into a sprite group
     if pygame.font:
         all.add(Score())
 
 
-    while player.alive():
+    while player1.alive():
 
         #get input
         for event in pygame.event.get():
             if event.type == QUIT or \
                 (event.type == KEYDOWN and event.key == K_ESCAPE):
                     return
+            elif event.type == KEYDOWN:
+                if event.key == PLAYER1FIREKEY:
+                    player1.keydown = True
+            elif event.type == KEYUP:
+                if event.key == PLAYER1FIREKEY:
+                    player1.keydown = False
+                    player1.state = THROW_STATE
+
         keystate = pygame.key.get_pressed()
 
         # clear/erase the last drawn sprites
@@ -370,9 +391,7 @@ def main(winstyle = 0):
         all.update()
 
         #handle player input
-        direction = keystate[K_RIGHT] - keystate[K_LEFT]
-        fire = keystate[K_SPACE]
-        player.check(direction,fire)
+        player1.check(keystate)
        
 
         # Create new alien
@@ -387,23 +406,23 @@ def main(winstyle = 0):
             Bomb(lastalien.sprite)
 
         # Detect collisions
-        for alien in pygame.sprite.spritecollide(player, aliens, 1):
+        for alien in pygame.sprite.spritecollide(player1, aliens, 1):
             boom_sound.play()
             Explosion(alien)
-            Explosion(player)
+            Explosion(player1)
             SCORE = SCORE + 1
-            player.kill()
+            player1.kill()
 
         for alien in pygame.sprite.groupcollide(shots, aliens, 1, 1).keys():
             boom_sound.play()
             Explosion(alien)
             SCORE = SCORE + 1
 
-        for bomb in pygame.sprite.spritecollide(player, bombs, 1):
+        for bomb in pygame.sprite.spritecollide(player1, bombs, 1):
             boom_sound.play()
-            Explosion(player)
+            Explosion(player1)
             Explosion(bomb)
-            player.kill()
+            player1.kill()
 
         #draw the scene
         dirty = all.draw(screen)
