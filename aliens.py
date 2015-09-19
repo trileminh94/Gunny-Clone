@@ -15,7 +15,7 @@ MAX_SHOTS      = 2      #most player bullets onscreen
 ALIEN_ODDS     = 22     #chances a new alien appears
 BOMB_ODDS      = 60    #chances a new bomb will drop
 ALIEN_RELOAD   = 12     #frames between new aliens
-SCREENRECT     = Rect(0, 0, 640, 480)
+SCREENRECT     = Rect(0, 0, 1000, 600)
 SCORE          = 0
 MOVE_STATE     = 1
 LIE_STATE      = 2
@@ -310,7 +310,7 @@ def main(winstyle = 0):
     pygame.mouse.set_visible(0)
 
     #create the background, tile the bgd image
-    bgdtile = load_image('background.gif')
+    bgdtile = load_image('back.jpg')
     background = pygame.Surface(SCREENRECT.size)
     for x in range(0, SCREENRECT.width, bgdtile.get_width()):
         background.blit(bgdtile, (x, 0))
