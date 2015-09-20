@@ -21,7 +21,7 @@ MOVE_STATE     = 1
 LIE_STATE      = 2
 THROW_STATE    = 3
 PLAYER1FIREKEY = K_SPACE
-PLAYER1UPKEY = K_UP
+PLAYER1UPKEY   = K_UP
 PLAYER1DOWNKey = K_DOWN
 
 
@@ -163,7 +163,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         if self.firedown == True:
             self.stepF+=1
-            self.fireF = 10*math.fabs(math.sin(self.stepF*math.pi/math.pow(10,3)))
+            self.fireF = 10*math.fabs(math.sin(self.stepF*math.pi/math.pow(10,2)))
             print "f = " + str(self.fireF)
         else:
             self.stepF = 0
@@ -213,7 +213,10 @@ class Player(pygame.sprite.Sprite):
                     print self.angle
             pygame.event.pump()
 
+# class dead(pygame.sprite.Sprite):
 
+#     def __init__(self):
+#         pygame.sprite.Sprite.__init__(self,self.containers)
 
 class Alien(pygame.sprite.Sprite):
     speed = 13
@@ -367,7 +370,7 @@ def main(winstyle = 0):
 
     #initialize our starting sprites
     global SCORE
-    player1 = Player('nhan vat 1','character',-1)
+    player1 = Player('nhan vat 1','character1',-1)
     Alien() #note, this 'lives' because it goes into a sprite group
     if pygame.font:
         all.add(Score())
