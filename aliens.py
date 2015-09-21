@@ -23,7 +23,7 @@ MOVE_STATE     = 1
 LIE_STATE      = 2
 THROW_STATE    = 3
 FPS            = 40
-RADIUS = 100
+RADIUS = 45
 PLAYER1FIREKEY = K_SPACE
 PLAYER1UPKEY   = K_UP
 PLAYER1DOWNKey = K_DOWN
@@ -179,7 +179,26 @@ class Player(pygame.sprite.Sprite):
             self.draw_throw()
         elif(self.state == MOVE_STATE):
             self.move(self.direction)
-        #self.draw_direction(self.image)
+        self.drawRadar()
+
+    def drawRadar(self):
+        if(self.direction > 0):
+            pos1 = (self.rect.centerx, self.rect.centery)
+            pos2 = (pos1[0] + math.cos(math.radians(self.angle))*RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*RADIUS)
+            #print pos1, pos2
+            pygame.draw.line(self.screen, Color('yellow'), pos1, pos2, 2)
+            #pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
+            self.screen.blit(pygame.font.Font(None, 15).render(str(self.angle), True, Color('red')), (pos2[0]-10, pos2[1] - 20 ))
+        elif self.direction < 0:
+            pos1 = (self.rect.centerx, self.rect.centery)
+            pos2 = (pos1[0] - math.cos(math.radians(self.angle))*RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*RADIUS)
+            #print pos1, pos2
+            pygame.draw.line(self.screen, Color('yellow'), pos1, pos2, 2)
+            #pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
+            self.screen.blit(pygame.font.Font(None, 15).render(str(self.angle), True, Color('red')), (pos2[0]-10, pos2[1] - 20 ))
+
+        pygame.display.flip()
+
 
 
     def move(self, direction):
@@ -413,6 +432,7 @@ def main(winstyle = 0):
 
     #assign default groups to each sprite class
     Player.containers = all
+    Player.screen = screen
     Alien.containers = aliens, all, lastalien
     Shot.containers = shots, all
     Bomb.containers = bombs, all
@@ -428,7 +448,7 @@ def main(winstyle = 0):
     #initialize our starting sprites
     global SCORE
     player1 = Player('nhan vat 1','character1',-1)
-    
+
     if pygame.font:
         all.add(Score())
     #keystate = 0
@@ -492,13 +512,13 @@ def main(winstyle = 0):
             Explosion(bomb)
             player1.kill()
         #draw the scene
-        pos1 = (player1.rect.centerx, player1.rect.centery)
-        pos2 = (pos1[0] + math.cos(math.radians(player1.angle))*RADIUS, pos1[1]  - math.sin(math.radians(player1.angle))*RADIUS)
-        #print pos1, pos2
-        pygame.draw.line(screen, Color('black'), pos1, pos2, 2)
-        pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
-        screen.blit(pygame.font.Font(None, 25).render(str(player1.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
-        pygame.display.flip()
+        # pos1 = (player1.rect.centerx, player1.rect.centery)
+        # pos2 = (pos1[0] + math.cos(math.radians(player1.angle))*RADIUS, pos1[1]  - math.sin(math.radians(player1.angle))*RADIUS)
+        # #print pos1, pos2
+        # pygame.draw.line(screen, Color('black'), pos1, pos2, 2)
+        # pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
+        # screen.blit(pygame.font.Font(None, 25).render(str(player1.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
+        # pygame.display.flip()
         dirty = all.draw(screen) # draw all sprite, return list of rect
         pygame.display.update(dirty) # draw only changed rect
         #cap the framerate
