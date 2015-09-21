@@ -160,7 +160,12 @@ class Player(pygame.sprite.Sprite):
         if(self.frame > 10 or self.frame < 7):
             self.stepChopMat*=-1
 
+    # def draw_direction(self,surface):
+    #     pygame.draw.line(surface,Color("yellow"),(20,20),(20 + 20*math.cos(self.angle*math.pi/180),20 - 20*math.sin(self.angle*math.pi/180)),3)
+
+
     def update(self):
+        #pygame.display.update(pygame.Rect(20,0,40,20))<<<<<<<<<<<<<<<<<<<<<----------------------------
         if self.firedown == True:
             self.stepF+=1
             self.fireF = 10*math.fabs(math.sin(self.stepF*math.pi/math.pow(10,2)))
@@ -173,6 +178,8 @@ class Player(pygame.sprite.Sprite):
             self.draw_throw()
         elif(self.state == MOVE_STATE):
             self.move(self.direction)
+        #self.draw_direction(self.image)
+
 
     def move(self, direction):
         if direction: 
