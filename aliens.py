@@ -431,7 +431,7 @@ def main(winstyle = 0):
 #     player1 = Player('nhan vat 1','character1',-1)
 #     Alien() #note, this 'lives' because it goes into a sprite group
 # =======
-    player1 = Player('nhan vat 1','character',-1)
+    player1 = Player('nhan vat 1','character1',-1)
     #Alien() #note, this 'lives' because it goes into a sprite group
 # >>>>>>> origin/luan
     if pygame.font:
