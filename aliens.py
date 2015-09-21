@@ -28,7 +28,11 @@ PLAYER1FIREKEY = K_SPACE
 PLAYER1UPKEY   = K_UP
 PLAYER1DOWNKey = K_DOWN
 PLAYER1CHANGEBULLET = K_TAB
-ACCELERATION = 100
+MAXPOWER = 800
+ACCELERATION = 200
+POWERBARRECT1 = Rect(0, SCREENRECT.height - 25, 400, 20)
+POWERBARRECT2 = Rect(SCREENRECT.width - 400, SCREENRECT.height - 25, 400, 20)
+POWERBARCOLOR = (0, 255, 255)
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
@@ -102,7 +106,6 @@ class Player(pygame.sprite.Sprite):
     speed = 1.5
     bounce = 24
     gun_offset = -11
-    heath = 100
     state = LIE_STATE
     isBlock = False
     stepChopMat = 0.08
@@ -110,7 +113,7 @@ class Player(pygame.sprite.Sprite):
     angle = 30
     fireF = 0
     stepF = 0
-    def __init__(self,folder,sprite_name,direction):
+    def __init__(self,folder,sprite_name,direction, whichplayer):
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.reloading = 0
         self.frame = 0
@@ -123,13 +126,17 @@ class Player(pygame.sprite.Sprite):
             self.image = self.image_frame[0]
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
-        print(self.image)
-        self.rect = self.image.get_rect(midbottom=SCREENRECT.midbottom)
-        print(self.rect)
+
+        self.rect = self.image.get_rect(midbottom=(SCREENRECT.midbottom[0], SCREENRECT.midbottom[1] - 100))
+
         self.origtop = self.rect.top
+        self.health = 100
         self.angle = 45
-        self.power = 200
+        self.power = MAXPOWER * self.fireF
         self.typeOfBullet = 1
+        self.whichplayer = whichplayer
+        Livebar(self)
+        Powerbar(self)
 
     def draw_move(self):
         self.frame = (self.frame + 0.2)
@@ -163,18 +170,18 @@ class Player(pygame.sprite.Sprite):
         if(self.frame > 10 or self.frame < 7):
             self.stepChopMat*=-1
 
-    # def draw_direction(self,surface):
-    #     pygame.draw.line(surface,Color("yellow"),(20,20),(20 + 20*math.cos(self.angle*math.pi/180),20 - 20*math.sin(self.angle*math.pi/180)),3)
-
-
     def update(self):
-        #pygame.display.update(pygame.Rect(20,0,40,20))<<<<<<<<<<<<<<<<<<<<<----------------------------
+
+        #change angle if player changes the direction
+        if (self.direction  < 0 and self.angle < 90) or (self.direction > 0 and self.angle > 90):
+            self.angle  = 180 - self.angle
         if self.firedown == True:
-            self.stepF+=1
-            #self.fireF = 10*math.fabs(math.sin(self.stepF*math.pi/math.pow(10,2)))
+            self.stepF+= 0.5
             self.fireF = 10*math.fabs(math.sin(self.stepF*math.pi/math.pow(10,3)))
         else:
             self.stepF = 0
+            self.fireF -= 10*math.fabs(math.sin(1*math.pi/math.pow(10,3)))
+        self.power = MAXPOWER * self.fireF
         if(self.state == LIE_STATE):
             self.draw_lie()
         elif(self.state == THROW_STATE):
@@ -184,16 +191,15 @@ class Player(pygame.sprite.Sprite):
         self.drawRadar()
 
     def drawRadar(self):
-        if(self.direction > 0):
-            pos1 = (self.rect.centerx, self.rect.centery)
-            pos2 = (pos1[0] + math.cos(math.radians(self.angle))*RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*RADIUS)
-            pygame.draw.line(self.screen, Color('yellow'), pos1, pos2, 2)
-            self.screen.blit(pygame.font.Font(None, 15).render(str(self.angle), True, Color('red')), (pos2[0]+10, pos2[1] - 20 ))
-        elif self.direction < 0:
-            pos1 = (self.rect.centerx, self.rect.centery)
-            pos2 = (pos1[0] - math.cos(math.radians(self.angle))*RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*RADIUS)
-            pygame.draw.line(self.screen, Color('yellow'), pos1, pos2, 2)
-            self.screen.blit(pygame.font.Font(None, 15).render(str(self.angle), True, Color('red')), (pos2[0]-20, pos2[1] - 20 ))
+        pos1 = (self.rect.centerx, self.rect.centery)
+        pos2 = (pos1[0] + math.cos(math.radians(self.angle))*RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*RADIUS)
+        pygame.draw.line(self.screen, Color('black'), pos1, pos2, 2)
+        if self.direction > 0:
+            # pygame.draw.arc(self.screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
+            self.screen.blit(pygame.font.Font(None, 25).render(str(self.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
+        else:
+            # pygame.draw.arc(self.screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), math.pi/2, math.pi ,1)
+            self.screen.blit(pygame.font.Font(None, 25).render(str(180 - self.angle), True, Color('red')), (pos2[0] - 18, pos2[1] - 12 ))
         pygame.display.flip()
 
 
@@ -210,16 +216,11 @@ class Player(pygame.sprite.Sprite):
         pos = self.facing*self.gun_offset + self.rect.centerx
         return pos, self.rect.top
 
-    def heath(self):
-        return self.heath
-
     def check(self,keystate):
         direction = keystate[K_RIGHT] - keystate[K_LEFT]
         fire = keystate[K_SPACE]
         up = keystate[PLAYER1UPKEY]
         down = keystate[PLAYER1DOWNKey]
-        if keystate[PLAYER1CHANGEBULLET]:
-            self.typeOfBullet *= -1
         if direction:
             self.direction = direction
         if(self.isBlock == False):
@@ -230,10 +231,13 @@ class Player(pygame.sprite.Sprite):
             if up != 0:
                 if self.angle < 90:
                     self.angle += 1
-
-            elif down != 0:
-                if self.angle > 0:
+                else:
                     self.angle -= 1
+            elif down != 0:
+                if self.angle > 0 and self.angle <= 90:
+                    self.angle -= 1
+                elif self.angle > 90 and self.angle <180:
+                    self.angle += 1
             pygame.event.pump()
 
 # class dead(pygame.sprite.Sprite):
@@ -283,10 +287,10 @@ class Explosion(pygame.sprite.Sprite):
 class Shot(pygame.sprite.Sprite):
     speed = -5
     images = []
-    def __init__(self,pos, angle, power, typeOfBullet):
+    def __init__(self, player):
         pygame.sprite.Sprite.__init__(self, self.containers)
         folder = 'dan'
-        if (typeOfBullet > 0):
+        if (player.typeOfBullet > 0):
             loaidan = 'phitieu'
             x = 0
             y = 0
@@ -308,10 +312,10 @@ class Shot(pygame.sprite.Sprite):
             j += 1
         self.frame = 0
         self.image = self.image_frame[int(round(self.frame))]
-        self.rect = self.image.get_rect(midbottom=pos)
+        self.rect = self.image.get_rect(midbottom= (player.rect.centerx, player.rect.centery))
         self.origtop = self.rect.top
-        self.speed_x = math.cos(math.radians(angle)) * power
-        self.speed_y = math.sin(math.radians(angle)) * power
+        self.speed_x = math.cos(math.radians(player.angle)) * player.power
+        self.speed_y = math.sin(math.radians(player.angle)) * player.power
         self.t = 0
         self.dx = 0
         self.dy = 0
@@ -362,6 +366,71 @@ class Score(pygame.sprite.Sprite):
             self.lastscore = SCORE
             msg = "Score: %d" % SCORE
             self.image = self.font.render(msg, 0, self.color)
+#TODO:
+class Livebar(pygame.sprite.Sprite):
+    """shows a bar with the hitpoints of a Bird sprite"""
+    def __init__(self, player):
+        pygame.sprite.Sprite.__init__(self, self.containers)
+        self.player = player
+        self.image = pygame.Surface((self.player.rect.width,7))
+        self.image.set_colorkey((0,0,0)) # black transparent
+        pygame.draw.rect(self.image, Color('green'), (0,0,self.player.rect.width,7),1)
+        self.rect = self.image.get_rect()
+        self.oldpercent = 0
+
+    def update(self):
+        self.percent = self.player.health / 100.0
+        if self.percent != self.oldpercent:
+            pygame.draw.rect(self.image, (0,0,0), (1,1,self.player.rect.width-2,5)) # fill black
+            pygame.draw.rect(self.image, Color('green'), (1,1,
+                int(self.player.rect.width * self.percent),5),0) # fill green
+        self.oldpercent = self.percent
+        self.rect.centerx = self.player.rect.centerx
+        self.rect.centery = self.player.rect.centery - self.player.rect.height /2 - 10
+        #check if player is still alive
+        if not self.player.alive():
+            self.kill() # kill the hitbar
+
+class Powerbar(pygame.sprite.Sprite):
+    """shows a bar with the hitpoints of a Bird sprite"""
+    def __init__(self, player):
+        pygame.sprite.Sprite.__init__(self, self.containers)
+        if (player.whichplayer == 1):
+            self.rect = POWERBARRECT1
+        else:
+            self.rect = POWERBARRECT2
+        self.player = player
+        self.image = pygame.Surface((self.rect.width,self.rect.height))
+        self.image.set_colorkey((0,0,0)) # black transparent
+        pygame.draw.rect(self.image, POWERBARCOLOR, (0, 0, self.rect.width,self.rect.height),1)
+        self.oldpercent = 0
+
+    def update(self):
+        self.percent = self.player.fireF
+        if self.percent != self.oldpercent:
+            pygame.draw.rect(self.image, (0,0,0), (1,1,self.rect.width - 2,self.rect.height - 2)) # fill black
+            if self.player.whichplayer == 1:
+                pygame.draw.rect(self.image, POWERBARCOLOR, (1, 1, int(self.percent * self.rect.width) , self.rect.height - 2),0) # fill green
+            else:
+                pygame.draw.rect(self.image, POWERBARCOLOR, (1 + self.rect.width - int(self.percent * self.rect.width) , 1, int(self.percent * self.rect.width) , self.rect.height - 2),0) # fill green
+        self.oldpercent = self.percent
+        #check if player is still alive
+        if not self.player.alive():
+            self.kill()
+
+
+    # Help function
+# def drawAiming(screen, player):
+#     pos1 = (player.rect.centerx, player.rect.centery)
+#     pos2 = (pos1[0] + math.cos(math.radians(player.angle))*RADIUS, pos1[1]  - math.sin(math.radians(player.angle))*RADIUS)
+#     pygame.draw.line(screen, Color('black'), pos1, pos2, 2)
+#     if player.direction > 0:
+#         pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
+#         screen.blit(pygame.font.Font(None, 25).render(str(player.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
+#     else:
+#         pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), math.pi/2, math.pi ,1)
+#         screen.blit(pygame.font.Font(None, 25).render(str(180 - player.angle), True, Color('red')), (pos2[0] - 18, pos2[1] - 12 ))
+#     pygame.display.flip()
 
 #TODO : handling multithread keyboard input, need improvement
 LOCK = threading.Lock()
@@ -435,6 +504,8 @@ def main(winstyle = 0):
     Bomb.containers = bombs, all
     Explosion.containers = all
     Score.containers = all
+    Livebar.containers = all
+    Powerbar.containers = all
 
     #Create Some Starting Values
     global score
@@ -444,14 +515,14 @@ def main(winstyle = 0):
 
     #initialize our starting sprites
     global SCORE
-    player1 = Player('nhan vat 1','character1',-1)
-
+    player1 = Player('nhan vat 1','character1',-1, 2)
+   
     if pygame.font:
         all.add(Score())
-    #keystate = 0
-    #threading._start_new_thread(input, (keystate, player1))
+   
     while player1.alive():
         #get input
+        downToUp = player1.firedown
         for event in pygame.event.get():
             if event.type == QUIT or \
                 (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -459,6 +530,8 @@ def main(winstyle = 0):
             elif event.type == KEYDOWN:
                 if event.key == PLAYER1FIREKEY:
                     player1.firedown = True
+                elif event.key == PLAYER1CHANGEBULLET:
+                    player1.typeOfBullet *= -1
             elif event.type == KEYUP:
                 if event.key == PLAYER1FIREKEY:
                     player1.firedown = False
@@ -474,11 +547,9 @@ def main(winstyle = 0):
         #handle player input
         keystate = pygame.key.get_pressed()
         player1.check(keystate)
-        fire = keystate[PLAYER1FIREKEY]
-        if not player1.reloading and fire:
-            Shot((player1.rect.centerx, player1.rect.centery), player1.angle, player1.power, player1.typeOfBullet)
+        if downToUp and not player1.firedown:
+            Shot(player1)
             shoot_sound.play()
-        player1.reloading = fire
         # Create new alien
         if alienreload:
             alienreload = alienreload - 1
@@ -508,6 +579,8 @@ def main(winstyle = 0):
             Explosion(player1)
             Explosion(bomb)
             player1.kill()
+
+        # drawAiming(screen, player1)
 
         dirty = all.draw(screen) # draw all sprite, return list of rect
         pygame.display.update(dirty) # draw only changed rect
