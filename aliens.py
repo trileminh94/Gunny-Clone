@@ -268,29 +268,13 @@ class Shot(pygame.sprite.Sprite):
     images = []
     def __init__(self, player):
         pygame.sprite.Sprite.__init__(self, self.containers)
-        folder = 'dan'
         if (player.typeOfBullet > 0):
-            loaidan = 'phitieu'
-            x = 0
-            y = 0
-            width = 40
-            height = 41
+            self.images = load_images('dan\phitieu1.png', 'dan\phitieu2.png', 'dan\phitieu3.png', 'dan\phitieu4.png', 'dan\phitieu5.png')
         else:
-            loaidan = 'bumerang'
-            x = 0
-            y = 0
-            width = 33
-            height = 34
+            self.images = load_images("dan\\boomerang1.png", 'dan\\boomerang2.png', 'dan\\boomerang3.png', 'dan\\boomerang4.png', 'dan\\boomerang5.png')
 
-        image_source = my_load_image(folder,loaidan+".png")
-        image = image_source.subsurface(x, y, width, height)
-        j = 0
-        self.image_frame = []
-        while j <= 36:
-            self.image_frame.append(pygame.transform.rotate(image, 10 * j))
-            j += 1
         self.frame = 0
-        self.image = self.image_frame[int(round(self.frame))]
+        self.image = self.images[0]
         self.rect = self.image.get_rect(midbottom= (player.rect.centerx, player.rect.centery))
         self.origtop = self.rect.top
         self.speed_x = math.cos(math.radians(player.angle)) * player.power
@@ -306,10 +290,10 @@ class Shot(pygame.sprite.Sprite):
         self.dx = self.speed_x * self.t
         self.dy = self.speed_y * self.t - ACCELERATION/2.0* self.t* self.t
         self.rect.move_ip(self.dx - x, y - self.dy)
-        self.frame += 72/FPS
-        if self.frame > 36:
+        self.frame += 0.25
+        if self.frame > 4:
             self.frame = 0
-        self.image = self.image_frame[int(round(self.frame))]
+        self.image = self.images[int(round(self.frame))]
         if not SCREENRECT.contains(self.rect):
             self.kill()
 
@@ -444,7 +428,6 @@ def main(winstyle = 0):
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
     Alien.images = load_images('alien1.gif', 'alien2.gif', 'alien3.gif')
     Bomb.images = [load_image('bomb.gif')]
-    Shot.images = [load_image('shot.gif')]
 
     #decorate the game window
     icon = pygame.transform.scale(Alien.images[0], (32, 32))
@@ -493,7 +476,7 @@ def main(winstyle = 0):
 
     #initialize our starting sprites
     global SCORE
-    player1 = Player('nhan vat 1','character',-1, 2)
+    player1 = Player('nhan vat 1','character',-1, 1)
     #Alien() #note, this 'lives' because it goes into a sprite group
     if pygame.font:
         all.add(Score())
