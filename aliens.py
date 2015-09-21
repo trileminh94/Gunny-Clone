@@ -22,6 +22,16 @@ SCORE          = 0
 MOVE_STATE     = 1
 LIE_STATE      = 2
 THROW_STATE    = 3
+COMPLAINT_STATE = 4
+ANGRY_STATE    = 5
+HEADACHE_STATE = 6
+BORING_STATE   = 7
+FIRE_EYE_STATE = 8
+XFACE_STATE    = 9
+CRYING_STATE   = 10
+CRYING_CHONG_MAT = 11
+BOTAY_STATE    = 12
+STEP_EMOTION   = 0.08
 FPS            = 40
 RADIUS = 45
 PLAYER1FIREKEY = K_SPACE
@@ -121,7 +131,9 @@ class Player(pygame.sprite.Sprite):
         self.facing = direction
         self.direction = direction
         image_source = my_load_image(folder,sprite_name+".png")
+        emotion_source = my_load_image(folder,sprite_name+"_emotion.png")
         self.image_frame = cut_frame(image_source, 114, 90, 110, 90)
+        self.image_frame.extend(cut_frame(emotion_source,114,90,110,90))
         if self.direction > 0:
             self.image = self.image_frame[0]
         else:
@@ -170,6 +182,156 @@ class Player(pygame.sprite.Sprite):
         if(self.frame > 10 or self.frame < 7):
             self.stepChopMat*=-1
 
+    def drawEmotion(self):
+        self.isBlock = True
+        if(self.direction > 0):
+            if(self.state == COMPLAINT_STATE):
+                if(self.frame < 33 or self.frame > 36):
+                    self.frame = 33
+                self.image = self.image_frame[int(round(self.frame))]
+                self.frame+= STEP_EMOTION
+                if(self.frame > 36):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == ANGRY_STATE):
+                if(self.frame < 37 or self.frame > 40):
+                    self.frame = 37
+                self.image = self.image_frame[int(round(self.frame))]
+                self.frame+= STEP_EMOTION
+                if(self.frame > 40):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == HEADACHE_STATE):
+                if(self.frame < 41 or self.frame > 43):
+                    self.frame = 41
+                self.image = self.image_frame[int(round(self.frame))]
+                self.frame+= STEP_EMOTION
+                if(self.frame > 43):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == BORING_STATE):
+                if(self.frame < 44 or self.frame > 47):
+                    self.frame = 44
+                self.image = self.image_frame[int(round(self.frame))]
+                self.frame+= STEP_EMOTION
+                if(self.frame > 47):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == FIRE_EYE_STATE):
+                if(self.frame < 48 or self.frame > 51):
+                    self.frame = 48
+                self.image = self.image_frame[int(round(self.frame))]
+                self.frame+= STEP_EMOTION
+                if(self.frame > 51):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == XFACE_STATE):
+                if(self.frame < 52 or self.frame > 54):
+                    self.frame = 52
+                self.image = self.image_frame[int(round(self.frame))]
+                self.frame+= STEP_EMOTION
+                if(self.frame > 54):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == CRYING_STATE):
+                if(self.frame < 55 or self.frame > 58):
+                    self.frame = 55
+                self.image = self.image_frame[int(round(self.frame))]
+                self.frame+= STEP_EMOTION
+                if(self.frame > 58):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == CRYING_CHONG_MAT):
+                if(self.frame < 59 or self.frame > 62):
+                    self.frame = 59
+                self.image = self.image_frame[int(round(self.frame))]
+                self.frame+= STEP_EMOTION
+                if(self.frame > 62):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == BOTAY_STATE):
+                if(self.frame < 63 or self.frame > 65):
+                    self.frame = 63
+                self.image = self.image_frame[int(round(self.frame))]
+                self.frame+= STEP_EMOTION
+                if(self.frame > 65):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+        elif(self.direction < 0):
+            if(self.state == COMPLAINT_STATE):
+                if(self.frame < 33 or self.frame > 36):
+                    self.frame = 33
+                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.frame+= STEP_EMOTION
+                if(self.frame > 36):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == ANGRY_STATE):
+                if(self.frame < 37 or self.frame > 40):
+                    self.frame = 37
+                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.frame+= STEP_EMOTION
+                if(self.frame > 40):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == HEADACHE_STATE):
+                if(self.frame < 41 or self.frame > 43):
+                    self.frame = 41
+                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.frame+= STEP_EMOTION
+                if(self.frame > 43):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == BORING_STATE):
+                if(self.frame < 44 or self.frame > 47):
+                    self.frame = 44
+                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.frame+= STEP_EMOTION
+                if(self.frame > 47):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == FIRE_EYE_STATE):
+                if(self.frame < 48 or self.frame > 51):
+                    self.frame = 48
+                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.frame+= STEP_EMOTION
+                if(self.frame > 51):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == XFACE_STATE):
+                if(self.frame < 52 or self.frame > 54):
+                    self.frame = 52
+                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.frame+= STEP_EMOTION
+                if(self.frame > 54):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == CRYING_STATE):
+                if(self.frame < 55 or self.frame > 58):
+                    self.frame = 55
+                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.frame+= STEP_EMOTION
+                if(self.frame > 58):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == CRYING_CHONG_MAT):
+                if(self.frame < 59 or self.frame > 62):
+                    self.frame = 59
+                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.frame+= STEP_EMOTION
+                if(self.frame > 62):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+            elif(self.state == BOTAY_STATE):
+                if(self.frame < 63 or self.frame > 65):
+                    self.frame = 63
+                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.frame+= STEP_EMOTION
+                if(self.frame > 65):
+                    self.state = LIE_STATE
+                    self.isBlock = False
+
+
     def update(self):
 
         #change angle if player changes the direction
@@ -188,17 +350,17 @@ class Player(pygame.sprite.Sprite):
             self.draw_throw()
         elif(self.state == MOVE_STATE):
             self.move(self.direction)
+        else:
+            self.drawEmotion()
         self.drawRadar()
 
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)
         pos2 = (pos1[0] + math.cos(math.radians(self.angle))*RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*RADIUS)
-        pygame.draw.line(self.screen, Color('black'), pos1, pos2, 2)
+        pygame.draw.line(self.screen, Color('yellow'), pos1, pos2, 2)
         if self.direction > 0:
-            # pygame.draw.arc(self.screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
             self.screen.blit(pygame.font.Font(None, 25).render(str(self.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
         else:
-            # pygame.draw.arc(self.screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), math.pi/2, math.pi ,1)
             self.screen.blit(pygame.font.Font(None, 25).render(str(180 - self.angle), True, Color('red')), (pos2[0] - 18, pos2[1] - 12 ))
         pygame.display.flip()
 
@@ -224,7 +386,25 @@ class Player(pygame.sprite.Sprite):
         if direction:
             self.direction = direction
         if(self.isBlock == False):
-            if(direction == 0 and fire == 0):
+            if(keystate[K_1] == 1):
+                self.state = COMPLAINT_STATE
+            elif(keystate[K_2] == 1):
+                self.state = ANGRY_STATE
+            elif(keystate[K_3] == 1):
+                self.state = HEADACHE_STATE
+            elif(keystate[K_4] == 1):
+                self.state = BORING_STATE
+            elif(keystate[K_5] == 1):
+                self.state = FIRE_EYE_STATE
+            elif(keystate[K_6] == 1):
+                self.state = XFACE_STATE
+            elif(keystate[K_7] == 1):
+                self.state = CRYING_STATE
+            elif(keystate[K_8] == 1):
+                self.state = CRYING_CHONG_MAT
+            elif(keystate[K_2] == 1):
+                self.state = BOTAY_STATE
+            elif(direction == 0 and fire == 0):
                 self.state = LIE_STATE
             elif(direction != 0):
                 self.state = MOVE_STATE
@@ -239,11 +419,6 @@ class Player(pygame.sprite.Sprite):
                 elif self.angle > 90 and self.angle <180:
                     self.angle += 1
             pygame.event.pump()
-
-# class dead(pygame.sprite.Sprite):
-
-#     def __init__(self):
-#         pygame.sprite.Sprite.__init__(self,self.containers)
 
 class Alien(pygame.sprite.Sprite):
     speed = 13
@@ -419,18 +594,6 @@ class Powerbar(pygame.sprite.Sprite):
             self.kill()
 
 
-    # Help function
-# def drawAiming(screen, player):
-#     pos1 = (player.rect.centerx, player.rect.centery)
-#     pos2 = (pos1[0] + math.cos(math.radians(player.angle))*RADIUS, pos1[1]  - math.sin(math.radians(player.angle))*RADIUS)
-#     pygame.draw.line(screen, Color('black'), pos1, pos2, 2)
-#     if player.direction > 0:
-#         pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
-#         screen.blit(pygame.font.Font(None, 25).render(str(player.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
-#     else:
-#         pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), math.pi/2, math.pi ,1)
-#         screen.blit(pygame.font.Font(None, 25).render(str(180 - player.angle), True, Color('red')), (pos2[0] - 18, pos2[1] - 12 ))
-#     pygame.display.flip()
 
 #TODO : handling multithread keyboard input, need improvement
 LOCK = threading.Lock()
@@ -491,7 +654,6 @@ def main(winstyle = 0):
 
     # Initialize Game Groups
     aliens = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
     bombs = pygame.sprite.Group()
     all = pygame.sprite.RenderUpdates()
     lastalien = pygame.sprite.GroupSingle()
@@ -499,8 +661,8 @@ def main(winstyle = 0):
     #assign default groups to each sprite class
     Player.containers = all
     Player.screen = screen
+    
     Alien.containers = aliens, all, lastalien
-    Shot.containers = shots, all
     Bomb.containers = bombs, all
     Explosion.containers = all
     Score.containers = all
@@ -516,7 +678,9 @@ def main(winstyle = 0):
     #initialize our starting sprites
     global SCORE
     player1 = Player('nhan vat 1','character1',-1, 2)
-   
+    shots = pygame.sprite.Group()
+    Shot.containers = shots, all
+
     if pygame.font:
         all.add(Score())
    
