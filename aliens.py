@@ -677,9 +677,15 @@ def main(winstyle = 0):
 
     #initialize our starting sprites
     global SCORE
-    player1 = Player('nhan vat 1','character1',-1, 2)
+#<<<<<<< HEAD
+    player1 = Player('nhan vat 1','character1',-1, 1)
     shots = pygame.sprite.Group()
     Shot.containers = shots, all
+#=======
+
+    #player1 = Player('nhan vat 1','character1',-1, 1)
+    #Alien() #note, this 'lives' because it goes into a sprite group
+#>>>>>>> b6e13de9173c656016d3e59b8d7b01618c56b21a
 
     if pygame.font:
         all.add(Score())
