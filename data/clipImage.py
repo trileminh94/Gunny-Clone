@@ -5,7 +5,7 @@ from pygame import Surface
 
 
 window = pygame.display.set_mode((800,500))
-background_colour = (0,0,0)
+background_colour = (255,255,255)
 window.fill(background_colour)
 clock = pygame.time.Clock()
 
@@ -37,10 +37,12 @@ def draw_chop_mat(frame):
 		pygame.time.wait(300)
 
 def draw():
-	img = pygame.image.load("radar.png");
+	img = pygame.image.load("radar.png").convert_alpha();
 	while True:
-		window.blit(frame[t],(0,0))
+		window.blit(img,(0,0))
 		pygame.display.flip()
+		pygame.time.wait(400)
+		window.fill(background_colour)
 		
 
 def draw_move(frame):

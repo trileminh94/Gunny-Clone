@@ -23,9 +23,9 @@ MOVE_STATE     = 1
 LIE_STATE      = 2
 THROW_STATE    = 3
 FPS            = 40
-RADIUS = 100
+RADIUS = 45
 PLAYER1FIREKEY = K_SPACE
-PLAYER1UPKEY = K_UP
+PLAYER1UPKEY   = K_UP
 PLAYER1DOWNKey = K_DOWN
 PLAYER1CHANGEBULLET = K_TAB
 MAXPOWER = 800
@@ -126,7 +126,9 @@ class Player(pygame.sprite.Sprite):
             self.image = self.image_frame[0]
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
+
         self.rect = self.image.get_rect(midbottom=(SCREENRECT.midbottom[0], SCREENRECT.midbottom[1] - 100))
+
         self.origtop = self.rect.top
         self.health = 100
         self.angle = 45
@@ -169,6 +171,7 @@ class Player(pygame.sprite.Sprite):
             self.stepChopMat*=-1
 
     def update(self):
+
         #change angle if player changes the direction
         if (self.direction  < 0 and self.angle < 90) or (self.direction > 0 and self.angle > 90):
             self.angle  = 180 - self.angle
@@ -185,6 +188,21 @@ class Player(pygame.sprite.Sprite):
             self.draw_throw()
         elif(self.state == MOVE_STATE):
             self.move(self.direction)
+        self.drawRadar()
+
+    def drawRadar(self):
+        pos1 = (self.rect.centerx, self.rect.centery)
+        pos2 = (pos1[0] + math.cos(math.radians(self.angle))*RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*RADIUS)
+        pygame.draw.line(self.screen, Color('black'), pos1, pos2, 2)
+        if self.direction > 0:
+            # pygame.draw.arc(self.screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
+            self.screen.blit(pygame.font.Font(None, 25).render(str(self.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
+        else:
+            # pygame.draw.arc(self.screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), math.pi/2, math.pi ,1)
+            self.screen.blit(pygame.font.Font(None, 25).render(str(180 - self.angle), True, Color('red')), (pos2[0] - 18, pos2[1] - 12 ))
+        pygame.display.flip()
+
+
 
     def move(self, direction):
         if direction: 
@@ -222,7 +240,10 @@ class Player(pygame.sprite.Sprite):
                     self.angle += 1
             pygame.event.pump()
 
+# class dead(pygame.sprite.Sprite):
 
+#     def __init__(self):
+#         pygame.sprite.Sprite.__init__(self,self.containers)
 
 class Alien(pygame.sprite.Sprite):
     speed = 13
@@ -383,17 +404,17 @@ class Powerbar(pygame.sprite.Sprite):
 
 
     # Help function
-def drawAiming(screen, player):
-    pos1 = (player.rect.centerx, player.rect.centery)
-    pos2 = (pos1[0] + math.cos(math.radians(player.angle))*RADIUS, pos1[1]  - math.sin(math.radians(player.angle))*RADIUS)
-    pygame.draw.line(screen, Color('black'), pos1, pos2, 2)
-    if player.direction > 0:
-        pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
-        screen.blit(pygame.font.Font(None, 25).render(str(player.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
-    else:
-        pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), math.pi/2, math.pi ,1)
-        screen.blit(pygame.font.Font(None, 25).render(str(180 - player.angle), True, Color('red')), (pos2[0] - 18, pos2[1] - 12 ))
-    pygame.display.flip()
+# def drawAiming(screen, player):
+#     pos1 = (player.rect.centerx, player.rect.centery)
+#     pos2 = (pos1[0] + math.cos(math.radians(player.angle))*RADIUS, pos1[1]  - math.sin(math.radians(player.angle))*RADIUS)
+#     pygame.draw.line(screen, Color('black'), pos1, pos2, 2)
+#     if player.direction > 0:
+#         pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
+#         screen.blit(pygame.font.Font(None, 25).render(str(player.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
+#     else:
+#         pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), math.pi/2, math.pi ,1)
+#         screen.blit(pygame.font.Font(None, 25).render(str(180 - player.angle), True, Color('red')), (pos2[0] - 18, pos2[1] - 12 ))
+#     pygame.display.flip()
 
 #TODO : handling multithread keyboard input, need improvement
 LOCK = threading.Lock()
@@ -460,6 +481,7 @@ def main(winstyle = 0):
 
     #assign default groups to each sprite class
     Player.containers = all
+    Player.screen = screen
     Alien.containers = aliens, all, lastalien
     Shot.containers = shots, all
     Bomb.containers = bombs, all
@@ -476,12 +498,13 @@ def main(winstyle = 0):
 
     #initialize our starting sprites
     global SCORE
-    player1 = Player('nhan vat 1','character',-1, 1)
+
+    player1 = Player('nhan vat 1','character1',-1, 1)
     #Alien() #note, this 'lives' because it goes into a sprite group
+
     if pygame.font:
         all.add(Score())
-    #keystate = 0
-    #threading._start_new_thread(input, (keystate, player1))
+   
     while player1.alive():
         #get input
         downToUp = player1.firedown
@@ -541,8 +564,9 @@ def main(winstyle = 0):
             Explosion(player1)
             Explosion(bomb)
             player1.kill()
-        #draw the scene
-        drawAiming(screen, player1)
+
+        # drawAiming(screen, player1)
+
         dirty = all.draw(screen) # draw all sprite, return list of rect
         pygame.display.update(dirty) # draw only changed rect
         #cap the framerate
