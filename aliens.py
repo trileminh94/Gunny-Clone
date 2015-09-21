@@ -427,13 +427,8 @@ def main(winstyle = 0):
 
     #initialize our starting sprites
     global SCORE
-# <<<<<<< HEAD
-#     player1 = Player('nhan vat 1','character1',-1)
-#     Alien() #note, this 'lives' because it goes into a sprite group
-# =======
     player1 = Player('nhan vat 1','character1',-1)
-    #Alien() #note, this 'lives' because it goes into a sprite group
-# >>>>>>> origin/luan
+    
     if pygame.font:
         all.add(Score())
     #keystate = 0
