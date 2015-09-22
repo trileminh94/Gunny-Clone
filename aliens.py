@@ -140,6 +140,8 @@ class Player(pygame.sprite.Sprite):
         self.thow_frame = 24
         self.facing = direction
         self.direction = direction
+        self.sound_change_radar = load_sound("bite.wav");
+        self.sound_change_radar.set_volume(0.3)
         image_source = my_load_image(folder,sprite_name+".png")
         emotion_source = my_load_image(folder,sprite_name+"_emotion.png")
         self.image_frame = cut_frame(image_source, 114, 90, 110, 90)
@@ -429,11 +431,13 @@ class Player(pygame.sprite.Sprite):
                     self.angle += 1
                 else:
                     self.angle -= 1
+                self.sound_change_radar.play()
             elif down != 0:
                 if self.angle > 0 and self.angle <= 90:
                     self.angle -= 1
                 elif self.angle > 90 and self.angle <180:
                     self.angle += 1
+                self.sound_change_radar.play()
             pygame.event.pump()
 
 class Alien(pygame.sprite.Sprite):
@@ -523,6 +527,7 @@ class Shot(pygame.sprite.Sprite):
             self.frame = 0
         self.image = self.image_frame[int(round(self.frame))]
         if not SCREENRECT.contains(self.rect):
+            load_sound("boom.wav").play()
             self.kill()
 
 
@@ -614,7 +619,7 @@ class Powerbar(pygame.sprite.Sprite):
 #TODO : handling multithread keyboard input, need improvement
 LOCK = threading.Lock()
 def input(keystate, player1):
-    shoot_sound = load_sound('car_door.wav')
+    shoot_sound = load_sound('2.wav')
     while True:
         keystate = pygame.key.get_pressed()
         LOCK.acquire()
@@ -662,11 +667,11 @@ def main(winstyle = 0):
 
     #load the sound effects
     boom_sound = load_sound('boom.wav')
-    shoot_sound = load_sound('car_door.wav')
+    shoot_sound = load_sound('1.wav')
     if pygame.mixer:
-        music = os.path.join(main_dir, 'data', 'house_lo.wav')
+        music = os.path.join(main_dir, 'data', '1037.wav')
         pygame.mixer.music.load(music)
-        #pygame.mixer.music.play(-1)
+        pygame.mixer.music.play(-1)
 
     # Initialize Game Groups
     aliens = pygame.sprite.Group()
@@ -746,8 +751,12 @@ def main(winstyle = 0):
         if player1downToUp and not player1.firedown:
             Shot(player1)
             shoot_sound.play()
+            shoot_sound.play()
+            shoot_sound.play()
         if player2downToUp and not player2.firedown:
             Shot(player2)
+            shoot_sound.play()
+            shoot_sound.play()
             shoot_sound.play()
         # Create new alien
         if alienreload:
