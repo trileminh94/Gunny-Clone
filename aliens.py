@@ -7,6 +7,7 @@ import pygame
 import threading
 import math
 from pygame.locals import *
+from random import randint
 
 #see if we can load more than standard BMP
 if not pygame.image.get_extended():
@@ -30,20 +31,21 @@ XFACE_STATE    = 9
 CRYING_STATE   = 10
 CRYING_CHONG_MAT = 11
 BOTAY_STATE    = 12
+DIE_STATE      = 13
 STEP_EMOTION   = 0.08
 FPS            = 60
 RADIUS = 35
 PLAYER1FIREKEY = K_SPACE
 PLAYER1UPKEY   = K_UP
 PLAYER1DOWNKey = K_DOWN
-PLAYER1CHANGEBULLET = K_TAB
+#PLAYER1CHANGEBULLET = K_TAB
 PLAYER1LEFTKEY = K_LEFT
 PLAYER1RIGHTKEY = K_RIGHT
 
 PLAYER2FIREKEY = K_x
 PLAYER2UPKEY   = K_w
 PLAYER2DOWNKey = K_s
-PLAYER2CHANGEBULLET = K_CAPSLOCK
+#PLAYER2CHANGEBULLET = K_CAPSLOCK
 PLAYER2LEFTKEY = K_a
 PLAYER2RIGHTKEY = K_d
 
@@ -182,6 +184,28 @@ class Player(pygame.sprite.Sprite):
         self.whichplayer = whichplayer
         Livebar(self)
         Powerbar(self)
+
+    def lost_blood(self):
+        self.health-=5
+        if(self.health <= 0):
+            self.state = DIE_STATE
+        else: 
+            if(randint(5,12) == 5):
+                self.state = ANGRY_STATE
+            elif(randint(5,12) == 6): 
+                self.state = HEADACHE_STATE
+            elif(randint(5,12) == 7):
+                self.state = BORING_STATE
+            elif(randint(5,12) == 8):  
+                self.state = FIRE_EYE_STATE
+            elif(randint(5,12) == 9):
+                self.state = XFACE_STATE
+            elif(randint(5,12) == 10):   
+                self.state = CRYING_STATE
+            elif(randint(5,12) == 11):   
+                self.state = CRYING_CHONG_MAT
+            elif(randint(5,12) == 12): 
+                self.state = BOTAY_STATE    
 
     def draw_move(self):
         self.frame = (self.frame + 0.2)
@@ -366,29 +390,32 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self):
-
-        #change angle if player changes the direction
-        if (self.direction  < 0 and self.angle < 90) or (self.direction > 0 and self.angle > 90):
-            self.angle  = 180 - self.angle
-        if self.firedown == True:
-            self.stepF+= 0.5
-            self.fireF = 10*math.fabs(math.sin(self.stepF*math.pi/math.pow(10,3)))
+        if(self.state == DIE_STATE):
+            self.frame = 32
+            self.image = self.image_frame[self.frame]
         else:
-            self.stepF = 0
-            self.fireF -= 10*math.fabs(math.sin(1*math.pi/math.pow(10,3)))
-        self.power = MAXPOWER * self.fireF
-        if(self.state == LIE_STATE):
-            self.draw_lie()
-        elif(self.state == THROW_STATE):
-            self.draw_throw()
-        elif(self.state == MOVE_STATE):
-            self.move(self.direction)
-        else:
-            self.drawEmotion()
-        self.drawRadar()
+            #change angle if player changes the direction
+            if (self.direction  < 0 and self.angle < 90) or (self.direction > 0 and self.angle > 90):
+                self.angle  = 180 - self.angle
+            if self.firedown == True:
+                self.stepF+= 0.5
+                self.fireF = 10*math.fabs(math.sin(self.stepF*math.pi/math.pow(10,3)))
+            else:
+                self.stepF = 0
+                self.fireF -= 10*math.fabs(math.sin(1*math.pi/math.pow(10,3)))
+            self.power = MAXPOWER * self.fireF
+            if(self.state == LIE_STATE):
+                self.draw_lie()
+            elif(self.state == THROW_STATE):
+                self.draw_throw()
+            elif(self.state == MOVE_STATE):
+                self.move(self.direction)
+            else:
+                self.drawEmotion()
+            self.drawRadar()
 
-        if self.downable:
-            self.rect.move_ip(0, 10)
+            if self.downable:
+                self.rect.move_ip(0, 10)
 
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)
@@ -407,54 +434,37 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.rect.clamp(SCREENRECT)
 
     def check(self,keystate):
-        if(self.whichplayer == 1):
-            direction = keystate[PLAYER1RIGHTKEY] - keystate[PLAYER1LEFTKEY]
-            fire = keystate[PLAYER1FIREKEY]
-            up = keystate[PLAYER1UPKEY]
-            down = keystate[PLAYER1DOWNKey]
-        elif(self.whichplayer == 2):
-            direction = keystate[PLAYER2RIGHTKEY] - keystate[PLAYER2LEFTKEY]
-            fire = keystate[PLAYER2FIREKEY]
-            up = keystate[PLAYER2UPKEY]
-            down = keystate[PLAYER2DOWNKey]
-        if direction:
-            self.direction = direction
-        if(self.isBlock == False):
-            if(keystate[K_1] == 1):
-                self.state = COMPLAINT_STATE
-            elif(keystate[K_2] == 1):
-                self.state = ANGRY_STATE
-            elif(keystate[K_3] == 1):
-                self.state = HEADACHE_STATE
-            elif(keystate[K_4] == 1):
-                self.state = BORING_STATE
-            elif(keystate[K_5] == 1):
-                self.state = FIRE_EYE_STATE
-            elif(keystate[K_6] == 1):
-                self.state = XFACE_STATE
-            elif(keystate[K_7] == 1):
-                self.state = CRYING_STATE
-            elif(keystate[K_8] == 1):
-                self.state = CRYING_CHONG_MAT
-            elif(keystate[K_2] == 1):
-                self.state = BOTAY_STATE
-            elif(direction == 0 and fire == 0):
-                self.state = LIE_STATE
-            elif(direction != 0):
-                self.state = MOVE_STATE
-            if up != 0:
-                if self.angle < 90:
-                    self.angle += 1
-                else:
-                    self.angle -= 1
-                self.sound_change_radar.play()
-            elif down != 0:
-                if self.angle > 0 and self.angle <= 90:
-                    self.angle -= 1
-                elif self.angle > 90 and self.angle <180:
-                    self.angle += 1
-                self.sound_change_radar.play()
-            pygame.event.pump()
+        if(self.state != DIE_STATE):
+            if(self.whichplayer == 1):
+                direction = keystate[PLAYER1RIGHTKEY] - keystate[PLAYER1LEFTKEY]
+                fire = keystate[PLAYER1FIREKEY]
+                up = keystate[PLAYER1UPKEY]
+                down = keystate[PLAYER1DOWNKey]
+            elif(self.whichplayer == 2):
+                direction = keystate[PLAYER2RIGHTKEY] - keystate[PLAYER2LEFTKEY]
+                fire = keystate[PLAYER2FIREKEY]
+                up = keystate[PLAYER2UPKEY]
+                down = keystate[PLAYER2DOWNKey]
+            if direction:
+                self.direction = direction
+            if(self.isBlock == False):
+                if(direction == 0 and fire == 0):
+                    self.state = LIE_STATE
+                elif(direction != 0):
+                    self.state = MOVE_STATE
+                if up != 0:
+                    if self.angle < 90:
+                        self.angle += 1
+                    else:
+                        self.angle -= 1
+                    self.sound_change_radar.play()
+                elif down != 0:
+                    if self.angle > 0 and self.angle <= 90:
+                        self.angle -= 1
+                    elif self.angle > 90 and self.angle <180:
+                        self.angle += 1
+                    self.sound_change_radar.play()
+                pygame.event.pump()
 
 
 class Explosion(pygame.sprite.Sprite):
@@ -523,12 +533,12 @@ class Bomb(pygame.sprite.Sprite):
         self.rect.move_ip(self.dx - x, y - self.dy)
         
         if self.player.direction > 0:
-            self.frame += 0.4 #72/FPS
+            self.frame += 0.4 
             if self.frame > 3:
                 self.frame = 0
             self.image = self.image_frame[int(round(self.frame))]
         elif self.player.direction < 0:
-            self.frame += 0.4 #72/FPS
+            self.frame += 0.4 
             if self.frame > 7:
                 self.frame = 4
             self.image = self.image_frame[int(round(self.frame))]
@@ -670,7 +680,11 @@ def main(winstyle = 0):
     player1 = Player('nhan vat 1','character1',1, 1,350)
     player2 = Player('nhan vat 2','character2',-1, 2,-350)
 
-    while player1.alive() and player2.alive():
+    while player1.health > -10 and player2.health > -10:
+        if(player1.state == DIE_STATE):
+            player1.health-=0.1
+        if(player2.state == DIE_STATE):
+            player2.health-=0.1
         #get input
         player1downToUp = player1.firedown
         player2downToUp = player2.firedown
@@ -681,12 +695,12 @@ def main(winstyle = 0):
             elif event.type == KEYDOWN:
                 if event.key == PLAYER1FIREKEY:
                     player1.firedown = True
-                elif event.key == PLAYER1CHANGEBULLET:
-                    player1.typeOfBullet *= -1
+                # elif event.key == PLAYER1CHANGEBULLET:
+                #     player1.typeOfBullet *= -1
                 if event.key == PLAYER2FIREKEY:
                     player2.firedown = True
-                elif event.key == PLAYER2CHANGEBULLET:
-                    player2.typeOfBullet *= -1
+                # elif event.key == PLAYER2CHANGEBULLET:
+                #     player2.typeOfBullet *= -1
             elif event.type == KEYUP:
                 if event.key == PLAYER1FIREKEY:
                     player1.firedown = False
@@ -717,13 +731,13 @@ def main(winstyle = 0):
         for bum in pygame.sprite.spritecollide(player1, bumeranges, 1):
             boom_sound.play()
             Explosion(player1)
-            Explosion(bum)
-            player1.kill()
+            player1.lost_blood()
+            bum.kill()
         for ras in pygame.sprite.spritecollide(player2, rasengans, 1):
             boom_sound.play()
             Explosion(player2)
-            Explosion(ras)
-            player2.kill()
+            player2.lost_blood()
+            ras.kill()
 
 
         # Detect collision with ground
