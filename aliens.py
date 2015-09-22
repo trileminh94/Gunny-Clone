@@ -485,27 +485,33 @@ class Shot(pygame.sprite.Sprite):
     def __init__(self, player):
         pygame.sprite.Sprite.__init__(self, self.containers)
         folder = 'dan'
+        self.player = player
         if (player.typeOfBullet > 0):
-            loaidan = 'phitieu'
+            loaidan = 'abc'
             x = 0
             y = 0
-            width = 40
-            height = 41
+            width = 50
+            height = 50
         else:
-            loaidan = 'bumerang'
+            loaidan = 'bumerange'
             x = 0
             y = 0
-            width = 33
-            height = 34
-
+            width = 50
+            height = 50
+            
         image_source = my_load_image(folder,loaidan+".png")
-        image = image_source.subsurface(x, y, width, height)
         j = 0
         self.image_frame = []
-        while j <= 36:
-            self.image_frame.append(pygame.transform.rotate(image, 10 * j))
-            j += 1
-        self.frame = 0
+        while j < 8:
+            if j < 4:
+                self.image_frame.append(image_source.subsurface(j*width, y, width, height))
+            else:
+                self.image_frame.append(pygame.transform.flip(image_source.subsurface((j-4)*width, y, width, height),1,0))
+            j+=1
+        if player.direction > 0:
+            self.frame = 0
+        elif player.direction < 0:
+            self.frame = 4
         self.image = self.image_frame[int(round(self.frame))]
         self.rect = self.image.get_rect(midbottom= (player.rect.centerx, player.rect.centery))
         self.origtop = self.rect.top
@@ -522,10 +528,17 @@ class Shot(pygame.sprite.Sprite):
         self.dx = self.speed_x * self.t
         self.dy = self.speed_y * self.t - ACCELERATION/2.0* self.t* self.t
         self.rect.move_ip(self.dx - x, y - self.dy)
-        self.frame += 72/FPS
-        if self.frame > 36:
-            self.frame = 0
-        self.image = self.image_frame[int(round(self.frame))]
+        
+        if self.player.direction > 0:
+            self.frame += 0.4 #72/FPS
+            if self.frame > 3:
+                self.frame = 0
+            self.image = self.image_frame[int(round(self.frame))]
+        elif self.player.direction < 0:
+            self.frame += 0.4 #72/FPS
+            if self.frame > 7:
+                self.frame = 4
+            self.image = self.image_frame[int(round(self.frame))]
         if not SCREENRECT.contains(self.rect):
             load_sound("boom.wav").play()
             self.kill()
