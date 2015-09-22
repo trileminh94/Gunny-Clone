@@ -34,6 +34,11 @@ BOTAY_STATE    = 12
 DIE_STATE      = 13
 STEP_EMOTION   = 0.08
 FPS            = 60
+
+HOME           = 1
+GAME           = 2
+GAMEOVER       = 3
+
 RADIUS = 35
 PLAYER1FIREKEY = K_SPACE
 PLAYER1UPKEY   = K_UP
@@ -605,6 +610,14 @@ class Powerbar(pygame.sprite.Sprite):
         #check if player is still alive
         if not self.player.alive():
             self.kill()
+
+gamestate = HOME
+
+def home():
+    pass
+
+def game_over():
+    pass
 
 def main(winstyle = 0):
     # Initialize pygame
