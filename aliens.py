@@ -34,7 +34,7 @@ main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 def load_image(file):
     "loads an image, prepares it for play"
-    file = os.path.join(main_dir, 'data',file)
+    file = os.path.join(main_dir, 'data', file)
     try:
         surface = pygame.image.load(file)
     except pygame.error:
@@ -97,6 +97,19 @@ def load_sound(file):
 # update, since it is passed extra information about
 # the keyboard
 
+class Ground(pygame.sprite.Sprite):
+
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self, self.containers)
+
+        #image_source = load_image('dead.png').convert_alpha()
+
+        self.image = my_load_image('nhan vat 2', 'dead.png')
+        self.rect = self.image.get_rect(midbottom=SCREENRECT.midbottom)
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def update(self):
+        return
 
 class Player(pygame.sprite.Sprite):
     speed = 1.5
@@ -110,6 +123,9 @@ class Player(pygame.sprite.Sprite):
     angle = 30
     fireF = 0
     stepF = 0
+
+    downable = True
+
     def __init__(self,folder,sprite_name,direction):
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.reloading = 0
@@ -123,11 +139,12 @@ class Player(pygame.sprite.Sprite):
             self.image = self.image_frame[0]
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
-        self.rect = self.image.get_rect(midbottom=SCREENRECT.midbottom)
+        self.rect = pygame.Rect(10,10,10,10)#self.image.get_rect(midbottom=SCREENRECT.midbottom)
         self.origtop = self.rect.top
         self.angle = 45
         self.power = 200
         self.typeOfBullet = 1
+        self.mask = pygame.mask.from_surface(self.image)
 
     def draw_move(self):
         self.frame = (self.frame + 0.2)
@@ -180,6 +197,10 @@ class Player(pygame.sprite.Sprite):
         elif(self.state == MOVE_STATE):
             self.move(self.direction)
         #self.draw_direction(self.image)
+        if self.downable:
+
+            self.rect.move_ip(0,2)
+
 
 
     def move(self, direction):
@@ -188,7 +209,8 @@ class Player(pygame.sprite.Sprite):
             self.draw_move()
         self.rect.move_ip(direction*self.speed, 0)
         self.rect = self.rect.clamp(SCREENRECT)
-        self.rect.top = self.origtop - (self.rect.left//self.bounce%2)
+        #self.rect.top = self.origtop - (self.rect.left//self.bounce%2)
+
 
     def gunpos(self):
         pos = self.facing*self.gun_offset + self.rect.centerx
@@ -347,6 +369,8 @@ class Score(pygame.sprite.Sprite):
             msg = "Score: %d" % SCORE
             self.image = self.font.render(msg, 0, self.color)
 
+
+
 #TODO : handling multithread keyboard input, need improvement
 LOCK = threading.Lock()
 def input(keystate, player1):
@@ -412,12 +436,15 @@ def main(winstyle = 0):
     lastalien = pygame.sprite.GroupSingle()
 
     #assign default groups to each sprite class
+
     Player.containers = all
     Alien.containers = aliens, all, lastalien
     Shot.containers = shots, all
     Bomb.containers = bombs, all
     Explosion.containers = all
     Score.containers = all
+    Ground.containers = all
+
 
     #Create Some Starting Values
     global score
@@ -427,10 +454,16 @@ def main(winstyle = 0):
 
     #initialize our starting sprites
     global SCORE
+    ground = Ground()
     player1 = Player('nhan vat 1','character1',-1)
-    
+
+
+
     if pygame.font:
         all.add(Score())
+
+    #all.add(ground)
+
     #keystate = 0
     #threading._start_new_thread(input, (keystate, player1))
     while player1.alive():
@@ -448,6 +481,7 @@ def main(winstyle = 0):
                     player1.state = THROW_STATE
 
         # clear/erase the last drawn sprites
+
         all.clear(screen, background)
         screen.blit(background, (0,0))
 
@@ -491,6 +525,11 @@ def main(winstyle = 0):
             Explosion(player1)
             Explosion(bomb)
             player1.kill()
+
+        # Detect collision with ground
+        if pygame.sprite.collide_mask(player1, ground):
+            player1.downable = False
+
         #draw the scene
         pos1 = (player1.rect.centerx, player1.rect.centery)
         pos2 = (pos1[0] + math.cos(math.radians(player1.angle))*RADIUS, pos1[1]  - math.sin(math.radians(player1.angle))*RADIUS)
@@ -498,11 +537,14 @@ def main(winstyle = 0):
         pygame.draw.line(screen, Color('black'), pos1, pos2, 2)
         pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
         screen.blit(pygame.font.Font(None, 25).render(str(player1.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
-        pygame.display.flip()
+
+        #pygame.display.flip()
         dirty = all.draw(screen) # draw all sprite, return list of rect
         pygame.display.update(dirty) # draw only changed rect
         #cap the framerate
         clock.tick(FPS)
+
+
 
     if pygame.mixer:
         pygame.mixer.music.fadeout(1000)
