@@ -18,7 +18,6 @@ ALIEN_ODDS     = 22     #chances a new alien appears
 BOMB_ODDS      = 60    #chances a new bomb will drop
 ALIEN_RELOAD   = 12     #frames between new aliens
 SCREENRECT     = Rect(0, 0, 1000, 600)
-SCORE          = 0
 MOVE_STATE     = 1
 LIE_STATE      = 2
 THROW_STATE    = 3
@@ -151,7 +150,7 @@ class Player(pygame.sprite.Sprite):
     downable = True
 
 
-    def __init__(self,folder,sprite_name,direction, whichplayer):
+    def __init__(self,folder,sprite_name,direction, whichplayer,offset):
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.reloading = 0
         self.frame = 0
@@ -169,10 +168,10 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        self.rect = pygame.Rect(10,10,10,10)
+        #self.rect = pygame.Rect(10,10,10,10)
 
 
-        #self.rect = self.image.get_rect(midbottom=(SCREENRECT.midbottom[0], SCREENRECT.midbottom[1] - 100))
+        self.rect = self.image.get_rect(midbottom=(SCREENRECT.midbottom[0]-offset, SCREENRECT.midbottom[1] - 185))
 
         self.origtop = self.rect.top
         self.health = 100
@@ -465,27 +464,69 @@ class Player(pygame.sprite.Sprite):
                 self.sound_change_radar.play()
             pygame.event.pump()
 
-class Alien(pygame.sprite.Sprite):
-    speed = 13
-    animcycle = 12
-    images = []
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self, self.containers)
-        self.image = self.images[0]
-        self.rect = self.image.get_rect()
-        self.facing = random.choice((-1,1)) * Alien.speed
-        self.frame = 0
-        if self.facing < 0:
-            self.rect.right = SCREENRECT.right
+# class Alien(pygame.sprite.Sprite):
+#     speed = -5
+#     images = []
+#     def __init__(self, player):
+#         pygame.sprite.Sprite.__init__(self, self.containers)
+#         folder = 'dan'
+#         self.player = player
+#         if (player.typeOfBullet > 0):
+#             loaidan = 'abc'
+#             x = 0
+#             y = 0
+#             width = 50
+#             height = 50
+#         else:
+#             loaidan = 'bumerange'
+#             x = 0
+#             y = 0
+#             width = 50
+#             height = 50
+            
+#         image_source = my_load_image(folder,loaidan+".png")
+#         j = 0
+#         self.image_frame = []
+#         while j < 8:
+#             if j < 4:
+#                 self.image_frame.append(image_source.subsurface(j*width, y, width, height))
+#             else:
+#                 self.image_frame.append(pygame.transform.flip(image_source.subsurface((j-4)*width, y, width, height),1,0))
+#             j+=1
+#         if player.direction > 0:
+#             self.frame = 0
+#         elif player.direction < 0:
+#             self.frame = 4
+#         self.image = self.image_frame[int(round(self.frame))]
+#         self.rect = self.image.get_rect(midbottom= (player.rect.centerx, player.rect.centery))
+#         self.origtop = self.rect.top
+#         self.speed_x = math.cos(math.radians(player.angle)) * player.power
+#         self.speed_y = math.sin(math.radians(player.angle)) * player.power
+#         self.t = 0
+#         self.dx = 0
+#         self.dy = 0
 
-    def update(self):
-        self.rect.move_ip(self.facing, 0)
-        if not SCREENRECT.contains(self.rect):
-            self.facing = -self.facing;
-            self.rect.top = self.rect.bottom + 1
-            self.rect = self.rect.clamp(SCREENRECT)
-        self.frame = self.frame + 1
-        self.image = self.images[self.frame//self.animcycle%3]
+#     def update(self):
+#         self.t += 1.0/FPS
+#         x = self.dx
+#         y = self.dy
+#         self.dx = self.speed_x * self.t
+#         self.dy = self.speed_y * self.t - ACCELERATION/2.0* self.t* self.t
+#         self.rect.move_ip(self.dx - x, y - self.dy)
+        
+#         if self.player.direction > 0:
+#             self.frame += 0.4 #72/FPS
+#             if self.frame > 3:
+#                 self.frame = 0
+#             self.image = self.image_frame[int(round(self.frame))]
+#         elif self.player.direction < 0:
+#             self.frame += 0.4 #72/FPS
+#             if self.frame > 7:
+#                 self.frame = 4
+#             self.image = self.image_frame[int(round(self.frame))]
+#         if not SCREENRECT.contains(self.rect):
+#             load_sound("boom.wav").play()
+#             self.kill()
 
 
 class Explosion(pygame.sprite.Sprite):
@@ -504,14 +545,79 @@ class Explosion(pygame.sprite.Sprite):
         if self.life <= 0: self.kill()
 
 
-class Shot(pygame.sprite.Sprite):
+# class Shot(pygame.sprite.Sprite):
+#     speed = -5
+#     images = []
+#     def __init__(self, player):
+#         pygame.sprite.Sprite.__init__(self, self.containers)
+#         folder = 'dan'
+#         self.player = player
+#         if (player.typeOfBullet > 0):
+#             loaidan = 'abc'
+#             x = 0
+#             y = 0
+#             width = 50
+#             height = 50
+#         else:
+#             loaidan = 'bumerange'
+#             x = 0
+#             y = 0
+#             width = 50
+#             height = 50
+            
+#         image_source = my_load_image(folder,loaidan+".png")
+#         j = 0
+#         self.image_frame = []
+#         while j < 8:
+#             if j < 4:
+#                 self.image_frame.append(image_source.subsurface(j*width, y, width, height))
+#             else:
+#                 self.image_frame.append(pygame.transform.flip(image_source.subsurface((j-4)*width, y, width, height),1,0))
+#             j+=1
+#         if player.direction > 0:
+#             self.frame = 0
+#         elif player.direction < 0:
+#             self.frame = 4
+#         self.image = self.image_frame[int(round(self.frame))]
+#         self.rect = self.image.get_rect(midbottom= (player.rect.centerx, player.rect.centery))
+#         self.origtop = self.rect.top
+#         self.speed_x = math.cos(math.radians(player.angle)) * player.power
+#         self.speed_y = math.sin(math.radians(player.angle)) * player.power
+#         self.t = 0
+#         self.dx = 0
+#         self.dy = 0
+
+    # def update(self):
+    #     self.t += 1.0/FPS
+    #     x = self.dx
+    #     y = self.dy
+    #     self.dx = self.speed_x * self.t
+    #     self.dy = self.speed_y * self.t - ACCELERATION/2.0* self.t* self.t
+    #     self.rect.move_ip(self.dx - x, y - self.dy)
+        
+    #     if self.player.direction > 0:
+    #         self.frame += 0.4 #72/FPS
+    #         if self.frame > 3:
+    #             self.frame = 0
+    #         self.image = self.image_frame[int(round(self.frame))]
+    #     elif self.player.direction < 0:
+    #         self.frame += 0.4 #72/FPS
+    #         if self.frame > 7:
+    #             self.frame = 4
+    #         self.image = self.image_frame[int(round(self.frame))]
+    #     if not SCREENRECT.contains(self.rect):
+    #         load_sound("boom.wav").play()
+    #         self.kill()
+
+
+class Bomb(pygame.sprite.Sprite):
     speed = -5
     images = []
     def __init__(self, player):
         pygame.sprite.Sprite.__init__(self, self.containers)
         folder = 'dan'
         self.player = player
-        if (player.typeOfBullet > 0):
+        if (self.player.whichplayer == 1):
             loaidan = 'abc'
             x = 0
             y = 0
@@ -545,7 +651,6 @@ class Shot(pygame.sprite.Sprite):
         self.t = 0
         self.dx = 0
         self.dy = 0
-
     def update(self):
         self.t += 1.0/FPS
         x = self.dx
@@ -568,38 +673,30 @@ class Shot(pygame.sprite.Sprite):
             load_sound("boom.wav").play()
             self.kill()
 
+class bumerange(Bomb):
+    def __init__(self, player):
+        Bomb.__init__(self,player)
 
-class Bomb(pygame.sprite.Sprite):
-    speed = 9
-    images = []
-    def __init__(self, alien):
-        pygame.sprite.Sprite.__init__(self, self.containers)
-        self.image = self.images[0]
-        self.rect = self.image.get_rect(midbottom=
-                    alien.rect.move(0,5).midbottom)
-
-    def update(self):
-        self.rect.move_ip(0, self.speed)
-        if self.rect.bottom >= 470:
-            Explosion(self)
-            self.kill()
+class rasengan(Bomb):
+    def __init__(self, player):
+        Bomb.__init__(self,player)
 
 
-class Score(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.font = pygame.font.Font(None, 20)
-        self.font.set_italic(1)
-        self.color = Color('white')
-        self.lastscore = -1
-        self.update()
-        self.rect = self.image.get_rect().move(10, 450)
+# class Score(pygame.sprite.Sprite):
+#     def __init__(self):
+#         pygame.sprite.Sprite.__init__(self)
+#         self.font = pygame.font.Font(None, 20)
+#         self.font.set_italic(1)
+#         self.color = Color('white')
+#         self.lastscore = -1
+#         self.update()
+#         self.rect = self.image.get_rect().move(10, 450)
 
-    def update(self):
-        if SCORE != self.lastscore:
-            self.lastscore = SCORE
-            msg = "Score: %d" % SCORE
-            self.image = self.font.render(msg, 0, self.color)
+#     def update(self):
+#         if SCORE != self.lastscore:
+#             self.lastscore = SCORE
+#             msg = "Score: %d" % SCORE
+#             self.image = self.font.render(msg, 0, self.color)
 #TODO:
 class Livebar(pygame.sprite.Sprite):
     """shows a bar with the hitpoints of a Bird sprite"""
@@ -666,7 +763,7 @@ def input(keystate, player1):
         player1.check(keystate)
         fire = keystate[PLAYER1FIREKEY]
         if not player1.reloading and fire:
-            Shot(player1.gunpos(), player1.angle, player1.power, player1.typeOfBullet)
+            Bomb(player1.gunpos(), player1.angle, player1.power, player1.typeOfBullet)
             shoot_sound.play()
         player1.reloading = fire
         LOCK.release()
@@ -687,14 +784,14 @@ def main(winstyle = 0):
     #(do this before the classes are used, after screen setup)
     img = load_image('explosion1.gif')
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
-    Alien.images = load_images('alien1.gif', 'alien2.gif', 'alien3.gif')
-    Bomb.images = [load_image('bomb.gif')]
-    Shot.images = [load_image('shot.gif')]
+    #Alien.images = load_images('alien1.gif', 'alien2.gif', 'alien3.gif')
+    #Bomb.images = [load_image('bomb.gif')]
+    #Shot.images = [load_image('shot.gif')]
 
     #decorate the game window
-    icon = pygame.transform.scale(Alien.images[0], (32, 32))
-    pygame.display.set_icon(icon)
-    pygame.display.set_caption('Pygame Aliens')
+    #icon = pygame.transform.scale(Alien.images[0], (32, 32))
+    #pygame.display.set_icon(icon)
+    pygame.display.set_caption('Gunny')
     pygame.mouse.set_visible(0)
 
     #create the background, tile the bgd image
@@ -715,7 +812,8 @@ def main(winstyle = 0):
 
     # Initialize Game Groups
     aliens = pygame.sprite.Group()
-    bombs = pygame.sprite.Group()
+    rasengans = pygame.sprite.Group()
+    bumeranges = pygame.sprite.Group()
     all = pygame.sprite.RenderUpdates()
     lastalien = pygame.sprite.GroupSingle()
 
@@ -724,10 +822,12 @@ def main(winstyle = 0):
     Player.containers = all
     Player.screen = screen
     
-    Alien.containers = aliens, all, lastalien
-    Bomb.containers = bombs, all
+    #Alien.containers = aliens, all, lastalien
+
+    rasengan.containers = rasengans, all
+    bumerange.containers = bumeranges,all
     Explosion.containers = all
-    Score.containers = all
+    #Score.containers = all
 
     Ground.containers = all
 
@@ -737,37 +837,32 @@ def main(winstyle = 0):
 
 
     #Create Some Starting Values
-    global score
+    #global score
     alienreload = ALIEN_RELOAD
     kills = 0
     clock = pygame.time.Clock()
 
     #initialize our starting sprites
-    global SCORE
+    #global SCORE
 
+    
     ground = Ground()
-    player1 = Player('nhan vat 1','character1',-1,1)
 
 
+    # if pygame.font:
+    #     all.add(Score())
 
-    if pygame.font:
-        all.add(Score())
+    player1 = Player('nhan vat 1','character1',1, 1,350)
+    player2 = Player('nhan vat 2','character2',-1, 2,-350)
 
-    #all.add(ground)
-
-    #keystate = 0
-    #threading._start_new_thread(input, (keystate, player1))
-
-    player1 = Player('nhan vat 1','character1',-1, 1)
-    player2 = Player('nhan vat 2','character2',-1, 2)
-    shots = pygame.sprite.Group()
-    Shot.containers = shots, all
+    #shots = pygame.sprite.Group()
+    #Shot.containers = shots, all
 
 
-    if pygame.font:
-        all.add(Score())
+    # if pygame.font:
+    #     all.add(Score())
 
-    while player1.alive():
+    while player1.alive() and player2.alive():
         #get input
         player1downToUp = player1.firedown
         player2downToUp = player2.firedown
@@ -805,49 +900,53 @@ def main(winstyle = 0):
         player1.check(keystate)
         player2.check(keystate)
         if player1downToUp and not player1.firedown:
-            Shot(player1)
-            shoot_sound.play()
-            shoot_sound.play()
+            rasengan(player1)
             shoot_sound.play()
         if player2downToUp and not player2.firedown:
-            Shot(player2)
+            bumerange(player2)
             shoot_sound.play()
-            shoot_sound.play()
-            shoot_sound.play()
-        # Create new alien
-        if alienreload:
-            alienreload = alienreload - 1
-        elif not int(random.random() * ALIEN_ODDS):
-            #Alien()
-            alienreload = ALIEN_RELOAD
+        # # Create new alien
+        # if alienreload:
+        #     alienreload = alienreload - 1
+        # elif not int(random.random() * ALIEN_ODDS):
+        #     #Alien()
+        #     alienreload = ALIEN_RELOAD
 
-        # Drop bombs
-        if lastalien and not int(random.random() * BOMB_ODDS):
-            Bomb(lastalien.sprite)
+        # # Drop bombs
+        # if lastalien and not int(random.random() * BOMB_ODDS):
+        #     Bomb(lastalien.sprite)
 
-        # Detect collisions
-        for alien in pygame.sprite.spritecollide(player1, aliens, 1):
+        # # Detect collisions
+        # for alien in pygame.sprite.spritecollide(player1, aliens, 1):
+        #     boom_sound.play()
+        #     Explosion(alien)
+        #     SCORE = SCORE + 1
+        #     player1.kill()
+        # #LOCK.acquire()
+        # for alien in pygame.sprite.groupcollide(player2, aliens, 1):
+        #     boom_sound.play()
+        #     Explosion(alien)
+        #     Explosion(player1)
+        #     SCORE = SCORE + 1
+        #     player1.kill()
+        # #LOCK.release()
+        for bum in pygame.sprite.spritecollide(player1, bumeranges, 1):
             boom_sound.play()
-            Explosion(alien)
             Explosion(player1)
-            SCORE = SCORE + 1
+            Explosion(bum)
             player1.kill()
-        #LOCK.acquire()
-        for alien in pygame.sprite.groupcollide(shots, aliens, 1, 1).keys():
+        for ras in pygame.sprite.spritecollide(player2, rasengans, 1):
             boom_sound.play()
-            Explosion(alien)
-            SCORE = SCORE + 1
-        #LOCK.release()
-        for bomb in pygame.sprite.spritecollide(player1, bombs, 1):
-            boom_sound.play()
-            Explosion(player1)
-            Explosion(bomb)
-            player1.kill()
+            Explosion(player2)
+            Explosion(ras)
+            player2.kill()
 
 
         # Detect collision with ground
         if pygame.sprite.collide_mask(player1, ground):
             player1.downable = False
+        if pygame.sprite.collide_mask(player2,ground):
+            player2.downable = False
 
 
 
