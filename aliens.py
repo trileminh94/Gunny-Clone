@@ -32,8 +32,8 @@ CRYING_STATE   = 10
 CRYING_CHONG_MAT = 11
 BOTAY_STATE    = 12
 STEP_EMOTION   = 0.08
-FPS            = 40
-RADIUS = 45
+FPS            = 60
+RADIUS = 35
 PLAYER1FIREKEY = K_SPACE
 PLAYER1UPKEY   = K_UP
 PLAYER1DOWNKey = K_DOWN
@@ -369,10 +369,10 @@ class Player(pygame.sprite.Sprite):
         pos2 = (pos1[0] + math.cos(math.radians(self.angle))*RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*RADIUS)
         pygame.draw.line(self.screen, Color('yellow'), pos1, pos2, 2)
         if self.direction > 0:
-            self.screen.blit(pygame.font.Font(None, 25).render(str(self.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
+            self.screen.blit(pygame.font.Font(None, 15).render(str(self.angle), True, Color('white')), (pos2[0], pos2[1] - 12 ))
         else:
-            self.screen.blit(pygame.font.Font(None, 25).render(str(180 - self.angle), True, Color('red')), (pos2[0] - 18, pos2[1] - 12 ))
-        pygame.display.flip()
+            self.screen.blit(pygame.font.Font(None, 15).render(str(180 - self.angle), True, Color('white')), (pos2[0] - 18, pos2[1] - 12 ))
+        #pygame.display.flip()
 
 
 
