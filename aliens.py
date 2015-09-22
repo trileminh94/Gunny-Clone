@@ -849,13 +849,7 @@ def main(winstyle = 0):
         if pygame.sprite.collide_mask(player1, ground):
             player1.downable = False
 
-        #draw the scene
-        pos1 = (player1.rect.centerx, player1.rect.centery)
-        pos2 = (pos1[0] + math.cos(math.radians(player1.angle))*RADIUS, pos1[1]  - math.sin(math.radians(player1.angle))*RADIUS)
-        #print pos1, pos2
-        pygame.draw.line(screen, Color('black'), pos1, pos2, 2)
-        pygame.draw.arc(screen,Color('black'),Rect(pos1[0] - RADIUS, pos1[1] - RADIUS, 2 * RADIUS, 2 * RADIUS), 0, math.pi/2 ,1)
-        screen.blit(pygame.font.Font(None, 25).render(str(player1.angle), True, Color('red')), (pos2[0], pos2[1] - 12 ))
+
 
         dirty = all.draw(screen) # draw all sprite, return list of rect
         pygame.display.update(dirty) # draw only changed rect
