@@ -38,6 +38,16 @@ PLAYER1FIREKEY = K_SPACE
 PLAYER1UPKEY   = K_UP
 PLAYER1DOWNKey = K_DOWN
 PLAYER1CHANGEBULLET = K_TAB
+PLAYER1LEFTKEY = K_LEFT
+PLAYER1RIGHTKEY = K_RIGHT
+
+PLAYER2FIREKEY = K_x
+PLAYER2UPKEY   = K_w
+PLAYER2DOWNKey = K_s
+PLAYER2CHANGEBULLET = K_CAPSLOCK
+PLAYER2LEFTKEY = K_a
+PLAYER2RIGHTKEY = K_d
+
 MAXPOWER = 800
 ACCELERATION = 200
 POWERBARRECT1 = Rect(0, SCREENRECT.height - 25, 400, 20)
@@ -379,10 +389,16 @@ class Player(pygame.sprite.Sprite):
         return pos, self.rect.top
 
     def check(self,keystate):
-        direction = keystate[K_RIGHT] - keystate[K_LEFT]
-        fire = keystate[K_SPACE]
-        up = keystate[PLAYER1UPKEY]
-        down = keystate[PLAYER1DOWNKey]
+        if(self.whichplayer == 1):
+            direction = keystate[PLAYER1RIGHTKEY] - keystate[PLAYER1LEFTKEY]
+            fire = keystate[PLAYER1FIREKEY]
+            up = keystate[PLAYER1UPKEY]
+            down = keystate[PLAYER1DOWNKey]
+        elif(self.whichplayer == 2):
+            direction = keystate[PLAYER2RIGHTKEY] - keystate[PLAYER2LEFTKEY]
+            fire = keystate[PLAYER2FIREKEY]
+            up = keystate[PLAYER2UPKEY]
+            down = keystate[PLAYER2DOWNKey]
         if direction:
             self.direction = direction
         if(self.isBlock == False):
@@ -679,6 +695,7 @@ def main(winstyle = 0):
     global SCORE
 #<<<<<<< HEAD
     player1 = Player('nhan vat 1','character1',-1, 1)
+    player2 = Player('nhan vat 2','character2',-1, 2)
     shots = pygame.sprite.Group()
     Shot.containers = shots, all
 #=======
@@ -692,7 +709,8 @@ def main(winstyle = 0):
    
     while player1.alive():
         #get input
-        downToUp = player1.firedown
+        player1downToUp = player1.firedown
+        player2downToUp = player2.firedown
         for event in pygame.event.get():
             if event.type == QUIT or \
                 (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -702,10 +720,17 @@ def main(winstyle = 0):
                     player1.firedown = True
                 elif event.key == PLAYER1CHANGEBULLET:
                     player1.typeOfBullet *= -1
+                if event.key == PLAYER2FIREKEY:
+                    player2.firedown = True
+                elif event.key == PLAYER2CHANGEBULLET:
+                    player2.typeOfBullet *= -1
             elif event.type == KEYUP:
                 if event.key == PLAYER1FIREKEY:
                     player1.firedown = False
                     player1.state = THROW_STATE
+                if event.key == PLAYER2FIREKEY:
+                    player2.firedown = False
+                    player2.state = THROW_STATE
 
         # clear/erase the last drawn sprites
         all.clear(screen, background)
@@ -717,8 +742,12 @@ def main(winstyle = 0):
         #handle player input
         keystate = pygame.key.get_pressed()
         player1.check(keystate)
-        if downToUp and not player1.firedown:
+        player2.check(keystate)
+        if player1downToUp and not player1.firedown:
             Shot(player1)
+            shoot_sound.play()
+        if player2downToUp and not player2.firedown:
+            Shot(player2)
             shoot_sound.play()
         # Create new alien
         if alienreload:
