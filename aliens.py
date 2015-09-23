@@ -323,7 +323,7 @@ class Player(pygame.sprite.Sprite):
             if(self.state == COMPLAINT_STATE):
                 if(self.frame < 33 or self.frame > 36):
                     self.frame = 33
-                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
                 self.frame+= STEP_EMOTION
                 if(self.frame > 36):
                     self.state = LIE_STATE
@@ -331,7 +331,7 @@ class Player(pygame.sprite.Sprite):
             elif(self.state == ANGRY_STATE):
                 if(self.frame < 37 or self.frame > 40):
                     self.frame = 37
-                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
                 self.frame+= STEP_EMOTION
                 if(self.frame > 40):
                     self.state = LIE_STATE
@@ -339,7 +339,7 @@ class Player(pygame.sprite.Sprite):
             elif(self.state == HEADACHE_STATE):
                 if(self.frame < 41 or self.frame > 43):
                     self.frame = 41
-                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
                 self.frame+= STEP_EMOTION
                 if(self.frame > 43):
                     self.state = LIE_STATE
@@ -347,7 +347,7 @@ class Player(pygame.sprite.Sprite):
             elif(self.state == BORING_STATE):
                 if(self.frame < 44 or self.frame > 47):
                     self.frame = 44
-                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
                 self.frame+= STEP_EMOTION
                 if(self.frame > 47):
                     self.state = LIE_STATE
@@ -355,7 +355,7 @@ class Player(pygame.sprite.Sprite):
             elif(self.state == FIRE_EYE_STATE):
                 if(self.frame < 48 or self.frame > 51):
                     self.frame = 48
-                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
                 self.frame+= STEP_EMOTION
                 if(self.frame > 51):
                     self.state = LIE_STATE
@@ -363,7 +363,7 @@ class Player(pygame.sprite.Sprite):
             elif(self.state == XFACE_STATE):
                 if(self.frame < 52 or self.frame > 54):
                     self.frame = 52
-                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
                 self.frame+= STEP_EMOTION
                 if(self.frame > 54):
                     self.state = LIE_STATE
@@ -371,7 +371,7 @@ class Player(pygame.sprite.Sprite):
             elif(self.state == CRYING_STATE):
                 if(self.frame < 55 or self.frame > 58):
                     self.frame = 55
-                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
                 self.frame+= STEP_EMOTION
                 if(self.frame > 58):
                     self.state = LIE_STATE
@@ -379,7 +379,7 @@ class Player(pygame.sprite.Sprite):
             elif(self.state == CRYING_CHONG_MAT):
                 if(self.frame < 59 or self.frame > 62):
                     self.frame = 59
-                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
                 self.frame+= STEP_EMOTION
                 if(self.frame > 62):
                     self.state = LIE_STATE
@@ -387,7 +387,7 @@ class Player(pygame.sprite.Sprite):
             elif(self.state == BOTAY_STATE):
                 if(self.frame < 63 or self.frame > 65):
                     self.frame = 63
-                pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+                self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
                 self.frame+= STEP_EMOTION
                 if(self.frame > 65):
                     self.state = LIE_STATE
