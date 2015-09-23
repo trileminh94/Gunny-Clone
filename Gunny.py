@@ -510,14 +510,14 @@ class Bomb(pygame.sprite.Sprite):
             y = 0
             width = 50
             height = 50
-            self.power = 20
+            self.power = 25
         else:
             loaidan = 'bumerange'
             x = 0
             y = 0
             width = 50
             height = 50
-            self.power = 10
+            self.power = 15
             self.collide = 3
 
         image_source = my_load_image(folder,loaidan+".png")
@@ -662,7 +662,6 @@ class Energybar(pygame.sprite.Sprite):
 
     def update(self):
         self.percent = self.player.enegery / 100.0
-        print self.player.enegery
         if self.percent != self.oldpercent:
             pygame.draw.rect(self.image, (0,0,0), (1,1,self.player.rect.width-2,5)) # fill black
             pygame.draw.rect(self.image, Color('blue'), (1,1,
@@ -867,10 +866,12 @@ def main(screen,gamestate,winstyle = 0):
             elif event.type == KEYUP:
                 if event.key == PLAYER1FIREKEY:
                     player1.firedown = False
-                    player1.state = THROW_STATE
+                    if player1.enegery >= 20:
+                        player1.state = THROW_STATE
                 if event.key == PLAYER2FIREKEY:
                     player2.firedown = False
-                    player2.state = THROW_STATE
+                    if player2.enegery >= 20:
+                        player2.state = THROW_STATE
 
         # clear/erase the last drawn sprites
 
@@ -884,10 +885,10 @@ def main(screen,gamestate,winstyle = 0):
         keystate = pygame.key.get_pressed()
         player1.check(keystate)
         player2.check(keystate)
-        if player1downToUp and not player1.firedown:
+        if player1downToUp and not player1.firedown and player1.enegery >= 25:
             Bomb(player1)
             shoot_sound.play()
-        if player2downToUp and not player2.firedown:
+        if player2downToUp and not player2.firedown and player2.enegery >= 25:
             Bomb(player2)
             shoot_sound.play()
 
