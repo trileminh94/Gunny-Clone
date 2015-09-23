@@ -6,6 +6,7 @@ import random, os.path, math
 import pygame
 import threading
 import math
+import pygbutton
 from pygame.locals import *
 from random import randint
 
@@ -611,15 +612,13 @@ class Powerbar(pygame.sprite.Sprite):
         if not self.player.alive():
             self.kill()
 
+#class button(pygame.sprite.Sprite):
+
+#class button(pygame)
+
 gamestate = HOME
 
-def home():
-    pass
-
-def game_over():
-    pass
-
-def main(winstyle = 0):
+def home(gamestate):
     # Initialize pygame
     pygame.init()
     if pygame.mixer and not pygame.mixer.get_init():
@@ -631,18 +630,94 @@ def main(winstyle = 0):
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
 
+    #decorate the game window
+    #icon = pygame.transform.scale(Alien.images[0], (32, 32))
+    #pygame.display.set_icon(icon)
+    pygame.display.set_caption('Gunny')
+    pygame.mouse.set_visible(1)
+
+    #create the background, tile the bgd image
+    bgdtile = load_image('home_back.jpg')
+    background = pygame.Surface(SCREENRECT.size)
+    for x in range(0, SCREENRECT.width, bgdtile.get_width()):
+        background.blit(bgdtile, (x, 0))
+
+    buttonObj = pygbutton.PygButton((0, 0, 100, 100), 'Button Caption')
+
+    while gamestate == HOME:
+        print gamestate
+        for event in pygame.event.get():
+            if event.type == QUIT or \
+                (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    return
+            if 'click' in buttonObj.handleEvent(event):
+                gamestate = GAME
+                if(gamestate == GAME):
+                    main(screen,gamestate)
+        if(gamestate == HOME):
+            screen.blit(background, (0,0))
+            buttonObj.draw(background)
+            pygame.display.flip()
+        
+
+
+
+
+
+def game_over(screen,gamestate):
+    pygame.mouse.set_visible(1)
+
+    # #create the background, tile the bgd image
+    bgdtile = load_image('home_back.jpg')
+    background = pygame.Surface(SCREENRECT.size)
+    for x in range(0, SCREENRECT.width, bgdtile.get_width()):
+        background.blit(bgdtile, (x, 0))
+
+    buttonObj = pygbutton.PygButton((0, 0, 100, 100), 'Play again')
+
+    while gamestate == GAMEOVER:
+        print gamestate
+        for event in pygame.event.get():
+            if event.type == QUIT or \
+                (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    return
+            if 'click' in buttonObj.handleEvent(event):
+                gamestate = GAME
+                if(gamestate == GAME):
+                    main(screen)
+        screen.blit(background, (0,0))
+        buttonObj.draw(background)
+        pygame.display.flip()
+
+    if pygame.mixer:
+        pygame.mixer.music.fadeout(1000)
+    pygame.time.wait(1000)
+    pygame.quit()
+
+def main(screen,gamestate,winstyle = 0):
+    # # Initialize pygame
+    # pygame.init()
+    # if pygame.mixer and not pygame.mixer.get_init():
+    #     print ('Warning, no sound')
+    #     pygame.mixer = None
+
+    # # Set the display mode
+    # winstyle = 0  # |FULLSCREEN
+    # bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
+    # screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
+
     #Load images, assign to sprite classes
     #(do this before the classes are used, after screen setup)
     img = load_image('explosion1.gif')
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
 
-    #decorate the game window
-    #icon = pygame.transform.scale(Alien.images[0], (32, 32))
-    #pygame.display.set_icon(icon)
-    pygame.display.set_caption('Gunny')
+    # #decorate the game window
+    # #icon = pygame.transform.scale(Alien.images[0], (32, 32))
+    # #pygame.display.set_icon(icon)
+    # pygame.display.set_caption('Gunny')
     pygame.mouse.set_visible(0)
 
-    #create the background, tile the bgd image
+    # #create the background, tile the bgd image
     bgdtile = load_image('back.jpg')
     background = pygame.Surface(SCREENRECT.size)
     for x in range(0, SCREENRECT.width, bgdtile.get_width()):
@@ -688,11 +763,11 @@ def main(winstyle = 0):
     kills = 0
     clock = pygame.time.Clock()
 
-    ground = Ground()
+    
 
     player1 = Player('nhan vat 1','character1',1, 1,350)
     player2 = Player('nhan vat 2','character2',-1, 2,-350)
-
+    ground = Ground()
     while player1.health > -10 and player2.health > -10:
         if(player1.state == DIE_STATE):
             player1.health-=0.1
@@ -765,15 +840,17 @@ def main(winstyle = 0):
         pygame.display.update(dirty) # draw only changed rect
         #cap the framerate
         clock.tick(FPS)
+    gamestate = GAMEOVER
+    print "game over"
+    game_over(screen,gamestate)
 
-
-    if pygame.mixer:
-        pygame.mixer.music.fadeout(1000)
-    pygame.time.wait(1000)
-    pygame.quit()
+    # if pygame.mixer:
+    #     pygame.mixer.music.fadeout(1000)
+    # pygame.time.wait(1000)
+    # pygame.quit()
 
 
 
 #call the "main" function if running this script
-if __name__ == '__main__': main()
+if __name__ == '__main__': home(gamestate)
 
