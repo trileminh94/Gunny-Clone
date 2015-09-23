@@ -41,21 +41,21 @@ GAMEOVER       = 3
 
 RADIUS = 35
 PLAYER1FIREKEY = K_SPACE
-PLAYER1UPKEY   = K_UP
-PLAYER1DOWNKey = K_DOWN
+PLAYER1UPKEY   = K_w
+PLAYER1DOWNKey = K_s
 PLAYER1CHANGEBULLET = K_TAB
-PLAYER1LEFTKEY = K_LEFT
-PLAYER1RIGHTKEY = K_RIGHT
+PLAYER1LEFTKEY = K_a
+PLAYER1RIGHTKEY = K_d
 
-PLAYER2FIREKEY = K_x
-PLAYER2UPKEY   = K_w
-PLAYER2DOWNKey = K_s
+PLAYER2FIREKEY = K_KP_ENTER
+PLAYER2UPKEY   = K_UP
+PLAYER2DOWNKey = K_DOWN
 PLAYER2CHANGEBULLET = K_CAPSLOCK
-PLAYER2LEFTKEY = K_a
-PLAYER2RIGHTKEY = K_d
+PLAYER2LEFTKEY = K_LEFT
+PLAYER2RIGHTKEY = K_RIGHT
 
 MAXPOWER = 800
-ACCELERATION = 200
+GRAVITY = 200
 POWERBARRECT1 = Rect(0, SCREENRECT.height - 25, 400, 20)
 POWERBARRECT2 = Rect(SCREENRECT.width - 400, SCREENRECT.height - 25, 400, 20)
 POWERBARCOLOR = (0, 255, 255)
@@ -177,7 +177,6 @@ class Player(pygame.sprite.Sprite):
 
 
         self.rect = self.image.get_rect(midbottom=(SCREENRECT.midbottom[0]-offset, SCREENRECT.midbottom[1] - 185))
-
         self.origtop = self.rect.top
         self.health = 100
         self.angle = 45
@@ -190,8 +189,8 @@ class Player(pygame.sprite.Sprite):
         Livebar(self)
         Powerbar(self)
 
-    def lost_blood(self):
-        self.health-=5
+    def lost_blood(self, power):
+        self.health-= power
         if(self.health <= 0):
             self.state = DIE_STATE
         else:
@@ -489,7 +488,6 @@ class Explosion(pygame.sprite.Sprite):
 
 
 class Bomb(pygame.sprite.Sprite):
-    speed = -5
     images = []
     def __init__(self, player):
         pygame.sprite.Sprite.__init__(self, self.containers)
@@ -501,12 +499,15 @@ class Bomb(pygame.sprite.Sprite):
             y = 0
             width = 50
             height = 50
+            self.power = 20
         else:
             loaidan = 'bumerange'
             x = 0
             y = 0
             width = 50
             height = 50
+            self.power = 10
+            self.collide = 3
 
         image_source = my_load_image(folder,loaidan+".png")
         j = 0
@@ -525,17 +526,57 @@ class Bomb(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(midbottom= (player.rect.centerx, player.rect.centery))
         self.origtop = self.rect.top
         self.speed_x = math.cos(math.radians(player.angle)) * player.power
-        self.speed_y = math.sin(math.radians(player.angle)) * player.power
+        self.speed_y = -math.sin(math.radians(player.angle)) * player.power
+        self.acceleration = GRAVITY
         self.t = 0
-        self.dx = 0
-        self.dy = 0
+        self.startx = self.player.rect.centerx
+        self.starty = self.player.rect.centery
+        self.x = self.startx
+        self.y = self.starty
+        self.wallcollison = 0
     def update(self):
         self.t += 1.0/FPS
-        x = self.dx
-        y = self.dy
-        self.dx = self.speed_x * self.t
-        self.dy = self.speed_y * self.t - ACCELERATION/2.0* self.t* self.t
-        self.rect.move_ip(self.dx - x, y - self.dy)
+        #Detect collision
+        if not self.player.typeOfBullet == 1:
+            if self.rect.top <= 0:
+                if self.collide == 1:
+                    self.kill()
+                else:
+                    self.collide -= 1
+                    self.startx = self.x
+                    self.starty = self.y
+                    self.speed_y = - (self.speed_y + self.acceleration *self.t)
+                    self.rect.move_ip(0, 0 - self.rect.top + 1)
+                    self.t = 0
+                return
+            elif self.rect.right >= SCREENRECT.right:
+                if self.collide == 1:
+                    self.kill()
+                else:
+                    self.collide -= 1
+                    self.startx = self.x
+                    self.starty = self.y
+                    self.speed_x = -self.speed_x
+                    self.rect.move_ip(SCREENRECT.right - self.rect.right - 1, 0)
+                    self.t = 0
+                return
+            elif self.rect.left <= SCREENRECT.left:
+                if self.collide == 1:
+                    self.kill()
+                else:
+                    self.collide -= 1
+                    self.startx = self.x
+                    self.starty = self.y
+                    self.speed_x = -self.speed_x
+                    self.rect.move_ip(SCREENRECT.left - self.rect.left + 1, 0)
+                    self.t = 0
+                return
+        old_x = self.x
+        old_y = self.y
+        self.x = self.startx + self.speed_x * self.t
+        self.y = self.starty + self.speed_y * self.t + self.acceleration/2.0* self.t* self.t
+        self.rect.move_ip(self.x - old_x, self.y - old_y)
+
 
         if self.player.direction > 0:
             self.frame += 0.4
@@ -547,7 +588,7 @@ class Bomb(pygame.sprite.Sprite):
             if self.frame > 7:
                 self.frame = 4
             self.image = self.image_frame[int(round(self.frame))]
-        if not SCREENRECT.contains(self.rect):
+        if self.player.typeOfBullet == 1 and not SCREENRECT.contains(self.rect):
             load_sound("boom.wav").play()
             self.kill()
 
@@ -733,17 +774,20 @@ def main(winstyle = 0):
             if bomb.player.whichplayer == 2:
                 boom_sound.play()
                 Explosion(player1)
-                player1.lost_blood()
+                player1.lost_blood(bomb.power)
                 bomb.kill()
         for bomb in pygame.sprite.spritecollide(player2, bombs, False):
             if bomb.player.whichplayer == 1:
                 boom_sound.play()
                 Explosion(player2)
-                player2.lost_blood()
+                player2.lost_blood(bomb.power)
                 bomb.kill()
-
-
         # Detect collision with ground
+        # for bomb in pygame.sprite.spritecollide(ground, bombs, False):
+        #     boom_sound.play()
+        #     Explosion(ground)
+        #     bomb.kill()
+
         if pygame.sprite.collide_mask(player1, ground):
             player1.downable = False
         if pygame.sprite.collide_mask(player2,ground):
