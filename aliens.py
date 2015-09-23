@@ -4,7 +4,6 @@ import random, os.path, math
 
 #import basic pygame modules
 import pygame
-import threading
 import math
 import pygbutton
 from pygame.locals import *
@@ -48,10 +47,10 @@ PLAYER1CHANGEBULLET = K_TAB
 PLAYER1LEFTKEY = K_a
 PLAYER1RIGHTKEY = K_d
 
-PLAYER2FIREKEY = K_KP_ENTER
+PLAYER2FIREKEY = K_l
 PLAYER2UPKEY   = K_UP
 PLAYER2DOWNKey = K_DOWN
-PLAYER2CHANGEBULLET = K_CAPSLOCK
+PLAYER2CHANGEBULLET = K_k
 PLAYER2LEFTKEY = K_LEFT
 PLAYER2RIGHTKEY = K_RIGHT
 
@@ -135,7 +134,9 @@ class Ground(pygame.sprite.Sprite):
 
         #image_source = load_image('dead.png').convert_alpha()
 
-        self.image = my_load_image('nhan vat 2', 'dead.png')
+        image_resource = my_load_image('nhan vat 2', 'dead.png')
+        self.image = image_resource.subsurface(100, 550, 1200, 200)
+        #self.image = my_load_image('nhan vat 2', 'dead.png')
         self.rect = self.image.get_rect(midbottom=SCREENRECT.midbottom)
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -494,7 +495,8 @@ class Bomb(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.containers)
         folder = 'dan'
         self.player = player
-        if (self.player.typeOfBullet == 1):
+        self.typeOfBullet = self.player.typeOfBullet
+        if (self.typeOfBullet == 1):
             loaidan = 'abc'
             x = 0
             y = 0
@@ -538,9 +540,11 @@ class Bomb(pygame.sprite.Sprite):
     def update(self):
         self.t += 1.0/FPS
         #Detect collision
-        if not self.player.typeOfBullet == 1:
+        if not self.typeOfBullet == 1:
             if self.rect.top <= 0:
                 if self.collide == 1:
+                    load_sound('boom.wav').play()
+                    Explosion(self)
                     self.kill()
                 else:
                     self.collide -= 1
@@ -552,24 +556,43 @@ class Bomb(pygame.sprite.Sprite):
                 return
             elif self.rect.right >= SCREENRECT.right:
                 if self.collide == 1:
+                    load_sound('boom.wav').play()
+                    Explosion(self)
                     self.kill()
                 else:
                     self.collide -= 1
                     self.startx = self.x
                     self.starty = self.y
                     self.speed_x = -self.speed_x
+                    self.speed_y += self.acceleration * self.t
                     self.rect.move_ip(SCREENRECT.right - self.rect.right - 1, 0)
                     self.t = 0
                 return
             elif self.rect.left <= SCREENRECT.left:
                 if self.collide == 1:
+                    load_sound('boom.wav').play()
+                    Explosion(self)
                     self.kill()
                 else:
                     self.collide -= 1
                     self.startx = self.x
                     self.starty = self.y
                     self.speed_x = -self.speed_x
+                    self.speed_y += self.acceleration * self.t
                     self.rect.move_ip(SCREENRECT.left - self.rect.left + 1, 0)
+                    self.t = 0
+                return
+            elif self.rect.bottom >= 400: #400 la toa do truc y cua nen`
+                if self.collide == 1:
+                    load_sound('boom.wav').play()
+                    Explosion(self)
+                    self.kill()
+                else:
+                    self.collide -= 1
+                    self.startx = self.x
+                    self.starty = self.y
+                    self.speed_y = - (self.speed_y + self.acceleration *self.t)
+                    self.rect.move_ip(0, 400 - self.rect.bottom - 1)
                     self.t = 0
                 return
         old_x = self.x
@@ -589,8 +612,9 @@ class Bomb(pygame.sprite.Sprite):
             if self.frame > 7:
                 self.frame = 4
             self.image = self.image_frame[int(round(self.frame))]
-        if self.player.typeOfBullet == 1 and not SCREENRECT.contains(self.rect):
+        if self.typeOfBullet == 1 and not SCREENRECT.contains(self.rect):
             load_sound("boom.wav").play()
+            Explosion(self)
             self.kill()
 
 class Livebar(pygame.sprite.Sprite):
@@ -677,7 +701,6 @@ def home(gamestate):
     buttonObj = pygbutton.PygButton((300, 400, 100, 40), 'Play')
 
     while gamestate == HOME:
-        print gamestate
         for event in pygame.event.get():
             if event.type == QUIT or \
                 (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -709,7 +732,6 @@ def game_over(screen,gamestate):
     quit = pygbutton.PygButton((520, 400, 100, 40), 'Quit')
 
     while gamestate == GAMEOVER:
-        print gamestate
         for event in pygame.event.get():
             if event.type == QUIT or \
                 (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -860,10 +882,11 @@ def main(screen,gamestate,winstyle = 0):
                 player2.lost_blood(bomb.power)
                 bomb.kill()
         # Detect collision with ground
-        # for bomb in pygame.sprite.spritecollide(ground, bombs, False):
-        #     boom_sound.play()
-        #     Explosion(ground)
-        #     bomb.kill()
+        for bomb in pygame.sprite.spritecollide(ground, bombs, False):
+            if bomb.typeOfBullet == 1:
+                boom_sound.play()
+                Explosion(bomb)
+                bomb.kill()
 
         if pygame.sprite.collide_mask(player1, ground):
             player1.downable = False
