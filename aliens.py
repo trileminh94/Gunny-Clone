@@ -44,14 +44,14 @@ RADIUS = 35
 PLAYER1FIREKEY = K_SPACE
 PLAYER1UPKEY   = K_UP
 PLAYER1DOWNKey = K_DOWN
-#PLAYER1CHANGEBULLET = K_TAB
+PLAYER1CHANGEBULLET = K_TAB
 PLAYER1LEFTKEY = K_LEFT
 PLAYER1RIGHTKEY = K_RIGHT
 
 PLAYER2FIREKEY = K_x
 PLAYER2UPKEY   = K_w
 PLAYER2DOWNKey = K_s
-#PLAYER2CHANGEBULLET = K_CAPSLOCK
+PLAYER2CHANGEBULLET = K_CAPSLOCK
 PLAYER2LEFTKEY = K_a
 PLAYER2RIGHTKEY = K_d
 
@@ -72,7 +72,7 @@ def load_image(file):
         raise SystemExit('Could not load image "%s" %s'%(file, pygame.get_error()))
     return surface.convert()
 
-#load sprite from subfolder and file name 
+#load sprite from subfolder and file name
 #for each character
 def my_load_image(subFolder,file):
     "loads an image, prepares it for play"
@@ -195,23 +195,23 @@ class Player(pygame.sprite.Sprite):
         self.health-=5
         if(self.health <= 0):
             self.state = DIE_STATE
-        else: 
+        else:
             if(randint(5,12) == 5):
                 self.state = ANGRY_STATE
-            elif(randint(5,12) == 6): 
+            elif(randint(5,12) == 6):
                 self.state = HEADACHE_STATE
             elif(randint(5,12) == 7):
                 self.state = BORING_STATE
-            elif(randint(5,12) == 8):  
+            elif(randint(5,12) == 8):
                 self.state = FIRE_EYE_STATE
             elif(randint(5,12) == 9):
                 self.state = XFACE_STATE
-            elif(randint(5,12) == 10):   
+            elif(randint(5,12) == 10):
                 self.state = CRYING_STATE
-            elif(randint(5,12) == 11):   
+            elif(randint(5,12) == 11):
                 self.state = CRYING_CHONG_MAT
-            elif(randint(5,12) == 12): 
-                self.state = BOTAY_STATE    
+            elif(randint(5,12) == 12):
+                self.state = BOTAY_STATE
 
     def draw_move(self):
         self.frame = (self.frame + 0.2)
@@ -219,7 +219,7 @@ class Player(pygame.sprite.Sprite):
             self.image = self.image_frame[int(round(self.frame))%7]
         elif(self.direction < 0):
             self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))%7],1,0)
-    
+
     def draw_throw(self):
         if(self.state == THROW_STATE):
             self.isBlock = True
@@ -433,7 +433,7 @@ class Player(pygame.sprite.Sprite):
             self.screen.blit(pygame.font.Font(None, 15).render(str(180 - self.angle), True, Color('white')), (pos2[0] - 18, pos2[1] - 12 ))
 
     def move(self, direction):
-        if direction: 
+        if direction:
             self.facing = direction
             self.draw_move()
         self.rect.move_ip(direction*self.speed, 0)
@@ -496,7 +496,7 @@ class Bomb(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.containers)
         folder = 'dan'
         self.player = player
-        if (self.player.whichplayer == 1):
+        if (self.player.typeOfBullet == 1):
             loaidan = 'abc'
             x = 0
             y = 0
@@ -508,7 +508,7 @@ class Bomb(pygame.sprite.Sprite):
             y = 0
             width = 50
             height = 50
-            
+
         image_source = my_load_image(folder,loaidan+".png")
         j = 0
         self.image_frame = []
@@ -537,14 +537,14 @@ class Bomb(pygame.sprite.Sprite):
         self.dx = self.speed_x * self.t
         self.dy = self.speed_y * self.t - ACCELERATION/2.0* self.t* self.t
         self.rect.move_ip(self.dx - x, y - self.dy)
-        
+
         if self.player.direction > 0:
-            self.frame += 0.4 
+            self.frame += 0.4
             if self.frame > 3:
                 self.frame = 0
             self.image = self.image_frame[int(round(self.frame))]
         elif self.player.direction < 0:
-            self.frame += 0.4 
+            self.frame += 0.4
             if self.frame > 7:
                 self.frame = 4
             self.image = self.image_frame[int(round(self.frame))]
@@ -552,15 +552,6 @@ class Bomb(pygame.sprite.Sprite):
             load_sound("boom.wav").play()
             self.kill()
 
-class bumerange(Bomb):
-    def __init__(self, player):
-        Bomb.__init__(self,player)
-
-class rasengan(Bomb):
-    def __init__(self, player):
-        Bomb.__init__(self,player)
-
-#TODO:
 class Livebar(pygame.sprite.Sprite):
     """shows a bar with the hitpoints of a Bird sprite"""
     def __init__(self, player):
@@ -735,8 +726,7 @@ def main(screen,gamestate,winstyle = 0):
 
     # Initialize Game Groups
     aliens = pygame.sprite.Group()
-    rasengans = pygame.sprite.Group()
-    bumeranges = pygame.sprite.Group()
+    bombs = pygame.sprite.Group()
     all = pygame.sprite.RenderUpdates()
     lastalien = pygame.sprite.GroupSingle()
 
@@ -744,10 +734,8 @@ def main(screen,gamestate,winstyle = 0):
 
     Player.containers = all
     Player.screen = screen
-    
 
-    rasengan.containers = rasengans, all
-    bumerange.containers = bumeranges,all
+    Bomb.containers = bombs,all
     Explosion.containers = all
 
     Ground.containers = all
@@ -783,12 +771,12 @@ def main(screen,gamestate,winstyle = 0):
             elif event.type == KEYDOWN:
                 if event.key == PLAYER1FIREKEY:
                     player1.firedown = True
-                # elif event.key == PLAYER1CHANGEBULLET:
-                #     player1.typeOfBullet *= -1
+                elif event.key == PLAYER1CHANGEBULLET:
+                    player1.typeOfBullet *= -1
                 if event.key == PLAYER2FIREKEY:
                     player2.firedown = True
-                # elif event.key == PLAYER2CHANGEBULLET:
-                #     player2.typeOfBullet *= -1
+                elif event.key == PLAYER2CHANGEBULLET:
+                    player2.typeOfBullet *= -1
             elif event.type == KEYUP:
                 if event.key == PLAYER1FIREKEY:
                     player1.firedown = False
@@ -810,22 +798,24 @@ def main(screen,gamestate,winstyle = 0):
         player1.check(keystate)
         player2.check(keystate)
         if player1downToUp and not player1.firedown:
-            rasengan(player1)
+            Bomb(player1)
             shoot_sound.play()
         if player2downToUp and not player2.firedown:
-            bumerange(player2)
+            Bomb(player2)
             shoot_sound.play()
-        
-        for bum in pygame.sprite.spritecollide(player1, bumeranges, 1):
-            boom_sound.play()
-            Explosion(player1)
-            player1.lost_blood()
-            bum.kill()
-        for ras in pygame.sprite.spritecollide(player2, rasengans, 1):
-            boom_sound.play()
-            Explosion(player2)
-            player2.lost_blood()
-            ras.kill()
+
+        for bomb in pygame.sprite.spritecollide(player1, bombs, False):
+            if bomb.player.whichplayer == 2:
+                boom_sound.play()
+                Explosion(player1)
+                player1.lost_blood()
+                bomb.kill()
+        for bomb in pygame.sprite.spritecollide(player2, bombs, False):
+            if bomb.player.whichplayer == 1:
+                boom_sound.play()
+                Explosion(player2)
+                player2.lost_blood()
+                bomb.kill()
 
 
         # Detect collision with ground
