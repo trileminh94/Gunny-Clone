@@ -633,7 +633,7 @@ def home(gamestate):
     for x in range(0, SCREENRECT.width, bgdtile.get_width()):
         background.blit(bgdtile, (x, 0))
 
-    buttonObj = pygbutton.PygButton((0, 0, 100, 100), 'Button Caption')
+    buttonObj = pygbutton.PygButton((300, 400, 100, 40), 'Play')
 
     while gamestate == HOME:
         print gamestate
@@ -659,12 +659,13 @@ def game_over(screen,gamestate):
     pygame.mouse.set_visible(1)
 
     # #create the background, tile the bgd image
-    bgdtile = load_image('home_back.jpg')
+    bgdtile = load_image('gameover_back.jpg')
     background = pygame.Surface(SCREENRECT.size)
     for x in range(0, SCREENRECT.width, bgdtile.get_width()):
         background.blit(bgdtile, (x, 0))
 
-    buttonObj = pygbutton.PygButton((0, 0, 100, 100), 'Play again')
+    playagain = pygbutton.PygButton((380, 400, 100, 40), 'Play again')
+    quit = pygbutton.PygButton((520, 400, 100, 40), 'Quit')
 
     while gamestate == GAMEOVER:
         print gamestate
@@ -672,18 +673,19 @@ def game_over(screen,gamestate):
             if event.type == QUIT or \
                 (event.type == KEYDOWN and event.key == K_ESCAPE):
                     return
-            if 'click' in buttonObj.handleEvent(event):
+            if 'click' in playagain.handleEvent(event):
                 gamestate = GAME
                 if(gamestate == GAME):
-                    main(screen)
+                    main(screen,gamestate)
+            if 'click' in quit.handleEvent(event):
+                if pygame.mixer:
+                    pygame.mixer.music.fadeout(1000)
+                pygame.time.wait(1000)
+                pygame.quit()
         screen.blit(background, (0,0))
-        buttonObj.draw(background)
+        playagain.draw(background)
+        quit.draw(background)
         pygame.display.flip()
-
-    if pygame.mixer:
-        pygame.mixer.music.fadeout(1000)
-    pygame.time.wait(1000)
-    pygame.quit()
 
 def main(screen,gamestate,winstyle = 0):
     # # Initialize pygame
@@ -731,14 +733,14 @@ def main(screen,gamestate,winstyle = 0):
     lastalien = pygame.sprite.GroupSingle()
 
     #assign default groups to each sprite class
-
+    Ground.containers = all
     Player.containers = all
     Player.screen = screen
 
     Bomb.containers = bombs,all
     Explosion.containers = all
 
-    Ground.containers = all
+    
 
 
     Livebar.containers = all
@@ -747,8 +749,8 @@ def main(screen,gamestate,winstyle = 0):
 
     #Create Some Starting Values
     #global score
-    alienreload = ALIEN_RELOAD
-    kills = 0
+    # alienreload = ALIEN_RELOAD
+    # kills = 0
     clock = pygame.time.Clock()
 
     
