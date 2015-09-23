@@ -168,8 +168,13 @@ class Player(pygame.sprite.Sprite):
         self.sound_change_radar.set_volume(0.3)
         image_source = my_load_image(folder,sprite_name+".png")
         emotion_source = my_load_image(folder,sprite_name+"_emotion.png")
-        self.image_frame = cut_frame(image_source, 114, 90, 110, 90)
-        self.image_frame.extend(cut_frame(emotion_source,114,90,110,90))
+        if whichplayer == 1:
+            self.image_frame = cut_frame(image_source, 114, 90, 110, 90)
+            self.image_frame.extend(cut_frame(emotion_source,114,90,110,90))
+        else:
+            self.image_frame = cut_frame(image_source, 114, 85, 110, 98)
+            self.image_frame.extend(cut_frame(emotion_source,114,85,110,98))
+
         if self.direction > 0:
             self.image = self.image_frame[0]
         else:
@@ -177,7 +182,7 @@ class Player(pygame.sprite.Sprite):
 
         #self.rect = pygame.Rect(10,10,10,10)
 
-
+        #TODO: need smaller rect
         self.rect = self.image.get_rect(midbottom=(SCREENRECT.midbottom[0]-offset, SCREENRECT.midbottom[1] - 185))
         self.origtop = self.rect.top
         self.health = 100
@@ -186,9 +191,10 @@ class Player(pygame.sprite.Sprite):
         self.typeOfBullet = 1
 
         self.mask = pygame.mask.from_surface(self.image)
-
         self.whichplayer = whichplayer
+        self.enegery = 100
         Livebar(self)
+        Energybar(self)
         Powerbar(self)
 
     def lost_blood(self, power):
@@ -396,6 +402,8 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self):
+        if self.enegery < 100:
+            self.enegery += 0.05
         if(self.state == DIE_STATE):
             self.frame = 32
             self.image = self.image_frame[self.frame]
@@ -488,7 +496,6 @@ class Explosion(pygame.sprite.Sprite):
         self.image = self.images[self.life//self.animcycle%2]
         if self.life <= 0: self.kill()
 
-
 class Bomb(pygame.sprite.Sprite):
     images = []
     def __init__(self, player):
@@ -496,6 +503,7 @@ class Bomb(pygame.sprite.Sprite):
         folder = 'dan'
         self.player = player
         self.typeOfBullet = self.player.typeOfBullet
+        player.enegery -= 25
         if (self.typeOfBullet == 1):
             loaidan = 'abc'
             x = 0
@@ -618,7 +626,7 @@ class Bomb(pygame.sprite.Sprite):
             self.kill()
 
 class Livebar(pygame.sprite.Sprite):
-    """shows a bar with the hitpoints of a Bird sprite"""
+    """shows a bar with the hitpoints of a Player sprite"""
     def __init__(self, player):
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.player = player
@@ -633,6 +641,31 @@ class Livebar(pygame.sprite.Sprite):
         if self.percent != self.oldpercent:
             pygame.draw.rect(self.image, (0,0,0), (1,1,self.player.rect.width-2,5)) # fill black
             pygame.draw.rect(self.image, Color('green'), (1,1,
+                int(self.player.rect.width * self.percent),5),0) # fill green
+        self.oldpercent = self.percent
+        self.rect.centerx = self.player.rect.centerx
+        self.rect.centery = self.player.rect.centery - self.player.rect.height /2 - 20
+        #check if player is still alive
+        if not self.player.alive():
+            self.kill() # kill the hitbar
+
+class Energybar(pygame.sprite.Sprite):
+    """shows a bar with the energy of a Player sprite"""
+    def __init__(self, player):
+        pygame.sprite.Sprite.__init__(self, self.containers)
+        self.player = player
+        self.image = pygame.Surface((self.player.rect.width,7))
+        self.image.set_colorkey((0,0,0)) # black transparent
+        pygame.draw.rect(self.image, Color('blue'), (0,0,self.player.rect.width,7),1)
+        self.rect = self.image.get_rect()
+        self.oldpercent = 0
+
+    def update(self):
+        self.percent = self.player.enegery / 100.0
+        print self.player.enegery
+        if self.percent != self.oldpercent:
+            pygame.draw.rect(self.image, (0,0,0), (1,1,self.player.rect.width-2,5)) # fill black
+            pygame.draw.rect(self.image, Color('blue'), (1,1,
                 int(self.player.rect.width * self.percent),5),0) # fill green
         self.oldpercent = self.percent
         self.rect.centerx = self.player.rect.centerx
@@ -751,19 +784,7 @@ def game_over(screen,gamestate):
         pygame.display.flip()
 
 def main(screen,gamestate,winstyle = 0):
-    # # Initialize pygame
-    # pygame.init()
-    # if pygame.mixer and not pygame.mixer.get_init():
-    #     print ('Warning, no sound')
-    #     pygame.mixer = None
 
-    # # Set the display mode
-    # winstyle = 0  # |FULLSCREEN
-    # bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
-    # screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
-
-    #Load images, assign to sprite classes
-    #(do this before the classes are used, after screen setup)
     img = load_image('explosion1.gif')
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
 
@@ -807,6 +828,7 @@ def main(screen,gamestate,winstyle = 0):
 
 
     Livebar.containers = all
+    Energybar.containers = all
     Powerbar.containers = all
 
 
@@ -900,7 +922,7 @@ def main(screen,gamestate,winstyle = 0):
         #cap the framerate
         clock.tick(FPS)
     gamestate = GAMEOVER
-    print "game over"
+
     game_over(screen,gamestate)
 
     # if pygame.mixer:
