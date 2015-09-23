@@ -58,7 +58,7 @@ MAXPOWER = 800
 GRAVITY = 200
 POWERBARRECT1 = Rect(0, SCREENRECT.height - 25, 400, 20)
 POWERBARRECT2 = Rect(SCREENRECT.width - 400, SCREENRECT.height - 25, 400, 20)
-POWERBARCOLOR = (0, 255, 255)
+POWERBARCOLOR = (255, 51, 51)
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
@@ -812,7 +812,7 @@ def main(screen,gamestate,winstyle = 0):
     # Initialize Game Groups
     aliens = pygame.sprite.Group()
     bombs = pygame.sprite.Group()
-    all = pygame.sprite.RenderUpdates()
+    all = pygame.sprite.OrderedUpdates()
     lastalien = pygame.sprite.GroupSingle()
 
     #assign default groups to each sprite class
@@ -838,10 +838,10 @@ def main(screen,gamestate,winstyle = 0):
     clock = pygame.time.Clock()
 
     
-
+    ground = Ground()
     player1 = Player('nhan vat 1','character1',1, 1,350)
     player2 = Player('nhan vat 2','character2',-1, 2,-350)
-    ground = Ground()
+
     while player1.health > -10 and player2.health > -10:
         if(player1.state == DIE_STATE):
             player1.health-=0.1
