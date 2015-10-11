@@ -43,10 +43,10 @@ class Utils:
         j = 0
         t = 0
         while j <= 2:
-            frame.append(image.subsurface((i*x,j*y,width,length)))
+            frame.append(image.subsurface((i*x, j*y, width, length)))
             t += 1
             i += 1
-            if(i > 10 ):
+            if i > 10:
                 i = 0
                 j += 1
         return frame
@@ -64,3 +64,25 @@ class Utils:
             print ('Warning, unable to load, %s' % file_name)
         return Dummy_sound()
     load_sound = staticmethod(load_sound)
+
+    def load_frame(image, x, y, width, height, step_x, num):
+        """
+        Init list of sprite sheets from an image
+        :param image: source image
+        :param x: position x of top left corner of the first sprite
+        :param y: position y of top left corner of the first sprite
+        :param width: width of each sprite
+        :param height: height of each sprite
+        :param step_x: distance between two sprite
+        :param num: number of sprites
+        :return: list surface
+        """
+        frame = []
+        i = 0
+        while (i < num) & (x + width < image.get_width()):
+            frame.append(image.subsurface(x, y, width, height))
+            x = x + width
+            x = x + step_x
+            i += 1
+        return frame
+    load_frame = staticmethod(load_frame)

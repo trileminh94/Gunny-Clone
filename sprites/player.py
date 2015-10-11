@@ -23,8 +23,8 @@ class Player(pygame.sprite.Sprite):
     stepF = 0
     downable = True
 
+    def __init__(self, folder, sprite_name, direction, whichplayer, offset):
 
-    def __init__(self,folder,sprite_name,direction, whichplayer,offset):
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.reloading = 0
         self.frame = 0
@@ -33,8 +33,8 @@ class Player(pygame.sprite.Sprite):
         self.direction = direction
         self.sound_change_radar = Utils.load_sound("bite.wav");
         self.sound_change_radar.set_volume(0.3)
-        image_source = Utils.my_load_image(folder,sprite_name+".png")
-        emotion_source = Utils.my_load_image(folder,sprite_name+"_emotion.png")
+        image_source = Utils.my_load_image(folder, sprite_name+".png")
+        emotion_source = Utils.my_load_image(folder, sprite_name+"_emotion.png")
         if whichplayer == 1:
             self.image_frame = Utils.cut_frame(image_source, 114, 90, 110, 90)
             self.image_frame.extend(Utils.cut_frame(emotion_source,114,90,110,90))
@@ -50,7 +50,8 @@ class Player(pygame.sprite.Sprite):
         #self.rect = pygame.Rect(10,10,10,10)
 
         #TODO: need smaller rect
-        self.rect = self.image.get_rect(midbottom=(Constant.SCREENRECT.midbottom[0]-offset, Constant.SCREENRECT.midbottom[1] - 185))
+        #self.rect = self.image.get_rect(midbottom=(Constant.SCREENRECT.midbottom[0]-offset, Constant.SCREENRECT.midbottom[1] - 185))
+        self.rect = Rect(109, 300, 100, 80)
         self.origtop = self.rect.top
         self.health = 100
         self.angle = 45
@@ -108,14 +109,14 @@ class Player(pygame.sprite.Sprite):
                 self.isBlock = False
 
     def draw_lie(self):
-        if(self.frame < 7 or self.frame > 10):
+        if self.frame < 7 or self.frame > 10:
             self.frame = 7
-        if(self.direction > 0):
+        if self.direction > 0:
             self.image = self.image_frame[int(round(self.frame))]
-        elif(self.direction < 0):
-            self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
+        elif self.direction < 0:
+            self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))], 1, 0)
         self.frame+=self.stepChopMat
-        if(self.frame > 10 or self.frame < 7):
+        if self.frame > 10 or self.frame < 7:
             self.stepChopMat*=-1
 
     def drawEmotion(self):
@@ -270,11 +271,11 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         if self.enegery < 100:
             self.enegery += 0.05
-        if(self.state == Constant.DIE_STATE):
+        if self.state == Constant.DIE_STATE:
             self.frame = 32
             self.image = self.image_frame[self.frame]
         else:
-            #change angle if player changes the direction
+            # change angle if player changes the direction
             if (self.direction  < 0 and self.angle < 90) or (self.direction > 0 and self.angle > 90):
                 self.angle  = 180 - self.angle
             if self.fire_down == True:
