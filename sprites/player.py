@@ -310,7 +310,7 @@ class Player(pygame.sprite.Sprite):
         if direction:
             self.facing = direction
             self.draw_move()
-        self.rect.move_ip(direction*self.speed, 0)
+        #self.rect.move_ip(direction*self.speed, 0)
         self.rect = self.rect.clamp(Constant.SCREENRECT)
 
     def check(self,keystate):

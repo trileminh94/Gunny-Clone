@@ -1,6 +1,5 @@
 import pygame
 from pygame.locals import *
-
 import pygbutton
 from common.constant import Constant
 from common.utils import Utils
@@ -11,6 +10,7 @@ from sprites.energy_bar import Energy_bar
 from sprites.power_bar import Power_bar
 from sprites.live_bar import Live_bar
 from sprites.player import Player
+
 from sprites.screeps.basic_creep import BasicCreep
 from sprites.screeps.creep_a import CreepA
 from sprites.screeps.creep_b import CreepB
@@ -20,7 +20,12 @@ from sprites.screeps.creep_e import CreepE
 from sprites.screeps.creep_f import CreepF
 from common.e_bullet_type import EBulletType
 
+
+from sprites.tile import TileCache
+from sprites.tile import Tile
+
 # See if we can load more than standard BMP
+
 if not pygame.image.get_extended():
     raise SystemExit("Sorry, extended image module required")
 
@@ -60,8 +65,7 @@ def home(game_state):
             button_obj.draw(background)
             pygame.display.flip()
 
-
-def game_over(screen, gamestate):
+def game_over(screen,gamestate):
     pygame.mouse.set_visible(1)
 
     # #create the background, tile the bgd image
@@ -75,11 +79,12 @@ def game_over(screen, gamestate):
 
     while gamestate == Constant.GAMEOVER:
         for event in pygame.event.get():
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                return
+            if event.type == QUIT or \
+                (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    return
             if 'click' in playagain.handleEvent(event):
                 gamestate = Constant.GAME
-                if gamestate == Constant.GAME:
+                if(gamestate == Constant.GAME):
                     main(screen,gamestate)
             if 'click' in quit.handleEvent(event):
                 if pygame.mixer:
@@ -93,18 +98,15 @@ def game_over(screen, gamestate):
 
 
 def main(screen):
+
     img = Utils.load_image('explosion1.gif')
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
 
     pygame.mouse.set_visible(0)
 
+
     # Create the background, tile the bgd image
-    bgdtile = Utils.load_image('back.jpg')
-    background = pygame.Surface(Constant.SCREENRECT.size)
-    for x in range(0, Constant.SCREENRECT.width, bgdtile.get_width()):
-        background.blit(bgdtile, (x, 0))
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
+    background = pygame.image.load("resources\image\TileSet\\background.png").convert()
 
     # Load the sound effects
     boom_sound = Utils.load_sound('boom.wav')
@@ -115,30 +117,30 @@ def main(screen):
         pygame.mixer.music.play(-1)
 
     # Initialize Game Groups
-
+    aliens = pygame.sprite.Group()
     bombs = pygame.sprite.Group()
-    all_group = pygame.sprite.OrderedUpdates()
+    render_group = pygame.sprite.OrderedUpdates()
     creeps = pygame.sprite.Group()
 
     # Assign default groups to each sprite class
-    Ground.containers = all_group
-    Player.containers = all_group
-    BasicCreep.containers = all_group, creeps
+    Player.containers = render_group
     Player.screen = screen
+    #Ground.containers = all_group
+    BasicCreep.containers = creeps, render_group
+    Bullet.containers = bombs, render_group
+    Explosion.containers = render_group
 
-    Bullet.containers = bombs, all_group
-    Explosion.containers = all_group
-
-    Live_bar.containers = all_group
-    Energy_bar.containers = all_group
-    Power_bar.containers = all_group
+    Live_bar.containers = render_group
+    Energy_bar.containers = render_group
+    Power_bar.containers = render_group
 
     # Create Some Starting Values
     # Global score
 
     clock = pygame.time.Clock()
 
-    ground = Ground()
+
+    #ground = Ground()
     player = Player('nhan vat 1', 'character1', 1, 1, 350)
 
     #*************************************
@@ -152,6 +154,10 @@ def main(screen):
     CreepE(800, 100, 1).down_able = False
     CreepF(600, 150, 1).down_able = False
 
+    tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table();
+    camera_left = 0
+    camera_right = Constant.SCREENRECT.width
+    hCount = 1
     while player.health > -10:
         if player.state == Constant.DIE_STATE:
             player.health -= 0.1
@@ -166,10 +172,12 @@ def main(screen):
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = True
                 elif event.key == Constant.PLAYER1CHANGEBULLET:
+
                     player.typeOfBullet += 1
                     if player.typeOfBullet >= Constant.NUM_BULLET_TYPE:
                         player.typeOfBullet = EBulletType.BASIC
                     print player.typeOfBullet
+
             elif event.type == KEYUP:
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = False
@@ -177,15 +185,41 @@ def main(screen):
                         player.state = Constant.THROW_STATE
 
         # Clear/erase the last drawn sprites
+        render_group.clear(screen, background)
+        screen.fill((0, 0, 0))
+        if player.state == Constant.MOVE_STATE:
+            if camera_left < 0:
+                camera_left = 0
+            elif camera_right > Constant.SCREENRECT.width * 4:
+                camera_right = Constant.SCREENRECT.width * 4
+            else:
+                camera_left += player.direction * player.speed
+                camera_right += player.direction * player.speed
 
-        all_group.clear(screen, background)
-        screen.blit(background, (0, 0))
+        if (camera_right < Constant.SCREENRECT.width * 4):
+            if camera_left < (hCount - 1) * background.get_width():
+                hCount -= 1
+            elif (camera_left < hCount * background.get_width()):
+                if (camera_right > hCount * background.get_width()):
+                        screen.blit(background, (0  - camera_left + (hCount -1) * background.get_width(), 0))
+                        screen.blit(background, (hCount * background.get_width() - camera_left, 0))
+                else:
+                        screen.blit(background, (0  - camera_left + (hCount -1) * background.get_width(), 0))
+            else:
+                hCount += 1
 
+        for y in range(int(camera_left) / Constant.TILE_WIDTH, (int(camera_right) / Constant.TILE_WIDTH) + 1):
+            for x in range(0, 20):
+                if Constant.MAP[x][y] is not 0:
+                    tile = Tile(tileset, Constant.MAP[x][y], Constant.TILE_WIDTH, Constant.TILE_HEIGHT)
+                    tile.render()
+                    screen.blit(tile.image, (Constant.TILE_WIDTH * y - camera_left, Constant.TILE_HEIGHT * x))
         # Update all the sprites
-        all_group.update()
+        render_group.update()
 
         # Handle player input
         key_state = pygame.key.get_pressed()
+
         player.check(key_state)
 
         if player1_down_to_up and not player.fire_down and player.enegery >= 25:
@@ -213,14 +247,16 @@ def main(screen):
         # CHECK OBJECTS CAN MOVE DOWN
         # *****************************
 
-        if pygame.sprite.collide_mask(player, ground):
-            player.downable = False
+        #if pygame.sprite.collide_mask(player, ground):
+        #   player.downable = False
 
-
-        dirty = all_group.draw(screen)  # Draw all sprite, return list of rect
+        dirty = render_group.draw(screen)  # Draw all sprite, return list of rect
         pygame.display.update(dirty)    # Draw only changed rect
+        pygame.display.flip()
         # Cap the frame rate
         clock.tick(Constant.FPS)
+
+
     game_state = Constant.GAMEOVER
 
     game_over(screen, game_state)
