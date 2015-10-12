@@ -16,7 +16,7 @@ from sprites.tile import Tile
 
 if not pygame.image.get_extended():
     raise SystemExit("Sorry, extended image module required")
-
+    
 def home(game_state):
     # Initialize pygame
     pygame.init()
