@@ -294,8 +294,11 @@ class Player(pygame.sprite.Sprite):
                 self.drawEmotion()
             self.drawRadar()
 
+            if self.rect.top > 400:
+                self.downable = False
             if self.downable:
                 self.rect.move_ip(0, 10)
+
 
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)

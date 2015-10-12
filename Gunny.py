@@ -19,7 +19,7 @@ from sprites.screeps.creep_d import CreepD
 from sprites.screeps.creep_e import CreepE
 from sprites.screeps.creep_f import CreepF
 from common.e_bullet_type import EBulletType
-
+from sprites.creep_manager import CreepManager
 
 from sprites.tile import TileCache
 from sprites.tile import Tile
@@ -125,7 +125,7 @@ def main(screen):
     # Assign default groups to each sprite class
     Player.containers = render_group
     Player.screen = screen
-    #Ground.containers = all_group
+
     BasicCreep.containers = creeps, render_group
     Bullet.containers = bombs, render_group
     Explosion.containers = render_group
@@ -147,18 +147,24 @@ def main(screen):
     # Init creeps
     #*************************************
     BasicCreep.screen = screen
-    CreepB(200, 100, 0).down_able = False
-    CreepA(500, 100, 1).down_able = False
-    CreepC(300, 100, 1).down_able = False
-    CreepD(250, 100, 0).down_able = False
-    CreepE(800, 100, 1).down_able = False
-    CreepF(600, 150, 1).down_able = False
+
+    # CreepB(200, 100, 0).down_able = False
+    #
+    # CreepC(300, 100, 1).down_able = False
+    # CreepD(250, 100, 0).down_able = False
+    # CreepE(800, 100, 1).down_able = False
+    # CreepF(600, 150, 1).down_able = False
 
     tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table();
     camera_left = 0
     camera_right = Constant.SCREENRECT.width
     hCount = 1
     while player.health > -10:
+
+        # CREEP MANAGER
+        if camera_left > 500:
+            CreepManager.create_creep_a_1()
+
         if player.state == Constant.DIE_STATE:
             player.health -= 0.1
 
