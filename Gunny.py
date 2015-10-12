@@ -6,7 +6,7 @@ from common.constant import Constant
 from common.utils import Utils
 from sprites.ground import Ground
 from sprites.explosion import Explosion
-from sprites.bomb import Bomb
+from sprites.bullet import Bullet
 from sprites.energy_bar import Energy_bar
 from sprites.power_bar import Power_bar
 from sprites.live_bar import Live_bar
@@ -18,6 +18,7 @@ from sprites.screeps.creep_c import CreepC
 from sprites.screeps.creep_d import CreepD
 from sprites.screeps.creep_e import CreepE
 from sprites.screeps.creep_f import CreepF
+from common.e_bullet_type import EBulletType
 
 # See if we can load more than standard BMP
 if not pygame.image.get_extended():
@@ -125,7 +126,7 @@ def main(screen):
     BasicCreep.containers = all_group, creeps
     Player.screen = screen
 
-    Bomb.containers = bombs, all_group
+    Bullet.containers = bombs, all_group
     Explosion.containers = all_group
 
     Live_bar.containers = all_group
@@ -144,11 +145,11 @@ def main(screen):
     # Init creeps
     #*************************************
     BasicCreep.screen = screen
-    CreepB(200, 200, 0).down_able = False
-    #CreepA(500, 200, 1).down_able = False
+    CreepB(200, 100, 0).down_able = False
+    CreepA(500, 100, 1).down_able = False
     CreepC(300, 100, 1).down_able = False
-    CreepD(250, 300, 0).down_able = False
-    #CreepE(800, 300, 1).down_able = False
+    CreepD(250, 100, 0).down_able = False
+    CreepE(800, 100, 1).down_able = False
     CreepF(600, 150, 1).down_able = False
 
     while player.health > -10:
@@ -165,7 +166,10 @@ def main(screen):
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = True
                 elif event.key == Constant.PLAYER1CHANGEBULLET:
-                    player.typeOfBullet *= -1
+                    player.typeOfBullet += 1
+                    if player.typeOfBullet >= Constant.NUM_BULLET_TYPE:
+                        player.typeOfBullet = EBulletType.BASIC
+                    print player.typeOfBullet
             elif event.type == KEYUP:
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = False
@@ -185,29 +189,29 @@ def main(screen):
         player.check(key_state)
 
         if player1_down_to_up and not player.fire_down and player.enegery >= 25:
-            Bomb(player)
+            Bullet(player.angle, player.power, player.rect)
             shoot_sound.play()
 
-        for bomb in pygame.sprite.spritecollide(player, bombs, False):
-            if bomb.player.whichplayer == 2:
-                boom_sound.play()
-                Explosion(player)
-                player.lost_blood(bomb.power)
-                bomb.kill()
+        # *************************************************************
+        # CHECK COLLISION HERE!
+        # *************************************************************
 
-        # Detect collision with ground
-        for bomb in pygame.sprite.spritecollide(ground, bombs, False):
-            if bomb.type_of_bullet == 1:
-                boom_sound.play()
-                Explosion(bomb)
-                bomb.kill()
+        dict_collide = pygame.sprite.groupcollide(bombs, creeps, True, True)
+        for key in dict_collide.keys():
+            boom_sound.play()
+            Explosion(key)
+
+        # # Detect collision with ground
+        # for bomb in pygame.sprite.spritecollide(ground, bombs, False):
+        #     boom_sound.play()
+        #     Explosion(bomb)
+        #     bomb.kill()
 
         if pygame.sprite.spritecollide(player, creeps, False):
             player.lost_blood(1000)
-        #*****************************
+        # *****************************
         # CHECK OBJECTS CAN MOVE DOWN
-        #*****************************
-
+        # *****************************
 
         if pygame.sprite.collide_mask(player, ground):
             player.downable = False

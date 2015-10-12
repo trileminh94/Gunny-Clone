@@ -79,7 +79,7 @@ class Utils:
         """
         frame = []
         i = 0
-        while (i < num) & (x + width < image.get_width()):
+        while (i < num) & (x + width <= image.get_width()):
             frame.append(image.subsurface(x, y, width, height))
             x = x + width
             x = x + step_x

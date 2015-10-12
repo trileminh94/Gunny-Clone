@@ -8,10 +8,11 @@ from sprites.energy_bar import Energy_bar
 import math
 from random import randint
 from pygame.locals import *
+from common.e_bullet_type import EBulletType
 __author__ = 'tri'
 
 class Player(pygame.sprite.Sprite):
-    speed = 1.5
+    speed = 4.5
     bounce = 24
     gun_offset = -11
     state = Constant.LIE_STATE
@@ -47,8 +48,6 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        #self.rect = pygame.Rect(10,10,10,10)
-
         #TODO: need smaller rect
         #self.rect = self.image.get_rect(midbottom=(Constant.SCREENRECT.midbottom[0]-offset, Constant.SCREENRECT.midbottom[1] - 185))
         self.rect = Rect(109, 300, 100, 80)
@@ -56,7 +55,7 @@ class Player(pygame.sprite.Sprite):
         self.health = 100
         self.angle = 45
         self.power = Constant.MAXPOWER * self.fireF
-        self.typeOfBullet = 1
+        self.typeOfBullet = EBulletType.FIREBALL
 
         self.mask = pygame.mask.from_surface(self.image)
         self.whichplayer = whichplayer
@@ -284,7 +283,7 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.stepF = 0
                 self.fireF -= 10*math.fabs(math.sin(1*math.pi/math.pow(10,3)))
-            self.power = Constant.MAXPOWER * self.fireF
+            self.power = Constant.MAXPOWER * self.fireF + 100
             if(self.state == Constant.LIE_STATE):
                 self.draw_lie()
             elif(self.state == Constant.THROW_STATE):

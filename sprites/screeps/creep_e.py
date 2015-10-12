@@ -2,10 +2,10 @@ from basic_creep import BasicCreep
 from common.utils import Utils
 import pygame
 __author__ = 'tri'
+__doc__ = 'May bay'
 
 
 class CreepE(BasicCreep):
-
     def __init__(self, x, y, direction):
         """
         Constructor
@@ -18,20 +18,30 @@ class CreepE(BasicCreep):
 
         # Coefficients
         self.frame = 0
-        self.frame_rate = 0.1
-        self.move_speed_x = 1
+        self.frame_rate = 0.8
+        self.move_speed_x = 4
         self.move_speed_y = 1
         self.direction = direction  # TODO Define enum
         if self.direction == 1:
             self.move_speed_x = -self.move_speed_x
         self.dis = 0
-        self.dis_to_redirect = 150
+        self.dis_to_redirect = 500
 
         # Status
         self.down_able = True
 
-        image_source = Utils.my_load_image('creep', 'creep2.png')
-        self.images_forward = Utils.load_frame(image_source, 0, 800, 153.83, 223, 0, 6)
+        image_source = Utils.my_load_image('creep', 'creep3.png')
+        self.images_forward = Utils.load_frame(image_source, 0, 0, 131.5, 66, 0, 4)
+        images_forward_ex1 = Utils.load_frame(image_source, 0, 69, 129.3, 47, 0, 3)
+        images_forward_ex2 = Utils.load_frame(image_source, 0, 143, 131.5, 66, 0, 4)
+        images_forward_ex3 = Utils.load_frame(image_source, 0, 214, 129.3, 47, 0, 3)
+        for image in images_forward_ex1:
+            self.images_forward.append(image)
+        for image in images_forward_ex2:
+            self.images_forward.append(image)
+        for image in images_forward_ex3:
+            self.images_forward.append(image)
+
         for i in range(len(self.images_forward) - 1, -1, -1):
             self.images_forward.append(self.images_forward[i])
 
