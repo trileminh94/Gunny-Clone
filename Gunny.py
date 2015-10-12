@@ -155,7 +155,7 @@ def main(screen):
     # CreepE(800, 100, 1).down_able = False
     # CreepF(600, 150, 1).down_able = False
 
-    tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table();
+    tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table()
     camera_left = 0
     camera_right = Constant.SCREENRECT.width
     hCount = 1
@@ -193,14 +193,16 @@ def main(screen):
         # Clear/erase the last drawn sprites
         render_group.clear(screen, background)
         screen.fill((0, 0, 0))
+        print player.pos[0]
         if player.state == Constant.MOVE_STATE:
-            if camera_left < 0:
-                camera_left = 0
-            elif camera_right > Constant.SCREENRECT.width * 4:
-                camera_right = Constant.SCREENRECT.width * 4
-            else:
+            if (((player.pos[0] + player.direction * player.speed) >= 0 ) and (player.pos[0] + player.direction * player.speed <= Constant.SCREENRECT.width * 4)):
+                player.pos[0] += player.direction * player.speed
+            if (camera_left + player.direction * player.speed >= 0) and (camera_right + player.direction * player.speed < Constant.SCREENRECT.width * 4):
                 camera_left += player.direction * player.speed
                 camera_right += player.direction * player.speed
+                player.moveWithScreen = False
+            else:
+                player.moveWithScreen = True
 
         if (camera_right < Constant.SCREENRECT.width * 4):
             if camera_left < (hCount - 1) * background.get_width():
@@ -213,8 +215,9 @@ def main(screen):
                         screen.blit(background, (0  - camera_left + (hCount -1) * background.get_width(), 0))
             else:
                 hCount += 1
-
         for y in range(int(camera_left) / Constant.TILE_WIDTH, (int(camera_right) / Constant.TILE_WIDTH) + 1):
+            if y > 119:
+                y = 119
             for x in range(0, 20):
                 if Constant.MAP[x][y] is not 0:
                     tile = Tile(tileset, Constant.MAP[x][y], Constant.TILE_WIDTH, Constant.TILE_HEIGHT)
@@ -253,8 +256,8 @@ def main(screen):
         # CHECK OBJECTS CAN MOVE DOWN
         # *****************************
 
-        #if pygame.sprite.collide_mask(player, ground):
-        #   player.downable = False
+        if player.rect.bottom >= 470:
+           player.downable = False
 
         dirty = render_group.draw(screen)  # Draw all sprite, return list of rect
         pygame.display.update(dirty)    # Draw only changed rect

@@ -12,7 +12,7 @@ from common.e_bullet_type import EBulletType
 __author__ = 'tri'
 
 class Player(pygame.sprite.Sprite):
-    speed = 4.5
+    speed = 15
     bounce = 24
     gun_offset = -11
     state = Constant.LIE_STATE
@@ -48,15 +48,14 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        #TODO: need smaller rect
-        #self.rect = self.image.get_rect(midbottom=(Constant.SCREENRECT.midbottom[0]-offset, Constant.SCREENRECT.midbottom[1] - 185))
         self.rect = Rect(109, 300, 100, 80)
+        self.pos = [self.rect.left, self.rect.top]
         self.origtop = self.rect.top
         self.health = 100
         self.angle = 45
         self.power = Constant.MAXPOWER * self.fireF
         self.typeOfBullet = EBulletType.FIREBALL
-
+        self.moveWithScreen = False
         self.mask = pygame.mask.from_surface(self.image)
         self.whichplayer = whichplayer
         self.enegery = 100
@@ -313,7 +312,8 @@ class Player(pygame.sprite.Sprite):
         if direction:
             self.facing = direction
             self.draw_move()
-        #self.rect.move_ip(direction*self.speed, 0)
+        if (self.moveWithScreen):
+            self.rect.move_ip(direction*self.speed, 0)
         self.rect = self.rect.clamp(Constant.SCREENRECT)
 
     def check(self,keystate):
