@@ -39,7 +39,7 @@ HOME           = 1
 GAME           = 2
 GAMEOVER       = 3
 
-RADIUS = 35
+RADIUS = 38
 PLAYER1FIREKEY = K_SPACE
 PLAYER1UPKEY   = K_w
 PLAYER1DOWNKey = K_s
@@ -436,9 +436,9 @@ class Player(pygame.sprite.Sprite):
         pos2 = (pos1[0] + math.cos(math.radians(self.angle))*RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*RADIUS)
         pygame.draw.line(self.screen, Color('yellow'), pos1, pos2, 2)
         if self.direction > 0:
-            self.screen.blit(pygame.font.Font(None, 15).render(str(self.angle), True, Color('white')), (pos2[0], pos2[1] - 12 ))
+            self.screen.blit(pygame.font.Font(None, 20).render(str(self.angle), True, Color('white')), (pos2[0], pos2[1] - 12 ))
         else:
-            self.screen.blit(pygame.font.Font(None, 15).render(str(180 - self.angle), True, Color('white')), (pos2[0] - 18, pos2[1] - 12 ))
+            self.screen.blit(pygame.font.Font(None, 20).render(str(180 - self.angle), True, Color('white')), (pos2[0] - 18, pos2[1] - 12 ))
 
     def move(self, direction):
         if direction:
@@ -473,9 +473,9 @@ class Player(pygame.sprite.Sprite):
                         self.angle -= 1
                     self.sound_change_radar.play()
                 elif down != 0:
-                    if self.angle > 0 and self.angle <= 90:
+                    if self.angle > 20 and self.angle <= 90:
                         self.angle -= 1
-                    elif self.angle > 90 and self.angle <180:
+                    elif self.angle > 90 and self.angle <160:
                         self.angle += 1
                     self.sound_change_radar.play()
                 pygame.event.pump()
