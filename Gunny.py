@@ -186,17 +186,7 @@ def main(screen):
         # Clear/erase the last drawn sprites
         render_group.clear(screen, background)
         screen.fill((0, 0, 0))
-        if player.state == Constant.MOVE_STATE:
-            if (((player.pos[0] + player.direction * player.speed) >= 0 ) and (player.pos[0] + player.direction * player.speed <= Constant.SCREENRECT.width * 4)):
-                player.pos[0] += player.direction * player.speed
-            if (camera_left + player.direction * player.speed >= 0) and (camera_right + player.direction * player.speed < Constant.SCREENRECT.width * 4):
-                camera_left += player.direction * player.speed
-                camera_right += player.direction * player.speed
-                player.moveWithScreen = False
-            else:
-                player.moveWithScreen = True
-
-        if (camera_right < Constant.SCREENRECT.width * 4):
+        if (camera_right < Constant.SCREENRECT.width * 8):
             if camera_left < (hCount - 1) * background.get_width():
                 hCount -= 1
             elif (camera_left < hCount * background.get_width()):
@@ -210,11 +200,11 @@ def main(screen):
 
         tiles = []
         for y in range(int(camera_left) / Constant.TILE_WIDTH, (int(camera_right) / Constant.TILE_WIDTH) + 1):
-            if y > 119:
-                y = 119
+            if y > 239:
+                y = 239
             for x in range(0, 20):
                 if Constant.MAP[x][y] is not 0:
-                    tile = Tile(tileset, Constant.MAP[x][y], (32 * y, 32 * x))
+                    tile = Tile(tileset, (x, y), (32 * y, 32 * x))
                     screen.blit(tile.image, (Constant.TILE_WIDTH * y - camera_left, Constant.TILE_HEIGHT * x))
                     tiles.append(tile)
         # Update all the sprites
@@ -232,6 +222,7 @@ def main(screen):
         # *************************************************************
         # CHECK COLLISION HERE!
         # *************************************************************
+        """PLAYER GOES DOWN"""
         player.downable = True
         for tile in tiles:
             if tile.downable == True:
@@ -241,6 +232,39 @@ def main(screen):
                 if (player.pos[1] + Constant.PLAYERHEIGHT  >= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT <= tile.pos[1] + Constant.TILE_HEIGHT):
                     player.downable = False
                     break;
+
+        """ WALL BLOCK """
+        player.isBlockByWall = False
+        for tile in tiles:
+            if tile.isBlock == True and player.pos[1] <= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT >= tile.pos[1] \
+                and player.pos[1] + Constant.PLAYERHEIGHT <= tile.pos[1] + Constant.TILE_HEIGHT:
+                """ Player goes to the right """
+                if player.direction == 1:
+                    if player.pos[0] + Constant.PLAYERWIDTH + player.speed >= tile.pos[0]:
+                        print player.pos, tile.pos, tile.id
+                        player.isBlockByWall = True
+                else:
+                    if player.pos[0] - player.speed <= tile.pos[0]:
+                        player.isBlockByWall = True
+
+        if player.state == Constant.MOVE_STATE:
+            if (((player.pos[0] + player.direction * player.speed) >= 0 ) and (player.pos[0] + player.direction * player.speed <= Constant.SCREENRECT.width * 8)):
+                player.pos[0] += player.direction * player.speed
+            if (camera_left + player.direction * player.speed >= 0) and (camera_right + player.direction * player.speed < Constant.SCREENRECT.width * 8):
+                camera_left += player.direction * player.speed
+                camera_right += player.direction * player.speed
+                player.moveWithScreen = False
+            else:
+                player.moveWithScreen = True
+
+        # player_tile_x_left = int(player.pos[0]) / Constant.TILE_WIDTH
+        # player_tile_x_right = int(player.pos[0] + Constant.PLAYERWIDTH) / Constant.TILE_WIDTH
+        # player_tile_y_top = int(player.pos[1]) / Constant.TILE_HEIGHT
+        # player_tile_y_bottom = int(player.pos[1] + Constant.PLAYERHEIGHT) / Constant.TILE_HEIGHT + 1
+        # for tile in tiles:
+        #     if (tile.id == (player_tile_y_bottom, player_tile_x_left) or tile.id == (player_tile_y_bottom, player_tile_x_right)) \
+        #         and tile.downable == False:
+        #         player.downable = False
 
 
         dict_collide = pygame.sprite.groupcollide(bombs, creeps, True, True)
