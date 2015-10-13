@@ -171,13 +171,13 @@ def main(screen):
     item3 = magicbox(300,100,"magic_box")
     print "xong item3"
     item4 = monster(400,100,"monster")
-    #item5 = berry(500,100,"berry")
+    item5 = berry(500,100,"berry")
 
     items.add(item1)
     items.add(item2)
     items.add(item3)
     items.add(item4)
-    #items.add(item5)
+    items.add(item5)
     
 
 
