@@ -9,12 +9,12 @@ class CreepA(BasicCreep):
     def __init__(self, x, y, direction):
         """
         Constructor
-        :param x: position x in screen
-        :param y: position y in screen
+        :param x: position x in world
+        :param y: position y in world
         :param direction: direction to move, 0 or 1
         :return: None
         """
-        BasicCreep.__init__(self)
+        BasicCreep.__init__(self, x, y)
 
         # Coefficients
         self.frame = 0

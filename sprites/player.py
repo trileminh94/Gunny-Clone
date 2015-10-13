@@ -11,6 +11,7 @@ from pygame.locals import *
 from common.e_bullet_type import EBulletType
 __author__ = 'tri'
 
+
 class Player(pygame.sprite.Sprite):
     speed = 15
     bounce = 24
@@ -85,7 +86,12 @@ class Player(pygame.sprite.Sprite):
             elif(randint(5,12) == 12):
                 self.state = Constant.BOTAY_STATE
 
+
     def draw_move(self):
+        """
+        Just draw sprites
+        :return:
+        """
         self.frame = (self.frame + 0.2)
         if(self.direction > 0):
             self.image = self.image_frame[int(round(self.frame))%7]
@@ -298,7 +304,6 @@ class Player(pygame.sprite.Sprite):
             if self.downable:
                 self.rect.move_ip(0, 10)
 
-
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)
         pos2 = (pos1[0] + math.cos(math.radians(self.angle))*Constant.RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*Constant.RADIUS)
@@ -312,7 +317,8 @@ class Player(pygame.sprite.Sprite):
         if direction:
             self.facing = direction
             self.draw_move()
-        if (self.moveWithScreen):
+
+        if self.moveWithScreen:
             self.rect.move_ip(direction*self.speed, 0)
         self.rect = self.rect.clamp(Constant.SCREENRECT)
 

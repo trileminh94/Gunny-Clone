@@ -149,7 +149,7 @@ def main(screen):
     BasicCreep.screen = screen
 
     # CreepB(200, 100, 0).down_able = False
-    #
+    creep_a1 = CreepA(500, 100, 1).down_able = False
     # CreepC(300, 100, 1).down_able = False
     # CreepD(250, 100, 0).down_able = False
     # CreepE(800, 100, 1).down_able = False
@@ -162,8 +162,9 @@ def main(screen):
     while player.health > -10:
 
         # CREEP MANAGER
-        if camera_left > 500:
-            CreepManager.create_creep_a_1()
+        creep_a1.pos_creep_screen = creep_a1.x - player.x
+        #if camera_left > 500:
+        #    CreepManager.create_creep_a_1()
 
         if player.state == Constant.DIE_STATE:
             player.health -= 0.1
