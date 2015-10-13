@@ -20,7 +20,14 @@ from sprites.screeps.creep_e import CreepE
 from sprites.screeps.creep_f import CreepF
 from sprites.item.coreItem import coreItem
 from common.e_bullet_type import EBulletType
-from sprites.creep_manager import CreepManager
+
+from sprites.item.money import money
+from sprites.item.magic_box import magicbox
+from sprites.item.bumerange import bumerange
+from sprites.item.monster import monster
+from sprites.item.berry import berry
+
+#from sprites.creep_manager import CreepManager
 
 from sprites.tile import TileCache
 from sprites.tile import Tile
@@ -122,12 +129,13 @@ def main(screen):
     bombs = pygame.sprite.Group()
     render_group = pygame.sprite.OrderedUpdates()
     creeps = pygame.sprite.Group()
+    items = pygame.sprite.Group()
 
     # Assign default groups to each sprite class
-    Ground.containers = all_group
-    Player.containers = all_group
-    BasicCreep.containers = all_group, creeps
-    coreItem.containers = all_group
+    # Ground.containers = all_group
+    # Player.containers = all_group
+    # BasicCreep.containers = all_group, creeps
+    coreItem.containers = render_group
     Player.containers = render_group
     Player.screen = screen
 
@@ -156,11 +164,21 @@ def main(screen):
     #*************************************
     # Init item
     #*************************************
-    item1 = coreItem(100,100,"money")
-    item2 = coreItem(200,100,"bumerange_tree")
-    item3 = coreItem(300,100,"magic_box")
-    item4 = coreItem(400,100,"monster")
-    item5 = coreItem(500,100,"berry")
+    item1 = money(100,100,"money")
+    print "xong item1"
+    item2 = bumerange(200,100,"bumerange_tree")
+    print "xong item2"
+    item3 = magicbox(300,100,"magic_box")
+    print "xong item3"
+    item4 = monster(400,100,"monster")
+    #item5 = berry(500,100,"berry")
+
+    items.add(item1)
+    items.add(item2)
+    items.add(item3)
+    items.add(item4)
+    #items.add(item5)
+    
 
 
     # CreepB(200, 100, 0).down_able = False
@@ -243,6 +261,7 @@ def main(screen):
                     tiles.append(tile)
         # Update all the sprites
         render_group.update()
+        items.update()
 
         # Handle player input
         key_state = pygame.key.get_pressed()

@@ -52,7 +52,8 @@ class Constant:
 
     """ time for item """
     MONEY_TIME_TO_DIE = 100
-    ITEM_TIME_TO_DIE = 2000
+    ITEM_TIME_TO_DIE = 1000
+    ITEM_TIME_TO_LIVE = 200
 
     """Item state"""
 
