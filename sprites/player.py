@@ -296,7 +296,7 @@ class Player(pygame.sprite.Sprite):
                 self.draw_throw()
             elif(self.state == Constant.MOVE_STATE):
                 #if not self.isBlockByWall:
-                    self.move(self.direction)
+                self.move(self.direction)
             else:
                 self.drawEmotion()
             self.drawRadar()
@@ -332,6 +332,7 @@ class Player(pygame.sprite.Sprite):
                 fire = keystate[Constant.PLAYER1FIREKEY]
                 up = keystate[Constant.PLAYER1UPKEY]
                 down = keystate[Constant.PLAYER1DOWNKey]
+
             elif(self.whichplayer == 2):
                 direction = keystate[Constant.PLAYER2RIGHTKEY] - keystate[Constant.PLAYER2LEFTKEY]
                 fire = keystate[Constant.PLAYER2FIREKEY]
@@ -339,6 +340,7 @@ class Player(pygame.sprite.Sprite):
                 down = keystate[Constant.PLAYER2DOWNKey]
             if direction:
                 self.direction = direction
+
             if(self.isBlock == False):
                 if(direction == 0 and fire == 0):
                     self.state = Constant.LIE_STATE

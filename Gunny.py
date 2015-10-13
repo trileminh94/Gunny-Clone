@@ -245,6 +245,7 @@ def main(screen):
             butllet = Bullet(player.angle, player.power, player.rect)
             shoot_sound.play()
             player.enegery -= butllet.energy_cost
+            player.rect.move_ip(0, -20)
 
         # *************************************************************
         # CHECK COLLISION HERE!
