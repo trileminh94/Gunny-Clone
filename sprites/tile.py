@@ -36,7 +36,12 @@ class Tile():
             self.downable = False
         else:
             self.downable = True
-        if (self.type == 81) or (self.type == 82) or (self.type == 83)  or (self.type == 86) or (self.type == 87):
+        if (self.type == 54) or (self.type == 55) or (self.type == 56)  or (self.type == 57) \
+            or (self.type == 64) or (self.type == 65) or (self.type == 66) or (self.type == 67) or (self.type == 69) or (self.type == 70) \
+            or (self.type == 74) or (self.type == 75) or (self.type == 76) or (self.type == 77)  or (self.type == 79) or (self.type == 80) \
+            or (self.type == 44) or (self.type == 45) or (self.type == 46) or (self.type == 47) \
+            or (self.type == 81) or (self.type == 82) or (self.type == 83) or (self.type == 86) or (self.type == 87) \
+            or (self.type == 89) or (self.type == 90) :
             self.isBlock = False
         else:
             self.isBlock = True
