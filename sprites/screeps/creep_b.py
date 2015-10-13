@@ -19,7 +19,9 @@ class CreepB(BasicCreep):
         # Coefficients
         self.frame = 0
 
-        self.move_speed_x = 1
+        self.move_speed_x = speed_x
+        self.frame_rate = 0.1*speed_x
+
         self.move_speed_y = 1
         self.direction = direction  # TODO Define enum
         if self.direction == 1:
@@ -29,9 +31,6 @@ class CreepB(BasicCreep):
         self.y = y
         self.left = left
         self.right = right
-        self.move_speed_x = speed_x
-        self.frame_rate = 0.1*speed_x
-
 
         # Status
         self.down_able = True

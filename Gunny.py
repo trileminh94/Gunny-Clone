@@ -250,21 +250,21 @@ def main(screen):
         # *************************************************************
         # CHECK COLLISION HERE!
         # *************************************************************
-        """ WALL BLOCK """
 
+        """ WALL BLOCK """
         player.isBlockByWall = False
         for tile in tiles:
             if tile.isBlock == True and player.pos[1] <= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT >= tile.pos[1] \
                 and player.pos[1] > tile.pos[1] - Constant.TILE_HEIGHT:
-                print player.pos, tile.pos, tile.id
                 """ Player goes to the right """
                 if player.direction == 1:
                     if player.pos[0] + Constant.PLAYERWIDTH >= tile.pos[0] \
                             and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH:
-                        print player.pos, tile.pos, tile.id
+                        #print player.pos, tile.pos, tile.id
                         player.isBlockByWall = True
                 else:
-                    if player.pos[0] >= tile.pos[0] and player.pos[0] <= tile.pos[0] + Constant.TILE_WIDTH:
+                    if player.pos[0]  >= tile.pos[0] and player.pos[0] <= tile.pos[0] + Constant.TILE_WIDTH:
+                        print player.pos, tile.pos, tile.id
                         player.isBlockByWall = True
 
         if not player.isBlockByWall and player.state == Constant.MOVE_STATE:

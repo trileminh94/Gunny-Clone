@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        self.rect = Rect(110, 200, 110, 90)
+        self.rect = Rect(1600, 200, 110, 90)
         self.pos = [self.rect.left + 25 , self.rect.top + 20]
         self.origtop = self.rect.top
         self.health = 100
@@ -295,8 +295,9 @@ class Player(pygame.sprite.Sprite):
             elif(self.state == Constant.THROW_STATE):
                 self.draw_throw()
             elif(self.state == Constant.MOVE_STATE):
-                #if not self.isBlockByWall:
-                self.move(self.direction)
+
+                if not self.isBlockByWall:
+                    self.move(self.direction)
             else:
                 self.drawEmotion()
             self.drawRadar()
@@ -323,7 +324,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.moveWithScreen:
             self.rect.move_ip(direction*self.speed, 0)
-        self.rect = self.rect.clamp(Constant.SCREENRECT)
+        self.rect = self.rect.clamp(Rect(-20, 0, Constant.SCREENRECT.width + 40, Constant.SCREENRECT.height))
 
     def check(self,keystate):
         if(self.state != Constant.DIE_STATE):
