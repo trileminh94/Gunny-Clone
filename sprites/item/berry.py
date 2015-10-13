@@ -8,3 +8,5 @@ class berry(coreItem):
 	move_length = 200
 	velocity = 0.2
 	direction = -1
+	ITEM_TIME_TO_DIE = 400
+	ITEM_TIME_TO_LIVE = 1000
