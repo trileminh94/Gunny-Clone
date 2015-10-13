@@ -5,7 +5,7 @@ __author__ = 'tri'
 
 class Utils:
     __main_dir = "resources"
-
+    resources = {}
     def __init__(self):
         pass
 
@@ -21,13 +21,18 @@ class Utils:
 
     def my_load_image(sub_folder, file_name):
         """loads an image, prepares it for play"""
-        folder = os.path.join(Utils.__main_dir, 'image')
-        file_name = os.path.join(folder, sub_folder, file_name)
-        try:
-            surface = pygame.image.load(file_name)
-        except pygame.error:
-            raise SystemExit('Could not load image "%s" %s' % (file_name, pygame.get_error()))
-        return surface.convert_alpha()
+        if not Utils.resources.has_key(sub_folder+file_name):
+            key = sub_folder+file_name
+            folder = os.path.join(Utils.__main_dir, 'image')
+            file_name = os.path.join(folder, sub_folder, file_name)
+            try:
+                surface = pygame.image.load(file_name)
+            except pygame.error:
+                raise SystemExit('Could not load image "%s" %s' % (file_name, pygame.get_error()))
+            Utils.resources[key] = surface.convert_alpha()
+            return surface.convert_alpha()
+        else:
+            return Utils.resources[sub_folder+file_name]
     my_load_image = staticmethod(my_load_image)
 
     def load_images(*files):
