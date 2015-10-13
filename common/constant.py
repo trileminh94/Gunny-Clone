@@ -23,6 +23,7 @@ class Constant:
     BOTAY_STATE = 12
     DIE_STATE = 13
     STEP_EMOTION = 0.08
+    STEP_FLIP = 0.01
     TILE_WIDTH = 32
     TILE_HEIGHT = 32
     DOWNPERFRAME = 10
@@ -48,6 +49,34 @@ class Constant:
     POWERBARRECT2 = Rect(SCREENRECT.width - 400, SCREENRECT.height - 25, 400, 20)
     POWERBARCOLOR = (255, 51, 51)
 
+
+    """ time for item """
+    MONEY_TIME_TO_DIE = 100
+    ITEM_TIME_TO_DIE = 2000
+
+    """Item state"""
+
+    ITEM_STATE_LIVE =  True
+    ITEM_STATE_DIE = False
+
+    """All item """
+    MONEY_ITEM = "money"
+    MAGIC_BOX_ITEM = "magic_box"
+    BUMERANGE_TREE_ITEM = "bumerange_tree"
+    MONSTER_ITEM = "monster"
+    BERRY_ITEM = "berry"
+
+
+    """ item style """
+    ADD = 1
+    SUBTRACT = 2
+
+    """ item feature """
+    MONEY = 1
+    BUMERANGE = 2
+    LIFE = 3
+    ENERGY = 4
+    POWER = 5
 
     NUM_BULLET_TYPE = 2
 

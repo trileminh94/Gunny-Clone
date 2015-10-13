@@ -18,6 +18,7 @@ from sprites.screeps.creep_c import CreepC
 from sprites.screeps.creep_d import CreepD
 from sprites.screeps.creep_e import CreepE
 from sprites.screeps.creep_f import CreepF
+from sprites.item.coreItem import coreItem
 from common.e_bullet_type import EBulletType
 from sprites.creep_manager import CreepManager
 
@@ -123,6 +124,8 @@ def main(screen):
     creeps = pygame.sprite.Group()
 
     # Assign default groups to each sprite class
+
+    coreItem.containers = all_group
     Player.containers = render_group
     Player.screen = screen
 
@@ -148,6 +151,16 @@ def main(screen):
     #*************************************
     BasicCreep.screen = screen
 
+    #*************************************
+    # Init item
+    #*************************************
+    item1 = coreItem(100,100,"money")
+    item2 = coreItem(200,100,"bumerange_tree")
+    item3 = coreItem(300,100,"magic_box")
+    item4 = coreItem(400,100,"monster")
+    item5 = coreItem(500,100,"berry")
+
+
     # CreepB(200, 100, 0).down_able = False
     #creep_a1 = CreepA(1500, 100, 1, 1300, 1700)
     #creep_a1.down_able = False
@@ -169,6 +182,7 @@ def main(screen):
     camera_left = 0
     camera_right = Constant.SCREENRECT.width
     hCount = 1
+
 
     while player.health > -10:
         print
