@@ -25,6 +25,7 @@ class Player(pygame.sprite.Sprite):
     stepF = 0
     downable = True
     isBlockByWall = False
+    jump = 0
 
     def __init__(self, folder, sprite_name, direction, whichplayer, offset):
 
@@ -50,7 +51,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        self.rect = Rect(1600, 200, 110, 90)
+        self.rect = Rect(120, 200, 110, 90)
         self.pos = [self.rect.left + 25 , self.rect.top + 20]
         self.origtop = self.rect.top
         self.health = 100
@@ -302,9 +303,13 @@ class Player(pygame.sprite.Sprite):
                 self.drawEmotion()
             self.drawRadar()
 
-            if self.rect.top > 400:
-                self.downable = False
-            if self.downable:
+
+            if self.jump > 0:
+                self.rect.move_ip(0, - Constant.JUMPPERFRAME)
+                self.pos[1] -= Constant.JUMPPERFRAME
+                self.jump -= 1
+            elif self.downable:
+
                 self.rect.move_ip(0, Constant.DOWNPERFRAME)
                 self.pos[1] += Constant.DOWNPERFRAME
 

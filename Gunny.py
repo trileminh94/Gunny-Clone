@@ -224,11 +224,12 @@ def main(screen):
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = True
                 elif event.key == Constant.PLAYER1CHANGEBULLET:
-
                     player.typeOfBullet += 1
                     if player.typeOfBullet >= Constant.NUM_BULLET_TYPE:
                         player.typeOfBullet = EBulletType.BASIC
-
+                elif event.key == Constant.PLAYER1JUMPKEY:
+                    if not player.downable:
+                        player.jump = 15
             elif event.type == KEYUP:
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = False
@@ -282,7 +283,7 @@ def main(screen):
             butllet = Bullet(player.angle, player.power, player.rect)
             shoot_sound.play()
             player.enegery -= butllet.energy_cost
-            player.rect.move_ip(0, -20)
+
 
         # *************************************************************
         # CHECK COLLISION HERE!
@@ -297,11 +298,10 @@ def main(screen):
                 if player.direction == 1:
                     if player.pos[0] + Constant.PLAYERWIDTH >= tile.pos[0] \
                             and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH:
-                        #print player.pos, tile.pos, tile.id
+                        print player.pos, tile.id
                         player.isBlockByWall = True
                 else:
                     if player.pos[0]  >= tile.pos[0] and player.pos[0] <= tile.pos[0] + Constant.TILE_WIDTH:
-                        print player.pos, tile.pos, tile.id
                         player.isBlockByWall = True
 
         if not player.isBlockByWall and player.state == Constant.MOVE_STATE:

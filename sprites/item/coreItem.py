@@ -106,10 +106,15 @@ class coreItem(pygame.sprite.Sprite):
 		elif(self.rect.x < self.max_left):
 			self.direction *= -1
 			
-
+	def die(self):
+		self.state = Constant.ITEM_STATE_DIE
+		self.remove(self.containers)
 
 	def getFeature(self):
 		return {self.style : self.feature}
+
+	# def moveBackground(self):
+	# 	creep_a1.pos_creep_screen = creep_a1.x - player.pos[0] + player.rect.left
 
 	def update(self):
 		self.checkState()
