@@ -183,7 +183,6 @@ def main(screen):
                     player.typeOfBullet += 1
                     if player.typeOfBullet >= Constant.NUM_BULLET_TYPE:
                         player.typeOfBullet = EBulletType.BASIC
-                    print player.typeOfBullet
 
             elif event.type == KEYUP:
                 if event.key == Constant.PLAYER1FIREKEY:
@@ -194,7 +193,6 @@ def main(screen):
         # Clear/erase the last drawn sprites
         render_group.clear(screen, background)
         screen.fill((0, 0, 0))
-        print player.pos[0]
         if player.state == Constant.MOVE_STATE:
             if (((player.pos[0] + player.direction * player.speed) >= 0 ) and (player.pos[0] + player.direction * player.speed <= Constant.SCREENRECT.width * 4)):
                 player.pos[0] += player.direction * player.speed
@@ -210,20 +208,22 @@ def main(screen):
                 hCount -= 1
             elif (camera_left < hCount * background.get_width()):
                 if (camera_right > hCount * background.get_width()):
-                        screen.blit(background, (0  - camera_left + (hCount -1) * background.get_width(), 0))
+                        screen.blit(background, (0  - camera_left + (hCount - 1) * background.get_width(), 0))
                         screen.blit(background, (hCount * background.get_width() - camera_left, 0))
                 else:
                         screen.blit(background, (0  - camera_left + (hCount -1) * background.get_width(), 0))
             else:
                 hCount += 1
+
+        tiles = []
         for y in range(int(camera_left) / Constant.TILE_WIDTH, (int(camera_right) / Constant.TILE_WIDTH) + 1):
             if y > 119:
                 y = 119
             for x in range(0, 20):
                 if Constant.MAP[x][y] is not 0:
-                    tile = Tile(tileset, Constant.MAP[x][y], Constant.TILE_WIDTH, Constant.TILE_HEIGHT)
-                    tile.render()
+                    tile = Tile(tileset, Constant.MAP[x][y], (32 * y, 32 * x))
                     screen.blit(tile.image, (Constant.TILE_WIDTH * y - camera_left, Constant.TILE_HEIGHT * x))
+                    tiles.append(tile)
         # Update all the sprites
         render_group.update()
 
@@ -239,6 +239,16 @@ def main(screen):
         # *************************************************************
         # CHECK COLLISION HERE!
         # *************************************************************
+        player.downable = True
+        for tile in tiles:
+            if tile.downable == True:
+                continue;
+            if(player.pos[0]  >= tile.pos[0] and player.pos[0]  <= tile.pos[0] + Constant.TILE_WIDTH) \
+                    or ( player.pos[0] + Constant.PLAYERWIDTH  >= tile.pos [0] and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH):
+                if (player.pos[1] + Constant.PLAYERHEIGHT  >= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT <= tile.pos[1] + Constant.TILE_HEIGHT):
+                    player.downable = False
+                    break;
+
 
         dict_collide = pygame.sprite.groupcollide(bombs, creeps, True, True)
         for key in dict_collide.keys():
@@ -257,14 +267,13 @@ def main(screen):
         # CHECK OBJECTS CAN MOVE DOWN
         # *****************************
 
-        if player.rect.bottom >= 470:
-           player.downable = False
-
         dirty = render_group.draw(screen)  # Draw all sprite, return list of rect
         pygame.display.update(dirty)    # Draw only changed rect
         pygame.display.flip()
         # Cap the frame rate
         clock.tick(Constant.FPS)
+        #Clear tile list
+        tiles[:] = []
 
 
     game_state = Constant.GAMEOVER

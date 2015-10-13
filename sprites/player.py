@@ -13,7 +13,7 @@ __author__ = 'tri'
 
 
 class Player(pygame.sprite.Sprite):
-    speed = 15
+    speed = 5
     bounce = 24
     gun_offset = -11
     state = Constant.LIE_STATE
@@ -49,8 +49,8 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        self.rect = Rect(109, 300, 100, 80)
-        self.pos = [self.rect.left, self.rect.top]
+        self.rect = Rect(110, 200, 110, 90)
+        self.pos = [self.rect.left + 25 , self.rect.top + 20]
         self.origtop = self.rect.top
         self.health = 100
         self.angle = 45
@@ -302,7 +302,8 @@ class Player(pygame.sprite.Sprite):
             if self.rect.top > 400:
                 self.downable = False
             if self.downable:
-                self.rect.move_ip(0, 10)
+                self.rect.move_ip(0, Constant.DOWNPERFRAME)
+                self.pos[1] += Constant.DOWNPERFRAME
 
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)
