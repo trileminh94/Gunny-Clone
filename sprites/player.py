@@ -8,10 +8,12 @@ from sprites.energy_bar import Energy_bar
 import math
 from random import randint
 from pygame.locals import *
+from common.e_bullet_type import EBulletType
 __author__ = 'tri'
 
+
 class Player(pygame.sprite.Sprite):
-    speed = 1.5
+    speed = 5
     bounce = 24
     gun_offset = -11
     state = Constant.LIE_STATE
@@ -47,17 +49,14 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        #self.rect = pygame.Rect(10,10,10,10)
-
-        #TODO: need smaller rect
-        #self.rect = self.image.get_rect(midbottom=(Constant.SCREENRECT.midbottom[0]-offset, Constant.SCREENRECT.midbottom[1] - 185))
-        self.rect = Rect(109, 300, 100, 80)
+        self.rect = Rect(110, 200, 110, 90)
+        self.pos = [self.rect.left + 25 , self.rect.top + 20]
         self.origtop = self.rect.top
         self.health = 100
         self.angle = 45
         self.power = Constant.MAXPOWER * self.fireF
-        self.typeOfBullet = 1
-
+        self.typeOfBullet = EBulletType.FIREBALL
+        self.moveWithScreen = False
         self.mask = pygame.mask.from_surface(self.image)
         self.whichplayer = whichplayer
         self.enegery = 100
@@ -87,7 +86,12 @@ class Player(pygame.sprite.Sprite):
             elif(randint(5,12) == 12):
                 self.state = Constant.BOTAY_STATE
 
+
     def draw_move(self):
+        """
+        Just draw sprites
+        :return:
+        """
         self.frame = (self.frame + 0.2)
         if(self.direction > 0):
             self.image = self.image_frame[int(round(self.frame))%7]
@@ -284,7 +288,7 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.stepF = 0
                 self.fireF -= 10*math.fabs(math.sin(1*math.pi/math.pow(10,3)))
-            self.power = Constant.MAXPOWER * self.fireF
+            self.power = Constant.MAXPOWER * self.fireF + 100
             if(self.state == Constant.LIE_STATE):
                 self.draw_lie()
             elif(self.state == Constant.THROW_STATE):
@@ -295,8 +299,11 @@ class Player(pygame.sprite.Sprite):
                 self.drawEmotion()
             self.drawRadar()
 
+            if self.rect.top > 400:
+                self.downable = False
             if self.downable:
-                self.rect.move_ip(0, 10)
+                self.rect.move_ip(0, Constant.DOWNPERFRAME)
+                self.pos[1] += Constant.DOWNPERFRAME
 
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)
@@ -311,7 +318,9 @@ class Player(pygame.sprite.Sprite):
         if direction:
             self.facing = direction
             self.draw_move()
-        self.rect.move_ip(direction*self.speed, 0)
+
+        if self.moveWithScreen:
+            self.rect.move_ip(direction*self.speed, 0)
         self.rect = self.rect.clamp(Constant.SCREENRECT)
 
     def check(self,keystate):

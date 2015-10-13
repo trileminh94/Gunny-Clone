@@ -1,16 +1,16 @@
 import pygame
 from pygame.locals import *
-
 import pygbutton
 from common.constant import Constant
 from common.utils import Utils
 from sprites.ground import Ground
 from sprites.explosion import Explosion
-from sprites.bomb import Bomb
+from sprites.bullet import Bullet
 from sprites.energy_bar import Energy_bar
 from sprites.power_bar import Power_bar
 from sprites.live_bar import Live_bar
 from sprites.player import Player
+
 from sprites.screeps.basic_creep import BasicCreep
 from sprites.screeps.creep_a import CreepA
 from sprites.screeps.creep_b import CreepB
@@ -19,11 +19,17 @@ from sprites.screeps.creep_d import CreepD
 from sprites.screeps.creep_e import CreepE
 from sprites.screeps.creep_f import CreepF
 from sprites.item.coreItem import coreItem
+from common.e_bullet_type import EBulletType
+from sprites.creep_manager import CreepManager
+
+from sprites.tile import TileCache
+from sprites.tile import Tile
 
 # See if we can load more than standard BMP
+
 if not pygame.image.get_extended():
     raise SystemExit("Sorry, extended image module required")
-    
+
 def home(game_state):
     # Initialize pygame
     pygame.init()
@@ -60,8 +66,7 @@ def home(game_state):
             button_obj.draw(background)
             pygame.display.flip()
 
-
-def game_over(screen, gamestate):
+def game_over(screen,gamestate):
     pygame.mouse.set_visible(1)
 
     # #create the background, tile the bgd image
@@ -75,11 +80,12 @@ def game_over(screen, gamestate):
 
     while gamestate == Constant.GAMEOVER:
         for event in pygame.event.get():
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                return
+            if event.type == QUIT or \
+                (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    return
             if 'click' in playagain.handleEvent(event):
                 gamestate = Constant.GAME
-                if gamestate == Constant.GAME:
+                if(gamestate == Constant.GAME):
                     main(screen,gamestate)
             if 'click' in quit.handleEvent(event):
                 if pygame.mixer:
@@ -93,18 +99,15 @@ def game_over(screen, gamestate):
 
 
 def main(screen):
+
     img = Utils.load_image('explosion1.gif')
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
 
     pygame.mouse.set_visible(0)
 
+
     # Create the background, tile the bgd image
-    bgdtile = Utils.load_image('back.jpg')
-    background = pygame.Surface(Constant.SCREENRECT.size)
-    for x in range(0, Constant.SCREENRECT.width, bgdtile.get_width()):
-        background.blit(bgdtile, (x, 0))
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
+    background = pygame.image.load("resources\image\TileSet\\background.png").convert()
 
     # Load the sound effects
     boom_sound = Utils.load_sound('boom.wav')
@@ -115,9 +118,9 @@ def main(screen):
         pygame.mixer.music.play(-1)
 
     # Initialize Game Groups
-
+    aliens = pygame.sprite.Group()
     bombs = pygame.sprite.Group()
-    all_group = pygame.sprite.OrderedUpdates()
+    render_group = pygame.sprite.OrderedUpdates()
     creeps = pygame.sprite.Group()
 
     # Assign default groups to each sprite class
@@ -125,34 +128,30 @@ def main(screen):
     Player.containers = all_group
     BasicCreep.containers = all_group, creeps
     coreItem.containers = all_group
+    Player.containers = render_group
     Player.screen = screen
 
-    Bomb.containers = bombs, all_group
-    Explosion.containers = all_group
+    BasicCreep.containers = creeps, render_group
+    Bullet.containers = bombs, render_group
+    Explosion.containers = render_group
 
-    Live_bar.containers = all_group
-    Energy_bar.containers = all_group
-    Power_bar.containers = all_group
+    Live_bar.containers = render_group
+    Energy_bar.containers = render_group
+    Power_bar.containers = render_group
 
     # Create Some Starting Values
     # Global score
 
     clock = pygame.time.Clock()
 
-    ground = Ground()
+
+    #ground = Ground()
     player = Player('nhan vat 1', 'character1', 1, 1, 350)
 
     #*************************************
     # Init creeps
     #*************************************
     BasicCreep.screen = screen
-    CreepB(200, 200, 0).down_able = False
-    #CreepA(500, 200, 1).down_able = False
-    CreepC(300, 100, 1).down_able = False
-    CreepD(250, 300, 0).down_able = False
-    #CreepE(800, 300, 1).down_able = False
-    CreepF(600, 150, 1).down_able = False
-
 
     #*************************************
     # Init item
@@ -163,7 +162,27 @@ def main(screen):
     item4 = coreItem(400,100,"monster")
     item5 = coreItem(500,100,"berry")
 
+
+    # CreepB(200, 100, 0).down_able = False
+    creep_a1 = CreepA(1500, 100, 1, 1300, 1700)
+    creep_a1.down_able = False
+    # CreepC(300, 100, 1).down_able = False
+    # CreepD(250, 100, 0).down_able = False
+    # CreepE(800, 100, 1).down_able = False
+    # CreepF(600, 150, 1).down_able = False
+
+    tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table()
+    camera_left = 0
+    camera_right = Constant.SCREENRECT.width
+    hCount = 1
+
     while player.health > -10:
+
+        # CREEP MANAGER
+        creep_a1.pos_creep_screen = creep_a1.x - player.pos[0] + player.rect.left
+        #if camera_left > 500:
+        #    CreepManager.create_creep_a_1()
+
         if player.state == Constant.DIE_STATE:
             player.health -= 0.1
 
@@ -177,7 +196,11 @@ def main(screen):
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = True
                 elif event.key == Constant.PLAYER1CHANGEBULLET:
-                    player.typeOfBullet *= -1
+
+                    player.typeOfBullet += 1
+                    if player.typeOfBullet >= Constant.NUM_BULLET_TYPE:
+                        player.typeOfBullet = EBulletType.BASIC
+
             elif event.type == KEYUP:
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = False
@@ -185,50 +208,91 @@ def main(screen):
                         player.state = Constant.THROW_STATE
 
         # Clear/erase the last drawn sprites
+        render_group.clear(screen, background)
+        screen.fill((0, 0, 0))
+        if player.state == Constant.MOVE_STATE:
+            if (((player.pos[0] + player.direction * player.speed) >= 0 ) and (player.pos[0] + player.direction * player.speed <= Constant.SCREENRECT.width * 4)):
+                player.pos[0] += player.direction * player.speed
+            if (camera_left + player.direction * player.speed >= 0) and (camera_right + player.direction * player.speed < Constant.SCREENRECT.width * 4):
+                camera_left += player.direction * player.speed
+                camera_right += player.direction * player.speed
+                player.moveWithScreen = False
+            else:
+                player.moveWithScreen = True
 
-        all_group.clear(screen, background)
-        screen.blit(background, (0, 0))
+        if (camera_right < Constant.SCREENRECT.width * 4):
+            if camera_left < (hCount - 1) * background.get_width():
+                hCount -= 1
+            elif (camera_left < hCount * background.get_width()):
+                if (camera_right > hCount * background.get_width()):
+                        screen.blit(background, (0  - camera_left + (hCount - 1) * background.get_width(), 0))
+                        screen.blit(background, (hCount * background.get_width() - camera_left, 0))
+                else:
+                        screen.blit(background, (0  - camera_left + (hCount -1) * background.get_width(), 0))
+            else:
+                hCount += 1
 
+        tiles = []
+        for y in range(int(camera_left) / Constant.TILE_WIDTH, (int(camera_right) / Constant.TILE_WIDTH) + 1):
+            if y > 119:
+                y = 119
+            for x in range(0, 20):
+                if Constant.MAP[x][y] is not 0:
+                    tile = Tile(tileset, Constant.MAP[x][y], (32 * y, 32 * x))
+                    screen.blit(tile.image, (Constant.TILE_WIDTH * y - camera_left, Constant.TILE_HEIGHT * x))
+                    tiles.append(tile)
         # Update all the sprites
-        all_group.update()
+        render_group.update()
 
         # Handle player input
         key_state = pygame.key.get_pressed()
+
         player.check(key_state)
 
         if player1_down_to_up and not player.fire_down and player.enegery >= 25:
-            Bomb(player)
+            Bullet(player.angle, player.power, player.rect)
             shoot_sound.play()
 
-        for bomb in pygame.sprite.spritecollide(player, bombs, False):
-            if bomb.player.whichplayer == 2:
-                boom_sound.play()
-                Explosion(player)
-                player.lost_blood(bomb.power)
-                bomb.kill()
+        # *************************************************************
+        # CHECK COLLISION HERE!
+        # *************************************************************
+        player.downable = True
+        for tile in tiles:
+            if tile.downable == True:
+                continue;
+            if(player.pos[0]  >= tile.pos[0] and player.pos[0]  <= tile.pos[0] + Constant.TILE_WIDTH) \
+                    or ( player.pos[0] + Constant.PLAYERWIDTH  >= tile.pos [0] and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH):
+                if (player.pos[1] + Constant.PLAYERHEIGHT  >= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT <= tile.pos[1] + Constant.TILE_HEIGHT):
+                    player.downable = False
+                    break;
 
-        # Detect collision with ground
-        for bomb in pygame.sprite.spritecollide(ground, bombs, False):
-            if bomb.type_of_bullet == 1:
-                boom_sound.play()
-                Explosion(bomb)
-                bomb.kill()
+
+        dict_collide = pygame.sprite.groupcollide(bombs, creeps, True, True)
+        for key in dict_collide.keys():
+            boom_sound.play()
+            Explosion(key)
+
+        # # Detect collision with ground
+        # for bomb in pygame.sprite.spritecollide(ground, bombs, False):
+        #     boom_sound.play()
+        #     Explosion(bomb)
+        #     bomb.kill()
 
         if pygame.sprite.spritecollide(player, creeps, False):
             player.lost_blood(1000)
-        #*****************************
+        # *****************************
         # CHECK OBJECTS CAN MOVE DOWN
-        #*****************************
+        # *****************************
 
-
-        if pygame.sprite.collide_mask(player, ground):
-            player.downable = False
-
-
-        dirty = all_group.draw(screen)  # Draw all sprite, return list of rect
+        dirty = render_group.draw(screen)  # Draw all sprite, return list of rect
         pygame.display.update(dirty)    # Draw only changed rect
+        pygame.display.flip()
         # Cap the frame rate
         clock.tick(Constant.FPS)
+        #Clear tile list
+        tiles[:] = []
+
+
     game_state = Constant.GAMEOVER
 
     game_over(screen, game_state)
