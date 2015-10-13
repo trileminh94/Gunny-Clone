@@ -25,6 +25,9 @@ class Constant:
     STEP_EMOTION = 0.08
     TILE_WIDTH = 32
     TILE_HEIGHT = 32
+    DOWNPERFRAME = 10
+    PLAYERWIDTH = 60
+    PLAYERHEIGHT = 47
     FPS = 60
 
     HOME = 1
