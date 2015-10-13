@@ -18,6 +18,7 @@ from sprites.screeps.creep_c import CreepC
 from sprites.screeps.creep_d import CreepD
 from sprites.screeps.creep_e import CreepE
 from sprites.screeps.creep_f import CreepF
+from sprites.item.coreItem import coreItem
 
 # See if we can load more than standard BMP
 if not pygame.image.get_extended():
@@ -123,6 +124,7 @@ def main(screen):
     Ground.containers = all_group
     Player.containers = all_group
     BasicCreep.containers = all_group, creeps
+    coreItem.containers = all_group
     Player.screen = screen
 
     Bomb.containers = bombs, all_group
@@ -150,6 +152,16 @@ def main(screen):
     CreepD(250, 300, 0).down_able = False
     #CreepE(800, 300, 1).down_able = False
     CreepF(600, 150, 1).down_able = False
+
+
+    #*************************************
+    # Init item
+    #*************************************
+    item1 = coreItem(100,100,"money")
+    item2 = coreItem(200,100,"bumerange_tree")
+    item3 = coreItem(300,100,"magic_box")
+    item4 = coreItem(400,100,"monster")
+    item5 = coreItem(500,100,"berry")
 
     while player.health > -10:
         if player.state == Constant.DIE_STATE:
