@@ -14,17 +14,20 @@ __author__ = 'tri'
 class BasicCreep(pygame.sprite.Sprite):
     screen = None   # TODO for testing
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, left, right):
         """
         Constructor
         :param x: position x in world
         :param y: position y in world
+        :param left, right: limit position for moving of creep
         :return: None
         """
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.x = x
         self.y = y
         self.pos_creep_screen = 0   # position x of creep in screen, = creep-player + player-screen
+        self.left = left
+        self.right = right
 
     def update(self):
 
@@ -35,15 +38,13 @@ class BasicCreep(pygame.sprite.Sprite):
             self.image = self.images_back[int(round(self.frame))%self.frame_length]
 
         self.x += self.move_speed_x
-        self.rect = self.rect.move(self.pos_creep_screen, 0)
 
+        if self.x < self.left or self.x > self.right:
+            self.redirect()
+        self.rect = pygame.Rect(self.pos_creep_screen, 200, self.rect.width, self.rect.height) # TODO Dang la tao 1 object moi, hoi lau
 
         if self.down_able:
                 self.rect = self.rect.move(0, self.move_speed_y)
-
-        if math.fabs(self.dis) > self.dis_to_redirect:
-            self.redirect()
-            self.dis = 0
 
     def redirect(self):
         self.frame = 0
