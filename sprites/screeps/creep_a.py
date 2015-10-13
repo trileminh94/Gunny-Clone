@@ -6,7 +6,7 @@ __author__ = 'tri'
 # Bo xuong
 class CreepA(BasicCreep):
 
-    def __init__(self, x, y, direction, left, right):
+    def __init__(self, x, y, left, right, direction, speed_x):
         """
         Constructor
         :param x: position x in world
@@ -19,8 +19,9 @@ class CreepA(BasicCreep):
 
         # Coefficients
         self.frame = 0
-        self.frame_rate = 0.3
-        self.move_speed_x = 1
+
+        self.move_speed_x = speed_x
+        self.frame_rate = self.move_speed_x*0.3
         self.move_speed_y = 1
         self.direction = direction  # TODO Define enum
         if self.direction == 1:
@@ -28,7 +29,6 @@ class CreepA(BasicCreep):
         self.x = x
         self.y = y
         self.pos_creep_screen = 0
-        self.dis_to_redirect = 300
         self.left = left
         self.right = right
 
@@ -47,4 +47,4 @@ class CreepA(BasicCreep):
         self.image = self.images_forward[0]
 
         self.rect = self.image.get_rect()   # Default position at (0,0)
-        self.rect.move_ip(self.pos_creep_screen, 0)
+        self.rect.move_ip(self.pos_creep_screen, self.y)

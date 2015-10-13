@@ -19,7 +19,7 @@ from sprites.screeps.creep_d import CreepD
 from sprites.screeps.creep_e import CreepE
 from sprites.screeps.creep_f import CreepF
 from sprites.item.coreItem import coreItem
-from common.e_bullet_type import EBulletType
+
 
 from sprites.item.money import money
 from sprites.item.magic_box import magicbox
@@ -27,11 +27,11 @@ from sprites.item.bumerange import bumerange
 from sprites.item.monster import monster
 from sprites.item.berry import berry
 
-#from sprites.creep_manager import CreepManager
+from sprites.creep_manager import CreepManager
 
 from sprites.tile import TileCache
 from sprites.tile import Tile
-
+from common.e_bullet_type import EBulletType
 # See if we can load more than standard BMP
 
 if not pygame.image.get_extended():
@@ -132,10 +132,12 @@ def main(screen):
     items = pygame.sprite.Group()
 
     # Assign default groups to each sprite class
+
     # Ground.containers = all_group
     # Player.containers = all_group
     # BasicCreep.containers = all_group, creeps
     coreItem.containers = render_group
+
     Player.containers = render_group
     Player.screen = screen
 
@@ -182,24 +184,32 @@ def main(screen):
 
 
     # CreepB(200, 100, 0).down_able = False
-    creep_a1 = CreepA(1500, 100, 1, 1300, 1700)
-    creep_a1.down_able = False
+    #creep_a1 = CreepA(1500, 100, 1, 1300, 1700)
+    #creep_a1.down_able = False
     # CreepC(300, 100, 1).down_able = False
     # CreepD(250, 100, 0).down_able = False
     # CreepE(800, 100, 1).down_able = False
     # CreepF(600, 150, 1).down_able = False
+
+    CreepManager.create_creep(creeps, 'A', 365, 332, 365, 510, 0, 1)
+    CreepManager.create_creep(creeps, 'A', 611, 384-52, 576, 989, 0, 1)
+    CreepManager.create_creep(creeps, 'A', 874, 384-52, 576, 989, 1, 1)
+
+    # for i in range(0, 100):
+    #     CreepManager.create_creep(creeps, 'A', 1000, 332, 1000, 1500, 0, 1)
+    #     CreepManager.create_creep(creeps, 'A', 1000, 384-52, 1000, 1500, 0, 1)
+    #     CreepManager.create_creep(creeps, 'A', 1000, 384-52, 1000, 1500, 1, 1)
 
     tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table()
     camera_left = 0
     camera_right = Constant.SCREENRECT.width
     hCount = 1
 
-    while player.health > -10:
 
+    while player.health > -10:
+        print
         # CREEP MANAGER
-        creep_a1.pos_creep_screen = creep_a1.x - player.pos[0] + player.rect.left
-        #if camera_left > 500:
-        #    CreepManager.create_creep_a_1()
+        CreepManager.update(creeps, player.pos[0], player.rect.left)
 
         if player.state == Constant.DIE_STATE:
             player.health -= 0.1
@@ -214,11 +224,12 @@ def main(screen):
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = True
                 elif event.key == Constant.PLAYER1CHANGEBULLET:
-
                     player.typeOfBullet += 1
                     if player.typeOfBullet >= Constant.NUM_BULLET_TYPE:
                         player.typeOfBullet = EBulletType.BASIC
-
+                elif event.key == Constant.PLAYER1JUMPKEY:
+                    if not player.downable:
+                        player.jump = 15
             elif event.type == KEYUP:
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = False
@@ -269,8 +280,10 @@ def main(screen):
         player.check(key_state)
 
         if player1_down_to_up and not player.fire_down and player.enegery >= 25:
-            Bullet(player.angle, player.power, player.rect)
+            butllet = Bullet(player.angle, player.power, player.rect)
             shoot_sound.play()
+            player.enegery -= butllet.energy_cost
+
 
         # *************************************************************
         # CHECK COLLISION HERE!
@@ -285,11 +298,10 @@ def main(screen):
                 if player.direction == 1:
                     if player.pos[0] + Constant.PLAYERWIDTH >= tile.pos[0] \
                             and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH:
-                        #print player.pos, tile.pos, tile.id
+                        print player.pos, tile.id
                         player.isBlockByWall = True
                 else:
                     if player.pos[0]  >= tile.pos[0] and player.pos[0] <= tile.pos[0] + Constant.TILE_WIDTH:
-                        print player.pos, tile.pos, tile.id
                         player.isBlockByWall = True
 
         if not player.isBlockByWall and player.state == Constant.MOVE_STATE:

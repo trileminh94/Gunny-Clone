@@ -41,7 +41,7 @@ class BasicCreep(pygame.sprite.Sprite):
 
         if self.x < self.left or self.x > self.right:
             self.redirect()
-        self.rect = pygame.Rect(self.pos_creep_screen, 200, self.rect.width, self.rect.height) # TODO Dang la tao 1 object moi, hoi lau
+        self.rect = pygame.Rect(self.pos_creep_screen, self.y, self.rect.width, self.rect.height) # TODO Dang la tao 1 object moi, hoi lau
 
         if self.down_able:
                 self.rect = self.rect.move(0, self.move_speed_y)

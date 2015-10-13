@@ -24,6 +24,7 @@ class TileCache:
         return tile_table
 
 class Tile():
+    not_downable_list = (1, 2, 3, 6, 7, 8, 9, 10, 18, 19, 20, 24, 25, 27, 28, 29, 31, 32, 33, 37, 38, 39, 41, 42, 43, 92)
     def __init__(self, tiles, id, pos):
         self.tiles = tiles
         self.id = id
@@ -31,8 +32,7 @@ class Tile():
         self.image = 0
         self.pos = pos
         self.image = self.tiles[(self.type - 1) % 10][(self.type - 1) / 10]
-        if (self.type == 1) or (self.type == 2) or (self.type == 3) or (self.type == 6) or (self.type == 7) or (self.type == 8) \
-            or (self.type == 24) or (self.type == 25) or (self.type == 26) or (self.type == 92) or (self.type == 12):
+        if self.type in self.not_downable_list:
             self.downable = False
         else:
             self.downable = True

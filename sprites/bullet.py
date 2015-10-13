@@ -20,8 +20,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.images = []
         self.images = Utils.load_frame(image_source, 0, 0, 30, 28, 0, 4)
-        #for i in range(1, 8):
-        #    self.images.append(pygame.transform.rotate(self.images[0], 180/8))
+
 
         self.frame_length = len(self.images)
         self.frame = 0
@@ -40,6 +39,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.x = self.start_x
         self.y = self.start_y
+        self.energy_cost = 10
 
     def update(self):
         self.t += 1.0/Constant.FPS
