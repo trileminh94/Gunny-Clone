@@ -27,7 +27,7 @@ from sprites.item.bumerange import bumerange
 from sprites.item.monster import monster
 from sprites.item.berry import berry
 
-#from sprites.creep_manager import CreepManager
+from sprites.creep_manager import CreepManager
 
 from sprites.tile import TileCache
 from sprites.tile import Tile
