@@ -57,7 +57,7 @@ class Player(pygame.sprite.Sprite):
 
 
         self.rect = Rect(160, 200, 110, 90)
-        self.rect = self.rect.inflate(-20, -20)
+        self.rect = self.rect.inflate(-30, -30)
         self.pos = [self.rect.left + 19 , self.rect.top + 18]
 
         self.origtop = self.rect.top
@@ -73,6 +73,7 @@ class Player(pygame.sprite.Sprite):
         Live_bar(self)
         Energy_bar(self)
         Power_bar(self)
+        self.money = 0
 
     def lost_blood(self, power):
         self.health-= power
@@ -320,7 +321,7 @@ class Player(pygame.sprite.Sprite):
 
                 self.rect.move_ip(0, Constant.DOWNPERFRAME)
                 self.pos[1] += Constant.DOWNPERFRAME
-    #    pygame.draw.rect(Player.screen, 0x000000, self.rect)
+        pygame.draw.rect(Player.screen, 0x000000, self.rect)
 
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)

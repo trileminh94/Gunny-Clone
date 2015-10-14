@@ -59,6 +59,7 @@ class coreItem(pygame.sprite.Sprite):
 		self.max_right = x + self.move_length
 		self.max_left = x - self.move_length
 		self.sound =  Utils.load_sound("yahoo.wav")
+		self.pos_creep_screen = 0
 
 	def animation(self):
 		if(self.state == Constant.ITEM_STATE_LIVE):
@@ -128,4 +129,9 @@ class coreItem(pygame.sprite.Sprite):
 		if(self.state == Constant.ITEM_STATE_LIVE):
 			if(self.fall == False):
 				self.move()
+		self.rect = pygame.Rect(self.pos_creep_screen, self.y, self.rect.width, self.rect.height) # TODO Dang la tao 1 object moi, hoi lau
+
+
+	def update_pos(self, x_pos_player_world, pos_player_screen):
+		self.pos_creep_screen = self.x - x_pos_player_world + pos_player_screen
 

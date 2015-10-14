@@ -24,10 +24,12 @@ class CreepManager(pygame.sprite.Sprite):
     def update(container, x_pos_player_world, y_pos_player_world, pos_player_screen):
         for creep in container.sprites():
             if isinstance(creep, CreepASpecial):
-                if x_pos_player_world > 4705 and x_pos_player_world < 4860:
-                    creep.y = y_pos_player_world
-                    creep.x += 20*creep.move_speed_x
+                if x_pos_player_world > 4705 and x_pos_player_world < 4860 and y_pos_player_world > 118:
+                    creep.y = y_pos_player_world - 4
+                    creep.x += creep.move_speed_x
                     print 'x=', creep.x
+                else:
+                    creep.y = creep.base_line
             creep.pos_creep_screen = creep.x - x_pos_player_world + pos_player_screen
 
 
