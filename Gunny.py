@@ -166,15 +166,15 @@ def game_over(screen,gamestate):
 
 
 def main(screen):
-
+    pygame.mouse.set_visible(0)
+    # Load image
+    background = pygame.image.load("resources\image\TileSet\\background.png").convert()
     img = Utils.load_image('explosion1.gif')
+    coins_image = pygame.image.load('resources\image\TileSet\Coins.png')
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
 
-    pygame.mouse.set_visible(0)
-
-
-    # Create the background, tile the bgd image
-    background = pygame.image.load("resources\image\TileSet\\background.png").convert()
+    # Load font
+    coin_font = pygame.font.Font("resources\Fonts\Number.ttf", 32)
 
     # Load the sound effects
     boom_sound = Utils.load_sound('boom.wav')
@@ -268,10 +268,107 @@ def main(screen):
     items.add(money_item)
     money_item = money(1720, 180, "money")
     items.add(money_item)
+    money_item = money(2592, 128, "money")
+    items.add(money_item)
+    money_item = money(2624, 128, "money")
+    items.add(money_item)
+    money_item = money(2656, 128, "money")
+    items.add(money_item)
+    money_item = money(2688, 128, "money")
+    items.add(money_item)
+    money_item = money(3744, 384, "money")
+    items.add(money_item)
+    money_item = money(3776, 384, "money")
+    items.add(money_item)
+    money_item = money(3808, 384, "money")
+    items.add(money_item)
+    money_item = money(3840, 384, "money")
+    items.add(money_item)
+    money_item = money(4736, 64, "money")
+    items.add(money_item)
+    money_item = money(4736, 32, "money")
+    items.add(money_item)
+    money_item = money(4768, 64, "money")
+    items.add(money_item)
+    money_item = money(4768, 32, "money")
+    items.add(money_item)
+    money_item = money(4800, 64, "money")
+    items.add(money_item)
+    money_item = money(4800, 32, "money")
+    items.add(money_item)
+    money_item = money(4832, 64, "money")
+    items.add(money_item)
+    money_item = money(4832, 32, "money")
+    items.add(money_item)
+    money_item = money(4864, 64, "money")
+    items.add(money_item)
+    money_item = money(4896, 32, "money")
+    items.add(money_item)
+    money_item = money(4928, 64, "money")
+    items.add(money_item)
+    money_item = money(4928, 32, "money")
+    items.add(money_item)
+    money_item = money(4960, 64, "money")
+    items.add(money_item)
+    money_item = money(4992, 32, "money")
+    items.add(money_item)
+    money_item = money(5024, 64, "money")
+    items.add(money_item)
+    money_item = money(5024, 32, "money")
+    items.add(money_item)
+    money_item = money(5056, 64, "money")
+    items.add(money_item)
+    money_item = money(5056, 32, "money")
+    items.add(money_item)
+    money_item = money(5088, 64, "money")
+    items.add(money_item)
+    money_item = money(5088, 32, "money")
+    items.add(money_item)
+    money_item = money(5120, 64, "money")
+    items.add(money_item)
+    money_item = money(5120, 32, "money")
+    items.add(money_item)
+    money_item = money(5152, 64, "money")
+    items.add(money_item)
+    money_item = money(5152, 32, "money")
+    items.add(money_item)
+    money_item = money(5184, 64, "money")
+    items.add(money_item)
+    money_item = money(5184, 32, "money")
+    items.add(money_item)
+    money_item = money(5216, 64, "money")
+    items.add(money_item)
+    money_item = money(5216, 32, "money")
+    items.add(money_item)
+    money_item = money(5248, 64, "money")
+    items.add(money_item)
+    money_item = money(5248, 32, "money")
+    items.add(money_item)
 
+    money_item = money(5440, 192, "money")
+    items.add(money_item)
+    money_item = money(5472, 192, "money")
+    items.add(money_item)
+    money_item = money(5504, 192, "money")
+    items.add(money_item)
+    money_item = money(5472, 192, "money")
+    items.add(money_item)
 
+    money_item = money(5792, 160, "money")
+    items.add(money_item)
+    money_item = money(5824, 160, "money")
+    items.add(money_item)
+    money_item = money(5856, 160, "money")
+    items.add(money_item)
+    money_item = money(5888, 160, "money")
+    items.add(money_item)
 
-
+    money_item = money(6080, 160, "money")
+    items.add(money_item)
+    money_item = money(6112, 160, "money")
+    items.add(money_item)
+    money_item = money(6144, 160, "money")
+    items.add(money_item)
     # item2 = bumerange(200,100,"bumerange_tree")
     # print "xong item2"
     # item3 = magicbox(300,100,"magic_box")
@@ -336,6 +433,7 @@ def main(screen):
 
     player.typeOfBullet = EBulletType.BASIC
 
+    # Main loop
     while player.health > -10:
 
         # CREEP MANAGER
@@ -398,8 +496,12 @@ def main(screen):
 
         # Update all the sprites
         render_group.update()
+
         for item in items.sprites():
             item.update_pos(player.pos[0], player.rect.left)
+
+        screen.blit(coins_image, (440, 0))
+        screen.blit(coin_font.render(' X  ' + str(player.money), True, (0, 0, 0)), (480, 0))
         items.update()
 
         # Handle player input
@@ -450,7 +552,7 @@ def main(screen):
         """ OUT OF MAP"""
         if (player.pos[1] + Constant.PLAYERHEIGHT >= Constant.SCREENRECT.height):
             game_state = Constant.GAMEOVER
-            break;
+            break
 
         """PLAYER GOES DOWN"""
         player.downable = True

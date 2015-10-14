@@ -70,6 +70,7 @@ class Player(pygame.sprite.Sprite):
         self.whichplayer = whichplayer
         self.enegery = 100
         self.screen = screen
+        self.coin = 0
         Live_bar(self)
         Energy_bar(self)
         Power_bar(self)
