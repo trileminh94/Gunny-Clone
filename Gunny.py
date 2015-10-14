@@ -166,15 +166,15 @@ def game_over(screen,gamestate):
 
 
 def main(screen):
-
+    pygame.mouse.set_visible(0)
+    # Load image
+    background = pygame.image.load("resources\image\TileSet\\background.png").convert()
     img = Utils.load_image('explosion1.gif')
+    coins_image = pygame.image.load('resources\image\TileSet\Coins.png')
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
 
-    pygame.mouse.set_visible(0)
-
-
-    # Create the background, tile the bgd image
-    background = pygame.image.load("resources\image\TileSet\\background.png").convert()
+    # Load font
+    coin_font = pygame.font.Font("resources\Fonts\Number.ttf", 32)
 
     # Load the sound effects
     boom_sound = Utils.load_sound('boom.wav')
@@ -293,6 +293,7 @@ def main(screen):
 
     player.typeOfBullet = EBulletType.BASIC
 
+    # Main loop
     while player.health > -10:
 
         # CREEP MANAGER
@@ -355,6 +356,8 @@ def main(screen):
 
         # Update all the sprites
         render_group.update()
+        screen.blit(coins_image, (440, 0))
+        screen.blit(coin_font.render(' X  ' + str(player.coin), True, (0, 0, 0)), (480, 0))
         items.update()
 
         # Handle player input
