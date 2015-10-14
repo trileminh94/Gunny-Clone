@@ -141,7 +141,7 @@ def main(screen):
 
 
     #ground = Ground()
-    player = Player('nhan vat 1', 'character1', 1, 1, 350)
+    player = Player('nhan vat 1', 'character1', 1, 1, 350, screen)
 
     #*************************************
     # Init creeps
@@ -177,7 +177,7 @@ def main(screen):
                         player.typeOfBullet = EBulletType.BASIC
                 elif event.key == Constant.PLAYER1JUMPKEY:
                     if not player.downable:
-                        player.jump = 15
+                        player.jump = 20
             elif event.type == KEYUP:
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = False
@@ -233,22 +233,31 @@ def main(screen):
         # *************************************************************
         # CHECK COLLISION HERE!
         # *************************************************************
-
         """ WALL BLOCK """
         player.isBlockByWall = False
         for tile in tiles:
-            if tile.isBlock == True and player.pos[1] <= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT >= tile.pos[1] \
+            if tile.isBlockByWall == True and player.pos[1] <= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT >= tile.pos[1] \
                 and player.pos[1] > tile.pos[1] - Constant.TILE_HEIGHT:
                 """ Player goes to the right """
                 if player.direction == 1:
-                    if player.pos[0] + Constant.PLAYERWIDTH >= tile.pos[0] \
-                            and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH:
-                        print player.pos, tile.id
+                    if player.pos[0] + Constant.PLAYERWIDTH + player.speed>= tile.pos[0] \
+                            and player.pos[0] + Constant.PLAYERWIDTH  + player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
                         player.isBlockByWall = True
                 else:
-                    if player.pos[0]  >= tile.pos[0] and player.pos[0] <= tile.pos[0] + Constant.TILE_WIDTH:
+                    if player.pos[0] - player.speed  >= tile.pos[0] \
+                            and player.pos[0] - player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
+                        print player.pos[0] - player.speed, tile.pos[0], tile.id
                         player.isBlockByWall = True
+        """ GROUND BLOCK """
+        player.is_block_by_ground = False
+        for tile in tiles:
+            if tile.isBlockByGround and player.jump > 0 and player.pos[1] >= tile.pos[1] and player.pos[1] <= tile.pos[1] + Constant.TILE_HEIGHT:
+                if(player.pos[0]  >= tile.pos[0] and player.pos[0]  <= tile.pos[0] + Constant.TILE_WIDTH) \
+                or ( player.pos[0] + Constant.PLAYERWIDTH  >= tile.pos [0] and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH):
+                    print tile.pos, tile.id
+                    player.jump = 0
 
+        """ Move with world """
         if not player.isBlockByWall and player.state == Constant.MOVE_STATE:
             if (((player.pos[0] + player.direction * player.speed) >= 0 ) and (player.pos[0] + player.direction * player.speed <= Constant.SCREENRECT.width * 8)):
                 player.pos[0] += player.direction * player.speed

@@ -25,6 +25,8 @@ class TileCache:
 
 class Tile():
     not_downable_list = (1, 2, 3, 6, 7, 8, 9, 10, 18, 19, 20, 24, 25, 27, 28, 29, 31, 32, 33, 37, 38, 39, 41, 42, 43, 92)
+    not_blockwall_list = (54, 55, 56, 57, 64, 65, 66, 67, 69, 70, 74, 75, 76, 77, 79, 80, 44, 45, 46, 47, 81, 82, 83, 86, 87, 89, 90)
+    not_blockground_list = (54, 55, 56, 57, 64, 65, 66, 67, 69, 70, 74, 75, 76, 77, 79, 80, 44, 45, 46, 47, 81, 82, 83, 86, 87, 89, 90)
     def __init__(self, tiles, id, pos):
         self.tiles = tiles
         self.id = id
@@ -36,16 +38,14 @@ class Tile():
             self.downable = False
         else:
             self.downable = True
-        if (self.type == 54) or (self.type == 55) or (self.type == 56)  or (self.type == 57) \
-            or (self.type == 64) or (self.type == 65) or (self.type == 66) or (self.type == 67) or (self.type == 69) or (self.type == 70) \
-            or (self.type == 74) or (self.type == 75) or (self.type == 76) or (self.type == 77)  or (self.type == 79) or (self.type == 80) \
-            or (self.type == 44) or (self.type == 45) or (self.type == 46) or (self.type == 47) \
-            or (self.type == 81) or (self.type == 82) or (self.type == 83) or (self.type == 86) or (self.type == 87) \
-            or (self.type == 89) or (self.type == 90) :
-            self.isBlock = False
+        if self.type in self.not_blockwall_list:
+            self.isBlockByWall = False
         else:
-            self.isBlock = True
-
+            self.isBlockByWall = True
+        if self.type in self.not_blockground_list:
+            self.isBlockByGround = False
+        else:
+            self.isBlockByGround = True
 
 
 
