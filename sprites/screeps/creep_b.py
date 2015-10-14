@@ -3,7 +3,9 @@ from common.utils import Utils
 import pygame
 __author__ = 'tri'
 
-
+"""
+Con sen
+"""
 class CreepB(BasicCreep):
 
     def __init__(self, x, y, left, right, direction, speed_x):
@@ -14,7 +16,7 @@ class CreepB(BasicCreep):
         :param direction: direction to move, 0 or 1
         :return:
         """
-        BasicCreep.__init__(self)
+        BasicCreep.__init__(self, x, y, left, right)
 
         # Coefficients
         self.frame = 0

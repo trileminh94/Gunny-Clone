@@ -1,12 +1,10 @@
-
+from sprites.screeps.creep_a import CreepA
 from common.utils import Utils
 import pygame
-from sprites.screeps.basic_creep import BasicCreep
 __author__ = 'tri'
 
-# Bo xuong
-class CreepA(BasicCreep):
 
+class CreepASpecial(CreepA):
     def __init__(self, x, y, left, right, direction, speed_x):
         """
         Constructor
@@ -16,8 +14,7 @@ class CreepA(BasicCreep):
         :param left, right: limit position for moving of creep
         :return: None
         """
-        BasicCreep.__init__(self, x, y, left, right)
-
+        CreepA.__init__(self, x, y, left, right, direction, speed_x)
         # Coefficients
         self.frame = 0
 
@@ -49,3 +46,9 @@ class CreepA(BasicCreep):
 
         self.rect = self.image.get_rect()   # Default position at (0,0)
         self.rect.move_ip(self.pos_creep_screen, self.y)
+
+        self.base_line = self.y
+
+    def check_die(self):
+        if self.x < self.left or self.x > self.right:
+            print 'DIE'

@@ -26,10 +26,12 @@ class Player(pygame.sprite.Sprite):
     downable = True
     isBlockByWall = False
     jump = 0
+
     is_block_by_ground = False
     screen = None
 
     def __init__(self, folder, sprite_name, direction, whichplayer, offset, screen):
+
 
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.reloading = 0
@@ -53,13 +55,16 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
+
         self.rect = Rect(160, 200, 110, 90)
+        self.rect = self.rect.inflate(-20, -20)
         self.pos = [self.rect.left + 19 , self.rect.top + 18]
+
         self.origtop = self.rect.top
         self.health = 100
         self.angle = 45
         self.power = Constant.MAXPOWER * self.fireF
-        self.typeOfBullet = EBulletType.FIREBALL
+        self.typeOfBullet = EBulletType.BASIC
         self.moveWithScreen = False
         self.mask = pygame.mask.from_surface(self.image)
         self.whichplayer = whichplayer
@@ -220,7 +225,7 @@ class Player(pygame.sprite.Sprite):
                 if(self.frame > 40):
                     self.state = Constant.LIE_STATE
                     self.isBlock = False
-            elif(self.state == Constant.HEADACHE_STATE):
+            elif(self.state == Constant.FACHE_STATE):
                 if(self.frame < 41 or self.frame > 43):
                     self.frame = 41
                 self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
@@ -315,6 +320,8 @@ class Player(pygame.sprite.Sprite):
 
                 self.rect.move_ip(0, Constant.DOWNPERFRAME)
                 self.pos[1] += Constant.DOWNPERFRAME
+    #    pygame.draw.rect(Player.screen, 0x000000, self.rect)
+
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)
         pos2 = (pos1[0] + math.cos(math.radians(self.angle))*Constant.RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*Constant.RADIUS)
@@ -349,10 +356,12 @@ class Player(pygame.sprite.Sprite):
             if direction:
                 t = self.direction
                 self.direction = direction
+
                 if self.direction == -1 and t == 1:
                     self.rect.move_ip(-18 , 0)
                 elif self.direction == 1 and t == -1:
                     self.rect.move_ip(18, 0)
+
             if(self.isBlock == False):
                 if(direction == 0 and fire == 0):
                     self.state = Constant.LIE_STATE

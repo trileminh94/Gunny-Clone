@@ -6,7 +6,7 @@ __doc__ = 'May bay'
 
 
 class CreepE(BasicCreep):
-    def __init__(self, x, y, direction):
+    def __init__(self, x, y, left, right, direction, speed_x):
         """
         Constructor
         :param x: position x in screen
@@ -14,18 +14,21 @@ class CreepE(BasicCreep):
         :param direction: direction to move, 0 or 1
         :return:
         """
-        BasicCreep.__init__(self)
+        BasicCreep.__init__(self, x, y, left, right)
 
         # Coefficients
         self.frame = 0
-        self.frame_rate = 0.8
-        self.move_speed_x = 4
+
+        self.move_speed_x = speed_x
+        self.frame_rate = 0.8 * 0.25 * speed_x
+
         self.move_speed_y = 1
         self.direction = direction  # TODO Define enum
         if self.direction == 1:
             self.move_speed_x = -self.move_speed_x
         self.dis = 0
-        self.dis_to_redirect = 500
+        self.left = left
+        self.right = self.right
 
         # Status
         self.down_able = True

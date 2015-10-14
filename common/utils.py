@@ -59,8 +59,9 @@ class Utils:
     cut_frame = staticmethod(cut_frame)
 
     def load_sound(file_name):
-        if not pygame.mixer:
-            return Dummy_sound()
+        # if not pygame.mixer:
+        #     return Dummy_sound()
+        pass
 
         file_name = os.path.join(Utils.__main_dir, 'data', file_name)
         try:
@@ -68,7 +69,7 @@ class Utils:
             return sound
         except pygame.error:
             print ('Warning, unable to load, %s' % file_name)
-        return Dummy_sound()
+        return None
     load_sound = staticmethod(load_sound)
 
     def load_frame(image, x, y, width, height, step_x, num):
