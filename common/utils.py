@@ -1,4 +1,5 @@
 import pygame
+from constant import  Constant
 import os.path
 __author__ = 'tri'
 
@@ -91,3 +92,17 @@ class Utils:
             i += 1
         return frame
     load_frame = staticmethod(load_frame)
+
+    def check_collision(player, tile):
+        if player.pos[1] <= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT >= tile.pos[1] \
+                and player.pos[1] > tile.pos[1] - Constant.TILE_HEIGHT:
+            if player.direction == 1:
+                    if player.pos[0] + Constant.PLAYERWIDTH + player.speed>= tile.pos[0] \
+                            and player.pos[0] + Constant.PLAYERWIDTH  + player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
+                        return True
+            else:
+                if player.pos[0] - player.speed  >= tile.pos[0] \
+                        and player.pos[0] - player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
+                        return True
+        return False
+    check_collision = staticmethod(check_collision)

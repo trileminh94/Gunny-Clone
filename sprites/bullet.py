@@ -29,8 +29,8 @@ class Bullet(pygame.sprite.Sprite):
         self.image = self.images[int(round(self.frame))]
         self.rect = self.image.get_rect()
 
-        self.speed_x = math.cos(math.radians(angle)) * power * 0.6 + 20
-        self.speed_y = -math.sin(math.radians(angle)) * power * 0.6 + 50
+        self.speed_x = math.cos(math.radians(angle)) * power * 1 + 20
+        self.speed_y = -math.sin(math.radians(angle)) * power * 1 + 50
 
         self.acceleration = Constant.GRAVITY
         self.t = 0
