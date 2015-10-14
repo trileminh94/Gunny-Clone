@@ -227,7 +227,7 @@ class Player(pygame.sprite.Sprite):
                 if(self.frame > 40):
                     self.state = Constant.LIE_STATE
                     self.isBlock = False
-            elif(self.state == Constant.FACHE_STATE):
+            elif(self.state == Constant.HEADACHE_STATE):
                 if(self.frame < 41 or self.frame > 43):
                     self.frame = 41
                 self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)

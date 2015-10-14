@@ -499,11 +499,8 @@ def main(screen):
 
         # Update all the sprites
         render_group.update()
-<<<<<<< HEAD
         monsterbombs.update()
-=======
-
->>>>>>> 26b63f673382c49ce93d0f8b377ec97b9be3ccc9
+        
         for item in items.sprites():
             item.update_pos(player.pos[0], player.rect.left)
 
