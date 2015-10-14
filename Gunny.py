@@ -6,6 +6,7 @@ from common.utils import Utils
 from sprites.ground import Ground
 from sprites.explosion import Explosion
 from sprites.bullet import Bullet
+from sprites.MonsterBullet import MonsterBullet
 from sprites.energy_bar import Energy_bar
 from sprites.power_bar import Power_bar
 from sprites.live_bar import Live_bar
@@ -187,6 +188,7 @@ def main(screen):
     # Initialize Game Groups
     aliens = pygame.sprite.Group()
     bombs = pygame.sprite.Group()
+    monsterbombs = pygame.sprite.Group()
     render_group = pygame.sprite.OrderedUpdates()
     creeps = pygame.sprite.Group()
     items = pygame.sprite.Group()
@@ -203,6 +205,7 @@ def main(screen):
 
     BasicCreep.containers = creeps, render_group
     Bullet.containers = bombs, render_group
+    MonsterBullet.containers = monsterbombs,render_group
     Explosion.containers = render_group
 
     Live_bar.containers = render_group
@@ -276,13 +279,13 @@ def main(screen):
     # print "xong item2"
     # item3 = magicbox(300,100,"magic_box")
     # print "xong item3"
-    item4 = monster(400,100,"monster")
+    mymonster = monster(400,100,"monster")
     # item5 = berry(500,100,"berry")
     #
 
     # items.add(item2)
     # items.add(item3)
-    items.add(item4)
+    items.add(mymonster)
     # items.add(item5)
 
 
@@ -398,6 +401,7 @@ def main(screen):
 
         # Update all the sprites
         render_group.update()
+        monsterbombs.update()
         for item in items.sprites():
             item.update_pos(player.pos[0], player.rect.left)
         items.update()
@@ -523,6 +527,18 @@ def main(screen):
                     creep.kill()
                 else:
                     creep.check_die()
+        #check va cham cua player voi dan cua monster
+        dict_collide1 = pygame.sprite.spritecollide(player,monsterbombs, True)
+        for key in dict_collide1:
+            boom_sound.play()
+            Explosion(key)
+            player.lost_blood(10)
+        #check va cham cua monster voi dan cua player
+        dict_collide2 = pygame.sprite.spritecollide(mymonster,bombs, True)
+        for key in dict_collide2:
+            boom_sound.play()
+            Explosion(key)
+            mymonster.lost_blood(5)
 
         if pygame.sprite.spritecollide(player, creeps, False):
             player.lost_blood(1000)
