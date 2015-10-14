@@ -10,7 +10,7 @@ from sprites.energy_bar import Energy_bar
 from sprites.power_bar import Power_bar
 from sprites.live_bar import Live_bar
 from sprites.player import Player
-
+from common.e_bullet_type import EBulletType
 from sprites.screeps.basic_creep import BasicCreep
 from sprites.screeps.creep_a import CreepA
 from sprites.screeps.creep_b import CreepB
@@ -28,13 +28,13 @@ from sprites.item.bumerange import bumerange
 from sprites.item.monster import monster
 from sprites.item.berry import berry
 
-from sprites.creep_manager import CreepManager
+#from sprites.creep_manager import CreepManager
 
 from sprites.tile import TileCache
 from sprites.tile import Tile
 
-from common.e_bullet_type import EBulletType
-
+from sprites.creep_manager import CreepManager
+from sprites.tile import SpecialObject
 from sprites.tile import SpecialObject
 
 
@@ -172,6 +172,7 @@ def main(screen):
     #*************************************
     # Init item
     #*************************************
+
     # item1 = money(100,100,"money")
     # print "xong item1"
     # item2 = bumerange(200,100,"bumerange_tree")
@@ -186,6 +187,22 @@ def main(screen):
     # items.add(item3)
     # items.add(item4)
     #items.add(item5)
+
+    item1 = money(100,100,"money")
+    print "xong item1"
+    item2 = bumerange(200,100,"bumerange_tree")
+    print "xong item2"
+    item3 = magicbox(300,100,"magic_box")
+    print "xong item3"
+    item4 = monster(400,100,"monster")
+    item5 = berry(500,100,"berry")
+
+    items.add(item1)
+    items.add(item2)
+    items.add(item3)
+    items.add(item4)
+    items.add(item5)
+
 
 
     CreepManager.create_creep(creeps, 'A', 365, 332, 365, 510, 0, 1)
@@ -379,26 +396,16 @@ def main(screen):
             if is_Visible and tile.isBlockByWall == True and player.pos[1] <= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT >= tile.pos[1] \
                 and player.pos[1] > tile.pos[1] - Constant.TILE_HEIGHT:
                 """ Player goes to the right """
-# <<<<<<< HEAD
-#                 if player.direction == 1 and not player.isBlockByWall:
-#                     if player.pos[0] + Constant.PLAYERWIDTH >= tile.pos[0] \
-#                             and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH:
-#
-# =======
+
                 if player.direction == 1:
                     if player.pos[0] + Constant.PLAYERWIDTH + player.speed>= tile.pos[0] \
                             and player.pos[0] + Constant.PLAYERWIDTH  + player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
-# >>>>>>> 17d2c909f3ded85bd0e6ccf4750249d6d0940827
+
                         player.isBlockByWall = True
 
 
                 else:
-# <<<<<<< HEAD
-#                     if player.pos[0]  >= tile.pos[0] and player.pos[0] <= tile.pos[0] + Constant.TILE_WIDTH and not player.isBlockByWall:
-#                         player.isBlockByWall = True
-#
-#
-# =======
+
                     if player.pos[0] - player.speed  >= tile.pos[0] \
                             and player.pos[0] - player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
                         print player.pos[0] - player.speed, tile.pos[0], tile.id
