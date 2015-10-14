@@ -6,6 +6,7 @@ from common.utils import Utils
 from sprites.ground import Ground
 from sprites.explosion import Explosion
 from sprites.bullet import Bullet
+from sprites.MonsterBullet import MonsterBullet
 from sprites.energy_bar import Energy_bar
 from sprites.power_bar import Power_bar
 from sprites.live_bar import Live_bar
@@ -153,6 +154,7 @@ def game_over(screen,gamestate):
             if 'click' in playagain.handleEvent(event):
                 gamestate = Constant.GAME
                 if(gamestate == Constant.GAME):
+                    CreepManager.init()
                     main(screen)
             if 'click' in quit.handleEvent(event):
                 if pygame.mixer:
@@ -166,15 +168,15 @@ def game_over(screen,gamestate):
 
 
 def main(screen):
-
+    pygame.mouse.set_visible(0)
+    # Load image
+    background = pygame.image.load("resources\image\TileSet\\background.png").convert()
     img = Utils.load_image('explosion1.gif')
+    coins_image = pygame.image.load('resources\image\TileSet\Coins.png')
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
 
-    pygame.mouse.set_visible(0)
-
-
-    # Create the background, tile the bgd image
-    background = pygame.image.load("resources\image\TileSet\\background.png").convert()
+    # Load font
+    coin_font = pygame.font.Font("resources\Fonts\Number.ttf", 32)
 
     # Load the sound effects
     boom_sound = Utils.load_sound('boom.wav')
@@ -187,6 +189,7 @@ def main(screen):
     # Initialize Game Groups
     aliens = pygame.sprite.Group()
     bombs = pygame.sprite.Group()
+    monsterbombs = pygame.sprite.Group()
     render_group = pygame.sprite.OrderedUpdates()
     creeps = pygame.sprite.Group()
     items = pygame.sprite.Group()
@@ -203,6 +206,7 @@ def main(screen):
 
     BasicCreep.containers = creeps, render_group
     Bullet.containers = bombs, render_group
+    MonsterBullet.containers = monsterbombs,render_group
     Explosion.containers = render_group
 
     Live_bar.containers = render_group
@@ -268,54 +272,144 @@ def main(screen):
     items.add(money_item)
     money_item = money(1720, 180, "money")
     items.add(money_item)
-
-    money_item = berry(2890, 100, "berry")
-
+    money_item = money(2592, 128, "money")
+    items.add(money_item)
+    money_item = money(2624, 128, "money")
+    items.add(money_item)
+    money_item = money(2656, 128, "money")
+    items.add(money_item)
+    money_item = money(2688, 128, "money")
+    items.add(money_item)
+    money_item = money(3744, 384, "money")
+    items.add(money_item)
+    money_item = money(3776, 384, "money")
+    items.add(money_item)
+    money_item = money(3808, 384, "money")
+    items.add(money_item)
+    money_item = money(3840, 384, "money")
+    items.add(money_item)
+    money_item = money(4736, 64, "money")
+    items.add(money_item)
+    money_item = money(4736, 32, "money")
+    items.add(money_item)
+    money_item = money(4768, 64, "money")
+    items.add(money_item)
+    money_item = money(4768, 32, "money")
+    items.add(money_item)
+    money_item = money(4800, 64, "money")
+    items.add(money_item)
+    money_item = money(4800, 32, "money")
+    items.add(money_item)
+    money_item = money(4832, 64, "money")
+    items.add(money_item)
+    money_item = money(4832, 32, "money")
+    items.add(money_item)
+    money_item = money(4864, 64, "money")
+    items.add(money_item)
+    money_item = money(4896, 32, "money")
+    items.add(money_item)
+    money_item = money(4928, 64, "money")
+    items.add(money_item)
+    money_item = money(4928, 32, "money")
+    items.add(money_item)
+    money_item = money(4960, 64, "money")
+    items.add(money_item)
+    money_item = money(4992, 32, "money")
+    items.add(money_item)
+    money_item = money(5024, 64, "money")
+    items.add(money_item)
+    money_item = money(5024, 32, "money")
+    items.add(money_item)
+    money_item = money(5056, 64, "money")
+    items.add(money_item)
+    money_item = money(5056, 32, "money")
+    items.add(money_item)
+    money_item = money(5088, 64, "money")
+    items.add(money_item)
+    money_item = money(5088, 32, "money")
+    items.add(money_item)
+    money_item = money(5120, 64, "money")
+    items.add(money_item)
+    money_item = money(5120, 32, "money")
+    items.add(money_item)
+    money_item = money(5152, 64, "money")
+    items.add(money_item)
+    money_item = money(5152, 32, "money")
+    items.add(money_item)
+    money_item = money(5184, 64, "money")
+    items.add(money_item)
+    money_item = money(5184, 32, "money")
+    items.add(money_item)
+    money_item = money(5216, 64, "money")
+    items.add(money_item)
+    money_item = money(5216, 32, "money")
+    items.add(money_item)
+    money_item = money(5248, 64, "money")
+    items.add(money_item)
+    money_item = money(5248, 32, "money")
     items.add(money_item)
 
-    # item2 = bumerange(200,100,"bumerange_tree")
-    # print "xong item2"
-
-    # print "xong item3"
-    # item4 = monster(400,100,"monster")
-    # item5 = berry(500,100,"berry")
-    #
-
-    # items.add(item2)
-    # items.add(item3)
-    # items.add(item4)
-    # items.add(item5)
+    money_item = berry(2890, 100, "berry")
+    items.add(money_item)
 
 
+    money_item = money(5440, 192, "money")
+    items.add(money_item)
+    money_item = money(5472, 192, "money")
+    items.add(money_item)
+    money_item = money(5504, 192, "money")
+    items.add(money_item)
+    money_item = money(5472, 192, "money")
+    items.add(money_item)
 
-    # CreepManager.create_creep(creeps, 'A', 365, 332, 365, 510, 0, 1)
-    # CreepManager.create_creep(creeps, 'A', 611, 332, 576, 989, 0, 1)
-    # CreepManager.create_creep(creeps, 'A', 874, 332, 576, 989, 1, 1)
-    # CreepManager.create_creep(creeps, 'D', 1472+10, 316-50, 1472+10, 1588, 1, 1)
-    # CreepManager.create_creep(creeps, 'D', 1218+10, 380-50, 1218+10, 1374, 1, 1)
-    #
-    # CreepManager.create_creep(creeps, 'B', 1280+20, 508-30, 1280+20, 1374-20, 1, 1)
-    # CreepManager.create_creep(creeps, 'B', 1474+20, 508-30, 1474+20, 1628-50, 1, 1)
-    # CreepManager.create_creep(creeps, 'B', 1664+45, 508-30, 1664+45, 1782-20, 1, 1)
-    #
-    # CreepManager.create_creep(creeps, 'A', 2592+45, 442-48, 2592+45, 2876-20, 1, 1)
-    # CreepManager.create_creep(creeps, 'F', 2592+45, 100, 2592+45, 2876-20, 1, 4)
-    #
-    # CreepManager.create_creep(creeps, 'B', 3302+45, 442 - 30, 3302+45-20, 3548-20, 1, 2)
-    # CreepManager.create_creep(creeps, 'F', 3312+45, 300, 3302+45-20, 3548-20, 1, 4)
-    # CreepManager.create_creep(creeps, 'F', 3400, 200, 3302+45-20, 3548-20, 0, 3)
-    # CreepManager.create_creep(creeps, 'F', 3390, 70, 3302+45-20, 3548-20, 0, 3)
-    #
-    # CreepManager.create_creep(creeps, 'A', 3840+55, 442 - 15, 3840+50, 4000-20-20, 0, 1)
-    #
-    # CreepManager.create_creep(creeps, 'A', 4706+55, 362, 4706, 4862-20, 0, 1)
-    #
-    # CreepManager.create_creep(creeps, 'C', 5365, 162, 5365, 6000, 0, 4)
-    # CreepManager.create_creep(creeps, 'C', 5365, 62, 5365, 6000, 0, 4)
-    #
-    # CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
-    #
-    # CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 378, 4907, 5033, 0, 1)
+    money_item = money(5792, 160, "money")
+    items.add(money_item)
+    money_item = money(5824, 160, "money")
+    items.add(money_item)
+    money_item = money(5856, 160, "money")
+    items.add(money_item)
+    money_item = money(5888, 160, "money")
+    items.add(money_item)
+
+    money_item = money(6080, 160, "money")
+    items.add(money_item)
+    money_item = money(6112, 160, "money")
+    items.add(money_item)
+    money_item = money(6144, 160, "money")
+    items.add(money_item)
+
+
+
+
+
+    CreepManager.create_creep(creeps, 'A', 365, 332, 365, 480, 0, 1)
+    CreepManager.create_creep(creeps, 'A', 611, 332, 576, 989, 0, 1)
+    CreepManager.create_creep(creeps, 'A', 874, 332, 576, 989, 1, 1)
+    CreepManager.create_creep(creeps, 'D', 1472+10, 316-50, 1472+10, 1588, 1, 1)
+    CreepManager.create_creep(creeps, 'D', 1218+10, 380-50, 1218+10, 1374, 1, 1)
+
+    CreepManager.create_creep(creeps, 'B', 1280+20, 508-30, 1280+20, 1374-20, 1, 1)
+    CreepManager.create_creep(creeps, 'B', 1474+20, 508-30, 1474+20, 1628-50, 1, 1)
+    CreepManager.create_creep(creeps, 'B', 1664+45, 508-30, 1664+45, 1782-20, 1, 1)
+
+    CreepManager.create_creep(creeps, 'A', 2592+45, 442-48, 2592+45, 2876-20, 1, 1)
+    CreepManager.create_creep(creeps, 'F', 2592+45, 100, 2592+45, 2876-20, 1, 4)
+
+    CreepManager.create_creep(creeps, 'B', 3302+45, 442 - 30, 3302+45-20, 3548-20, 1, 2)
+    CreepManager.create_creep(creeps, 'F', 3312+45, 300, 3302+45-20, 3548-20, 1, 4)
+    CreepManager.create_creep(creeps, 'F', 3400, 200, 3302+45-20, 3548-20, 0, 3)
+    CreepManager.create_creep(creeps, 'F', 3390, 70, 3302+45-20, 3548-20, 0, 3)
+
+    CreepManager.create_creep(creeps, 'A', 3840+55, 442 - 15, 3840+50, 4000-20-20, 0, 1)
+
+    CreepManager.create_creep(creeps, 'A', 4706+55, 362, 4706, 4862-20, 0, 1)
+
+    CreepManager.create_creep(creeps, 'C', 5365, 162, 5365, 6000, 0, 4)
+    CreepManager.create_creep(creeps, 'C', 5365, 62, 5365, 6000, 0, 4)
+
+    CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
+
+    CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 381, 4907, 5033, 0, 1)
 
     tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table()
     invisible_tiles = (((9,14), (9,15), (9, 16),(9, 17)),
@@ -336,8 +430,13 @@ def main(screen):
     hCount = 1
 
     player.typeOfBullet = EBulletType.BASIC
-
+    mymonster = monster(7400, 270, "monster")
+    items.add(mymonster)
+    # Main loop
     while player.health > -10:
+        print 'player.x = ', player.pos[0]
+        #mymonster.update_pos(player.pos[0], player.rect.left)
+        print 'monster rect= ', mymonster.rect
 
         # CREEP MANAGER
         CreepManager.update(creeps, player.pos[0], player.pos[1], player.rect.left)
@@ -399,8 +498,13 @@ def main(screen):
 
         # Update all the sprites
         render_group.update()
+        monsterbombs.update()
+        
         for item in items.sprites():
             item.update_pos(player.pos[0], player.rect.left)
+
+        screen.blit(coins_image, (440, 0))
+        screen.blit(coin_font.render(' X  ' + str(player.money), True, (0, 0, 0)), (480, 0))
         items.update()
 
         # Handle player input
@@ -451,7 +555,7 @@ def main(screen):
         """ OUT OF MAP"""
         if (player.pos[1] + Constant.PLAYERHEIGHT >= Constant.SCREENRECT.height):
             game_state = Constant.GAMEOVER
-            break;
+            break
 
         """PLAYER GOES DOWN"""
         player.downable = True
@@ -524,6 +628,19 @@ def main(screen):
                     creep.kill()
                 else:
                     creep.check_die()
+        #check va cham cua player voi dan cua monster
+        dict_collide1 = pygame.sprite.spritecollide(player,monsterbombs, True)
+        for key in dict_collide1:
+            boom_sound.play()
+            Explosion(key)
+            player.lost_blood(50)
+        #check va cham cua monster voi dan cua player
+        if mymonster:
+            dict_collide2 = pygame.sprite.spritecollide(mymonster,bombs, True)
+            for key in dict_collide2:
+                boom_sound.play()
+                Explosion(key)
+                mymonster.lost_blood(5)
 
         if pygame.sprite.spritecollide(player, creeps, True):
             player.lost_blood(40)
@@ -535,6 +652,7 @@ def main(screen):
                 continue
             item.playEffect()
             player.money += 1
+            player.enegery += 5
 
         dirty = render_group.draw(screen)  # Draw all sprite, return list of rect
         pygame.display.update(dirty)    # Draw only changed rect

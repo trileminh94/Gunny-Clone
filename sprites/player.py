@@ -70,6 +70,7 @@ class Player(pygame.sprite.Sprite):
         self.whichplayer = whichplayer
         self.enegery = 100
         self.screen = screen
+        self.coin = 0
         Live_bar(self)
         Energy_bar(self)
         Power_bar(self)
@@ -226,7 +227,7 @@ class Player(pygame.sprite.Sprite):
                 if(self.frame > 40):
                     self.state = Constant.LIE_STATE
                     self.isBlock = False
-            elif(self.state == Constant.FACHE_STATE):
+            elif(self.state == Constant.HEADACHE_STATE):
                 if(self.frame < 41 or self.frame > 43):
                     self.frame = 41
                 self.image = pygame.transform.flip(self.image_frame[int(round(self.frame))],1,0)
@@ -321,7 +322,7 @@ class Player(pygame.sprite.Sprite):
 
                 self.rect.move_ip(0, Constant.DOWNPERFRAME)
                 self.pos[1] += Constant.DOWNPERFRAME
-        pygame.draw.rect(Player.screen, 0x000000, self.rect)
+        #pygame.draw.rect(Player.screen, 0x000000, self.rect)
 
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)

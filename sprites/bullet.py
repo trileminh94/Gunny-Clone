@@ -41,7 +41,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.x = self.start_x
         self.y = self.start_y
-        self.energy_cost = 0
+        self.energy_cost = 10
 
     def update(self):
         self.t += 1.0/Constant.FPS

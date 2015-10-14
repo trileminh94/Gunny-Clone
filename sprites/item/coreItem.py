@@ -106,6 +106,7 @@ class coreItem(pygame.sprite.Sprite):
 		self.sound.play()
 
 	def move(self):
+
 		self.rect.x += self.velocity*self.direction
 		if(self.rect.x > self.max_right):
 			self.direction *= -1

@@ -20,6 +20,12 @@ class CreepManager(pygame.sprite.Sprite):
     creep_special1 = None
     def __init__(self):
         pass
+    def init():
+        CreepManager.pos1 = False
+        CreepManager.pos2 = False
+        CreepManager.pos3 = False
+        CreepManager.creep_special1 = None
+    init = staticmethod(init)
 
     def update(container, x_pos_player_world, y_pos_player_world, pos_player_screen):
         for creep in container.sprites():
