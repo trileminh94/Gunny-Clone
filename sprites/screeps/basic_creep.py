@@ -37,7 +37,7 @@ class BasicCreep(pygame.sprite.Sprite):
 
         if self.down_able:
                 self.rect = self.rect.move(0, self.move_speed_y)
-        pygame.draw.rect(BasicCreep.screen, 0x000000, self.rect)
+
 
     def redirect(self):
         # if isinstance(self, CreepASpecial):
