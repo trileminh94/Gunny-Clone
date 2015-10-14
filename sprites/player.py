@@ -349,14 +349,10 @@ class Player(pygame.sprite.Sprite):
             if direction:
                 t = self.direction
                 self.direction = direction
-<<<<<<< HEAD
-
-=======
                 if self.direction == -1 and t == 1:
                     self.rect.move_ip(-18 , 0)
                 elif self.direction == 1 and t == -1:
                     self.rect.move_ip(18, 0)
->>>>>>> 17d2c909f3ded85bd0e6ccf4750249d6d0940827
             if(self.isBlock == False):
                 if(direction == 0 and fire == 0):
                     self.state = Constant.LIE_STATE

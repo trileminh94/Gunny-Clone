@@ -27,16 +27,13 @@ from sprites.item.bumerange import bumerange
 from sprites.item.monster import monster
 from sprites.item.berry import berry
 
-from sprites.creep_manager import CreepManager
+#from sprites.creep_manager import CreepManager
 
 from sprites.tile import TileCache
 from sprites.tile import Tile
-<<<<<<< HEAD
 from common.e_bullet_type import EBulletType
-=======
 from sprites.tile import SpecialObject
 
->>>>>>> 17d2c909f3ded85bd0e6ccf4750249d6d0940827
 # See if we can load more than standard BMP
 
 if not pygame.image.get_extended():
