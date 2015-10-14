@@ -30,7 +30,7 @@ from sprites.tile import SpecialObject
 if not pygame.image.get_extended():
     raise SystemExit("Sorry, extended image module required")
 
-def home(game_state):
+def start(game_state):
     # Initialize pygame
     pygame.init()
     if pygame.mixer and not pygame.mixer.get_init():
@@ -44,26 +44,80 @@ def home(game_state):
 
     pygame.display.set_caption('Gunny')
     pygame.mouse.set_visible(1)
+    home(screen, game_state)
 
-    # Create the background, tile the bgd image
-    bg_title = Utils.load_image('home_back.jpg')
-    background = pygame.Surface(Constant.SCREENRECT.size)
-    for x in range(0, Constant.SCREENRECT.width, bg_title.get_width()):
-        background.blit(bg_title, (x, 0))
 
-    button_obj = pygbutton.PygButton((300, 400, 100, 40), 'Play')
+def home(screen, game_state):
+    background = pygame.image.load("resources\data\home_back.png")
 
+    play_button_obj = pygbutton.PygButton((430, 200, 100, 40), 'Play')
+    how_to_play_button_obj = pygbutton.PygButton((430, 300, 100, 40), 'How to play')
+    about_us_button_obj = pygbutton.PygButton((430, 400, 100, 40), 'About us')
+    exit_button_obj = pygbutton.PygButton((430, 500, 100, 40),'Exit')
     while game_state == Constant.HOME:
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 return
-            if 'click' in button_obj.handleEvent(event):
+            if 'click' in play_button_obj.handleEvent(event):
                 game_state = Constant.GAME
                 if game_state == Constant.GAME:
                     main(screen)
+            elif 'click' in how_to_play_button_obj.handleEvent(event):
+                game_state = Constant.HOWTOPLAY
+                how_to_play(screen,game_state)
+            elif 'click' in about_us_button_obj.handleEvent(event):
+                game_state = Constant.ABOUTUS
+                about_us(screen,game_state)
+            elif 'click' in exit_button_obj.handleEvent(event):
+                if pygame.mixer:
+                    pygame.mixer.music.fadeout(1000)
+                pygame.time.wait(1000)
+                pygame.quit()
         if game_state == Constant.HOME:
             screen.blit(background, (0, 0))
-            button_obj.draw(background)
+            play_button_obj.draw(background)
+            how_to_play_button_obj.draw(background)
+            about_us_button_obj.draw(background)
+            exit_button_obj.draw(background)
+            pygame.display.flip()
+
+def how_to_play(screen, game_state):
+    background = pygame.image.load("resources\data\HowToPlay.png")
+
+    back_button_obj = pygbutton.PygButton((0, 600, 100, 40),'Back')
+    while game_state == Constant.HOWTOPLAY:
+        for event in pygame.event.get():
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                return
+            if 'click' in back_button_obj.handleEvent(event):
+                game_state = Constant.HOME
+                home(screen, game_state)
+        if game_state == Constant.HOWTOPLAY:
+            screen.blit(background, (0, 0))
+            Font = pygame.font.Font("resources\Fonts\GoodDog.otf", 40)
+            screen.blit(Font.render('Press "A, D" to ', True, (255, 0, 0)), (30, 100))
+            screen.blit(Font.render('move left or right.  ', True, (255, 0, 0)), (30, 150))
+            screen.blit(Font.render('Press "W, S" to ', True, (255, 0, 0)), (30, 250))
+            screen.blit(Font.render('choose angle.  ', True, (255, 0, 0)), (30, 300))
+            screen.blit(Font.render('Press "J" to jump . Press "Space" to choose power.', True, (255, 0, 0)), (30, 400))
+            screen.blit(Font.render('Press "TAB" to change bullet.', True, (255, 0, 0)), (30, 500))
+            back_button_obj.draw(background)
+            pygame.display.flip()
+
+def about_us(screen, game_state):
+    background = pygame.image.load("resources\data\AboutUs.png")
+
+    back_button_obj = pygbutton.PygButton((0, 600, 100, 40),'Back')
+    while game_state == Constant.ABOUTUS:
+        for event in pygame.event.get():
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                return
+            if 'click' in back_button_obj.handleEvent(event):
+                game_state = Constant.HOME
+                home(screen, game_state)
+        if game_state == Constant.ABOUTUS:
+            screen.blit(background, (0, 0))
+            back_button_obj.draw(background)
             pygame.display.flip()
 
 def game_over(screen,gamestate):
@@ -86,7 +140,7 @@ def game_over(screen,gamestate):
             if 'click' in playagain.handleEvent(event):
                 gamestate = Constant.GAME
                 if(gamestate == Constant.GAME):
-                    main(screen,gamestate)
+                    main(screen)
             if 'click' in quit.handleEvent(event):
                 if pygame.mixer:
                     pygame.mixer.music.fadeout(1000)
@@ -367,4 +421,4 @@ def main(screen):
 
 # Call the "main" function if running this script
 if __name__ == '__main__':
-    home(Constant.HOME)
+    start(Constant.HOME)
