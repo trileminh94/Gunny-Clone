@@ -57,6 +57,7 @@ class Player(pygame.sprite.Sprite):
 
 
         self.rect = Rect(160, 200, 110, 90)
+        self.rect = self.rect.inflate(-20, -20)
         self.pos = [self.rect.left + 19 , self.rect.top + 18]
 
         self.origtop = self.rect.top
@@ -319,6 +320,7 @@ class Player(pygame.sprite.Sprite):
 
                 self.rect.move_ip(0, Constant.DOWNPERFRAME)
                 self.pos[1] += Constant.DOWNPERFRAME
+    #    pygame.draw.rect(Player.screen, 0x000000, self.rect)
 
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)
