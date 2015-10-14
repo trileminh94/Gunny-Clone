@@ -227,8 +227,51 @@ def main(screen):
     # Init item
     #*************************************
 
-    # item1 = money(100,100,"money")
-    # print "xong item1"
+    money_item = money(360, 200, "money")
+    items.add(money_item)
+    money_item = money(400, 200, "money")
+    items.add(money_item)
+    money_item = money(440, 200, "money")
+    items.add(money_item)
+    money_item = money(480, 200, "money")
+    items.add(money_item)
+    money_item = money(520, 200, "money")
+    items.add(money_item)
+
+    money_item = money(360, 80, "money")
+    items.add(money_item)
+    money_item = money(400, 80, "money")
+    items.add(money_item)
+    money_item = money(440, 80, "money")
+    items.add(money_item)
+    money_item = money(480, 80, "money")
+    items.add(money_item)
+    money_item = money(520, 80, "money")
+    items.add(money_item)
+
+    money_item = money(680, 40, "money")
+    items.add(money_item)
+    money_item = money(720, 40, "money")
+    items.add(money_item)
+    money_item = money(760, 40, "money")
+    items.add(money_item)
+    money_item = money(800, 40, "money")
+    items.add(money_item)
+    money_item = money(840, 40, "money")
+    items.add(money_item)
+
+    money_item = money(1600, 180, "money")
+    items.add(money_item)
+    money_item = money(1640, 180, "money")
+    items.add(money_item)
+    money_item = money(1680, 180, "money")
+    items.add(money_item)
+    money_item = money(1720, 180, "money")
+    items.add(money_item)
+
+
+
+
     # item2 = bumerange(200,100,"bumerange_tree")
     # print "xong item2"
     # item3 = magicbox(300,100,"magic_box")
@@ -236,7 +279,7 @@ def main(screen):
     item4 = monster(400,100,"monster")
     # item5 = berry(500,100,"berry")
     #
-    # items.add(item1)
+
     # items.add(item2)
     # items.add(item3)
     items.add(item4)
@@ -271,7 +314,7 @@ def main(screen):
 
     CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
 
-    CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 382, 4907, 5033, 0, 1)
+    CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 378, 4907, 5033, 0, 1)
 
     tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table()
     invisible_tiles = (((9,14), (9,15), (9, 16),(9, 17)),
@@ -355,6 +398,8 @@ def main(screen):
 
         # Update all the sprites
         render_group.update()
+        for item in items.sprites():
+            item.update_pos(player.pos[0], player.rect.left)
         items.update()
 
         # Handle player input
@@ -441,13 +486,9 @@ def main(screen):
                             and player.pos[0] + Constant.PLAYERWIDTH  + player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
 
                         player.isBlockByWall = True
-
-
                 else:
-
                     if player.pos[0] - player.speed  >= tile.pos[0] \
                             and player.pos[0] - player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
-                        print player.pos[0] - player.speed, tile.pos[0], tile.id
                         player.isBlockByWall = True
         """ GROUND BLOCK """
         player.is_block_by_ground = False
@@ -460,11 +501,9 @@ def main(screen):
             if is_Visible and tile.isBlockByGround and player.jump > 0 and player.pos[1] >= tile.pos[1] and player.pos[1] <= tile.pos[1] + Constant.TILE_HEIGHT:
                 if(player.pos[0]  >= tile.pos[0] and player.pos[0]  <= tile.pos[0] + Constant.TILE_WIDTH) \
                 or ( player.pos[0] + Constant.PLAYERWIDTH  >= tile.pos [0] and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH):
-                    print tile.pos, tile.id
                     player.jump = 0
 
         """ Move with world """
-# >>>>>>> 17d2c909f3ded85bd0e6ccf4750249d6d0940827
         if not player.isBlockByWall and player.state == Constant.MOVE_STATE:
             if (((player.pos[0] + player.direction * player.speed) >= 0 ) and (player.pos[0] + player.direction * player.speed <= Constant.SCREENRECT.width * 8)):
                 player.pos[0] += player.direction * player.speed
@@ -485,19 +524,15 @@ def main(screen):
                 else:
                     creep.check_die()
 
-            #dict_collide[key].kill()
-
-        # # Detect collision with ground
-        # for bomb in pygame.sprite.spritecollide(ground, bombs, False):
-        #     boom_sound.play()
-        #     Explosion(bomb)
-        #     bomb.kill()
-
         if pygame.sprite.spritecollide(player, creeps, False):
             player.lost_blood(1000)
-        # *****************************
-        # CHECK OBJECTS CAN MOVE DOWN
-        # *****************************
+
+        item_collides = pygame.sprite.spritecollide(player, items, True)
+        for item in item_collides:
+            item.playEffect()
+            player.money += 1
+
+            print 'money=', player.money
 
         dirty = render_group.draw(screen)  # Draw all sprite, return list of rect
         pygame.display.update(dirty)    # Draw only changed rect
