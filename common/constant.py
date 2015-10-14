@@ -35,6 +35,9 @@ class Constant:
     HOME = 1
     GAME = 2
     GAMEOVER = 3
+    HOWTOPLAY = 4
+    ABOUTUS = 5
+
 
     RADIUS = 35
     PLAYER1FIREKEY = K_SPACE
