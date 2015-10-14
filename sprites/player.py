@@ -53,7 +53,7 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-30, -25)
-        self.rect.move_ip(250, 0)
+        self.rect.move_ip(150, 0)
         self.pos = [self.rect.left + 25 , self.rect.top + 20]
         self.origtop = self.rect.top
         self.health = 100

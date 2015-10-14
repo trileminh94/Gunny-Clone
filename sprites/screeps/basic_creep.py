@@ -19,6 +19,7 @@ class BasicCreep(pygame.sprite.Sprite):
         self.pos_creep_screen = 0   # position x of creep in screen, = creep-player + player-screen
         self.left = left
         self.right = right
+        self.base_line = y
 
     def update(self):
 
@@ -30,7 +31,7 @@ class BasicCreep(pygame.sprite.Sprite):
 
         self.x += self.move_speed_x
 
-        if self.x < self.left or self.x > self.right:
+        if self.y <= self.base_line and (self.x < self.left or self.x > self.right):
             self.redirect()
         self.rect = pygame.Rect(self.pos_creep_screen, self.y, self.rect.width, self.rect.height) # TODO Dang la tao 1 object moi, hoi lau
 

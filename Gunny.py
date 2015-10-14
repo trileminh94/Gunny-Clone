@@ -183,32 +183,32 @@ def main(screen):
     #items.add(item5)
 
 
-    # CreepManager.create_creep(creeps, 'A', 365, 332, 365, 510, 0, 1)
-    # CreepManager.create_creep(creeps, 'A', 611, 332, 576, 989, 0, 1)
-    # CreepManager.create_creep(creeps, 'A', 874, 332, 576, 989, 1, 1)
-    # CreepManager.create_creep(creeps, 'D', 1472+10, 316-50, 1472+10, 1588, 1, 1)
-    # CreepManager.create_creep(creeps, 'D', 1218+10, 380-50, 1218+10, 1374, 1, 1)
-    #
-    # CreepManager.create_creep(creeps, 'B', 1280+20, 508-30, 1280+20, 1374-20, 1, 1)
-    # CreepManager.create_creep(creeps, 'B', 1474+20, 508-30, 1474+20, 1628-50, 1, 1)
-    # CreepManager.create_creep(creeps, 'B', 1664+45, 508-30, 1664+45, 1782-20, 1, 1)
-    #
-    # CreepManager.create_creep(creeps, 'A', 2592+45, 442-48, 2592+45, 2876-20, 1, 1)
-    # CreepManager.create_creep(creeps, 'F', 2592+45, 100, 2592+45, 2876-20, 1, 4)
-    #
-    # CreepManager.create_creep(creeps, 'B', 3302+45, 442 - 30, 3302+45-20, 3548-20, 1, 2)
-    # CreepManager.create_creep(creeps, 'F', 3312+45, 300, 3302+45-20, 3548-20, 1, 4)
-    # CreepManager.create_creep(creeps, 'F', 3400, 200, 3302+45-20, 3548-20, 0, 3)
-    # CreepManager.create_creep(creeps, 'F', 3390, 70, 3302+45-20, 3548-20, 0, 3)
-    #
-    # CreepManager.create_creep(creeps, 'A', 3840+55, 442 - 15, 3840+50, 4000-20-20, 0, 1)
-    #
-    # CreepManager.create_creep(creeps, 'A', 4706+55, 362, 4706, 4862-20, 0, 1)
-    #
-    # CreepManager.create_creep(creeps, 'C', 5365, 162, 5365, 6000, 0, 4)
-    # CreepManager.create_creep(creeps, 'C', 5365, 62, 5365, 6000, 0, 4)
-    #
-    # CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
+    CreepManager.create_creep(creeps, 'A', 365, 332, 365, 510, 0, 1)
+    CreepManager.create_creep(creeps, 'A', 611, 332, 576, 989, 0, 1)
+    CreepManager.create_creep(creeps, 'A', 874, 332, 576, 989, 1, 1)
+    CreepManager.create_creep(creeps, 'D', 1472+10, 316-50, 1472+10, 1588, 1, 1)
+    CreepManager.create_creep(creeps, 'D', 1218+10, 380-50, 1218+10, 1374, 1, 1)
+
+    CreepManager.create_creep(creeps, 'B', 1280+20, 508-30, 1280+20, 1374-20, 1, 1)
+    CreepManager.create_creep(creeps, 'B', 1474+20, 508-30, 1474+20, 1628-50, 1, 1)
+    CreepManager.create_creep(creeps, 'B', 1664+45, 508-30, 1664+45, 1782-20, 1, 1)
+
+    CreepManager.create_creep(creeps, 'A', 2592+45, 442-48, 2592+45, 2876-20, 1, 1)
+    CreepManager.create_creep(creeps, 'F', 2592+45, 100, 2592+45, 2876-20, 1, 4)
+
+    CreepManager.create_creep(creeps, 'B', 3302+45, 442 - 30, 3302+45-20, 3548-20, 1, 2)
+    CreepManager.create_creep(creeps, 'F', 3312+45, 300, 3302+45-20, 3548-20, 1, 4)
+    CreepManager.create_creep(creeps, 'F', 3400, 200, 3302+45-20, 3548-20, 0, 3)
+    CreepManager.create_creep(creeps, 'F', 3390, 70, 3302+45-20, 3548-20, 0, 3)
+
+    CreepManager.create_creep(creeps, 'A', 3840+55, 442 - 15, 3840+50, 4000-20-20, 0, 1)
+
+    CreepManager.create_creep(creeps, 'A', 4706+55, 362, 4706, 4862-20, 0, 1)
+
+    CreepManager.create_creep(creeps, 'C', 5365, 162, 5365, 6000, 0, 4)
+    CreepManager.create_creep(creeps, 'C', 5365, 62, 5365, 6000, 0, 4)
+
+    CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
 
     CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 382, 4907, 5033, 0, 1)
 
