@@ -52,7 +52,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        self.rect = Rect(120, 200, 110, 90)
+        self.rect = Rect(160, 200, 110, 90)
         self.pos = [self.rect.left + 19 , self.rect.top + 18]
         self.origtop = self.rect.top
         self.health = 100
@@ -306,10 +306,6 @@ class Player(pygame.sprite.Sprite):
             elif self.downable:
                 self.rect.move_ip(0, Constant.DOWNPERFRAME)
                 self.pos[1] += Constant.DOWNPERFRAME
-        if self.direction  == 1:
-            pygame.draw.rect(Player.screen, 0x000000, Rect(self.rect.left + 19, self.rect.top + 18, Constant.PLAYERWIDTH, Constant.PLAYERHEIGHT))
-        else:
-            pygame.draw.rect(Player.screen, 0x000000, Rect(self.rect.left + 32, self.rect.top + 18, Constant.PLAYERWIDTH, Constant.PLAYERHEIGHT))
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)
         pos2 = (pos1[0] + math.cos(math.radians(self.angle))*Constant.RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*Constant.RADIUS)
