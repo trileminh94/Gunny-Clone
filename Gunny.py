@@ -215,7 +215,7 @@ def main(screen):
     money_item = money(1720, 180, "money")
     items.add(money_item)
 
-    
+
 
 
     # item2 = bumerange(200,100,"bumerange_tree")
