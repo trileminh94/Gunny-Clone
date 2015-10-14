@@ -26,8 +26,10 @@ class Player(pygame.sprite.Sprite):
     downable = True
     isBlockByWall = False
     jump = 0
+    is_block_by_ground = False
+    screen = None
 
-    def __init__(self, folder, sprite_name, direction, whichplayer, offset):
+    def __init__(self, folder, sprite_name, direction, whichplayer, offset, screen):
 
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.reloading = 0
@@ -51,8 +53,8 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        self.rect = Rect(120, 200, 110, 90)
-        self.pos = [self.rect.left + 25 , self.rect.top + 20]
+        self.rect = Rect(160, 200, 110, 90)
+        self.pos = [self.rect.left + 19 , self.rect.top + 18]
         self.origtop = self.rect.top
         self.health = 100
         self.angle = 45
@@ -62,6 +64,7 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.whichplayer = whichplayer
         self.enegery = 100
+        self.screen = screen
         Live_bar(self)
         Energy_bar(self)
         Power_bar(self)
@@ -312,7 +315,6 @@ class Player(pygame.sprite.Sprite):
 
                 self.rect.move_ip(0, Constant.DOWNPERFRAME)
                 self.pos[1] += Constant.DOWNPERFRAME
-
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)
         pos2 = (pos1[0] + math.cos(math.radians(self.angle))*Constant.RADIUS, pos1[1]  - math.sin(math.radians(self.angle))*Constant.RADIUS)
@@ -345,8 +347,16 @@ class Player(pygame.sprite.Sprite):
                 up = keystate[Constant.PLAYER2UPKEY]
                 down = keystate[Constant.PLAYER2DOWNKey]
             if direction:
+                t = self.direction
                 self.direction = direction
+<<<<<<< HEAD
 
+=======
+                if self.direction == -1 and t == 1:
+                    self.rect.move_ip(-18 , 0)
+                elif self.direction == 1 and t == -1:
+                    self.rect.move_ip(18, 0)
+>>>>>>> 17d2c909f3ded85bd0e6ccf4750249d6d0940827
             if(self.isBlock == False):
                 if(direction == 0 and fire == 0):
                     self.state = Constant.LIE_STATE

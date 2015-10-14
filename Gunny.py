@@ -31,7 +31,12 @@ from sprites.creep_manager import CreepManager
 
 from sprites.tile import TileCache
 from sprites.tile import Tile
+<<<<<<< HEAD
 from common.e_bullet_type import EBulletType
+=======
+from sprites.tile import SpecialObject
+
+>>>>>>> 17d2c909f3ded85bd0e6ccf4750249d6d0940827
 # See if we can load more than standard BMP
 
 if not pygame.image.get_extended():
@@ -156,7 +161,7 @@ def main(screen):
 
 
     #ground = Ground()
-    player = Player('nhan vat 1', 'character1', 1, 1, 350)
+    player = Player('nhan vat 1', 'character1', 1, 1, 350, screen)
 
     #*************************************
     # Init creeps
@@ -201,6 +206,19 @@ def main(screen):
     #     CreepManager.create_creep(creeps, 'A', 1000, 384-52, 1000, 1500, 1, 1)
 
     tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table()
+    invisible_tiles = (((9,14), (9,15), (9, 16),(9, 17)),
+                        ((6, 19), (6, 20), (6, 21), (6,22)),
+                       ((12, 68), (12, 69), (12,70), (13, 70), (14, 70)),
+                       ((5, 81), (5, 82), (5, 83), (5, 84)),
+                       ((7,144), (7, 145), (6, 146), (6, 147)))
+
+    """ CREATE LIST OF SPECIAL OBJECTS """
+    special_tiles = []
+    for line in invisible_tiles:
+        for element in line:
+            special_tile = SpecialObject(tileset, element, (Constant.TILE_WIDTH * element[1], Constant.TILE_HEIGHT * element[0]))
+            special_tiles.append(special_tile)
+
     camera_left = 0
     camera_right = Constant.SCREENRECT.width
     hCount = 1
@@ -229,7 +247,7 @@ def main(screen):
                         player.typeOfBullet = EBulletType.BASIC
                 elif event.key == Constant.PLAYER1JUMPKEY:
                     if not player.downable:
-                        player.jump = 15
+                        player.jump = 20
             elif event.type == KEYUP:
                 if event.key == Constant.PLAYER1FIREKEY:
                     player.fire_down = False
@@ -258,18 +276,14 @@ def main(screen):
             for x in range(0, 20):
                 if Constant.MAP[x][y] is not 0:
                     tile = Tile(tileset, (x, y), (32 * y, 32 * x))
-                    screen.blit(tile.image, (Constant.TILE_WIDTH * y - camera_left, Constant.TILE_HEIGHT * x))
+                    for line in invisible_tiles:
+                        if tile.id in line:
+                            tile.visible = False
+                            break
+                    if tile.visible:
+                        screen.blit(tile.image, (Constant.TILE_WIDTH * y - camera_left, Constant.TILE_HEIGHT * x))
                     tiles.append(tile)
-        """PLAYER GOES DOWN"""
-        player.downable = True
-        for tile in tiles:
-            if tile.downable == True:
-                continue;
-            if(player.pos[0]  >= tile.pos[0] and player.pos[0]  <= tile.pos[0] + Constant.TILE_WIDTH) \
-                    or ( player.pos[0] + Constant.PLAYERWIDTH  >= tile.pos [0] and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH):
-                if (player.pos[1] + Constant.PLAYERHEIGHT  >= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT <= tile.pos[1] + Constant.TILE_HEIGHT):
-                    player.downable = False
-                    break;
+
         # Update all the sprites
         render_group.update()
         items.update()
@@ -288,22 +302,88 @@ def main(screen):
         # *************************************************************
         # CHECK COLLISION HERE!
         # *************************************************************
+        """ COLLIDE WITH SPECIAL OBJECT"""
+        for tile in tiles:
+            if tile.id ==  (11, 21) and Utils.check_collision(player, tile):
+                for special_tile in special_tiles:
+                    if special_tile.id in invisible_tiles[0]:
+                        special_tile.visible = True
+            if tile.id == (11, 27) and Utils.check_collision(player, tile):
+                for special_tile in special_tiles:
+                    if special_tile.id in invisible_tiles[1]:
+                        special_tile.visible = True
+            if tile.id == (14, 58) and Utils.check_collision(player, tile):
+                for special_tile in special_tiles:
+                    if special_tile.id in invisible_tiles[2]:
+                        special_tile.visible = True
+            if tile.id == (6, 77) and Utils.check_collision(player, tile):
+                for special_tile in special_tiles:
+                    if special_tile.id in invisible_tiles[3]:
+                        special_tile.visible = True
+            if tile.id == (9, 143) and Utils.check_collision(player, tile):
+                for special_tile in special_tiles:
+                    if special_tile.id in invisible_tiles[4]:
+                        special_tile.visible = True
+        for special_tile in special_tiles:
+            if special_tile.visible:
+                screen.blit(special_tile.image, (Constant.TILE_WIDTH * special_tile.id[1] - camera_left, Constant.TILE_HEIGHT * special_tile.id[0]))
+        """ OUT OF MAP"""
+        if (player.pos[1] + Constant.PLAYERHEIGHT >= Constant.SCREENRECT.height):
+            game_state = Constant.GAMEOVER
+            break;
 
+        """PLAYER GOES DOWN"""
+        player.downable = True
+        for tile in tiles:
+            is_Visible = True
+            for special_tile in special_tiles:
+                if special_tile.id == tile.id and special_tile.visible == False:
+                    is_Visible = False
+                    break
+            if not is_Visible :
+                continue
+            if tile.downable == True:
+                continue;
+            if (player.pos[0]  >= tile.pos[0] and player.pos[0]  <= tile.pos[0] + Constant.TILE_WIDTH) \
+                    or ( player.pos[0] + Constant.PLAYERWIDTH  >= tile.pos [0] and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH):
+                if (player.pos[1] + Constant.PLAYERHEIGHT  >= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT <= tile.pos[1] + Constant.TILE_HEIGHT):
+                    player.downable = False
+                    break;
         """ WALL BLOCK """
         player.isBlockByWall = False
         for tile in tiles:
-            if tile.isBlock == True and player.pos[1] <= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT >= tile.pos[1] \
+            is_Visible = True
+            for special_tile in special_tiles:
+                if special_tile.id == tile.id and special_tile.visible == False:
+                    is_Visible = False
+                    break
+            if is_Visible and tile.isBlockByWall == True and player.pos[1] <= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT >= tile.pos[1] \
                 and player.pos[1] > tile.pos[1] - Constant.TILE_HEIGHT:
                 """ Player goes to the right """
                 if player.direction == 1:
-                    if player.pos[0] + Constant.PLAYERWIDTH >= tile.pos[0] \
-                            and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH:
-                        print player.pos, tile.id
+                    if player.pos[0] + Constant.PLAYERWIDTH + player.speed>= tile.pos[0] \
+                            and player.pos[0] + Constant.PLAYERWIDTH  + player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
                         player.isBlockByWall = True
                 else:
-                    if player.pos[0]  >= tile.pos[0] and player.pos[0] <= tile.pos[0] + Constant.TILE_WIDTH:
+                    if player.pos[0] - player.speed  >= tile.pos[0] \
+                            and player.pos[0] - player.speed <= tile.pos[0] + Constant.TILE_WIDTH:
+                        print player.pos[0] - player.speed, tile.pos[0], tile.id
                         player.isBlockByWall = True
+        """ GROUND BLOCK """
+        player.is_block_by_ground = False
+        for tile in tiles:
+            is_Visible = True
+            for special_tile in special_tiles:
+                if special_tile.id == tile.id and special_tile.visible == False:
+                    is_Visible = False
+                    break
+            if is_Visible and tile.isBlockByGround and player.jump > 0 and player.pos[1] >= tile.pos[1] and player.pos[1] <= tile.pos[1] + Constant.TILE_HEIGHT:
+                if(player.pos[0]  >= tile.pos[0] and player.pos[0]  <= tile.pos[0] + Constant.TILE_WIDTH) \
+                or ( player.pos[0] + Constant.PLAYERWIDTH  >= tile.pos [0] and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH):
+                    print tile.pos, tile.id
+                    player.jump = 0
 
+        """ Move with world """
         if not player.isBlockByWall and player.state == Constant.MOVE_STATE:
             if (((player.pos[0] + player.direction * player.speed) >= 0 ) and (player.pos[0] + player.direction * player.speed <= Constant.SCREENRECT.width * 8)):
                 player.pos[0] += player.direction * player.speed

@@ -92,6 +92,7 @@ class coreItem(pygame.sprite.Sprite):
 				self.state = Constant.ITEM_STATE_DIE
 				self.remove(self.containers)
 				self.timer_live = 0
+				self.playEffect()
 
 
 	def fallDown(self):
