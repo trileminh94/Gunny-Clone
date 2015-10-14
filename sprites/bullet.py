@@ -10,25 +10,27 @@ __author__ = 'tri'
 class Bullet(pygame.sprite.Sprite):
     images = []
 
-    def __init__(self, angle, power, play_rect):
+    def __init__(self, angle, power, play_rect, type):
         pygame.sprite.Sprite.__init__(self, self.containers)
         folder = 'dan'
 
         self.frame_rate = 1
 
-        image_source = Utils.my_load_image(folder, "fireball.png")
+        image_source = Utils.my_load_image(folder, type)
 
         self.images = []
-        self.images = Utils.load_frame(image_source, 0, 0, 30, 28, 0, 4)
-
+        if type=='simple.png':
+            self.images = Utils.load_frame(image_source, 0, 0, 30, 30, 0, 4)
+        else:
+            self.images = Utils.load_frame(image_source, 0, 0, 30, 28, 0, 4)
 
         self.frame_length = len(self.images)
         self.frame = 0
         self.image = self.images[int(round(self.frame))]
         self.rect = self.image.get_rect()
 
-        self.speed_x = math.cos(math.radians(angle)) * power
-        self.speed_y = -math.sin(math.radians(angle)) * power
+        self.speed_x = math.cos(math.radians(angle)) * power * 0.6 + 20
+        self.speed_y = -math.sin(math.radians(angle)) * power * 0.6 + 50
 
         self.acceleration = Constant.GRAVITY
         self.t = 0
@@ -39,7 +41,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.x = self.start_x
         self.y = self.start_y
-        self.energy_cost = 10
+        self.energy_cost = 0
 
     def update(self):
         self.t += 1.0/Constant.FPS

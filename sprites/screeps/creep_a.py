@@ -1,6 +1,7 @@
-from basic_creep import BasicCreep
+
 from common.utils import Utils
 import pygame
+from sprites.screeps.basic_creep import BasicCreep
 __author__ = 'tri'
 
 # Bo xuong

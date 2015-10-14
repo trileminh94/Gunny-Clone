@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
     downable = True
     isBlockByWall = False
     jump = 0
-
+    screen = None
     def __init__(self, folder, sprite_name, direction, whichplayer, offset):
 
         pygame.sprite.Sprite.__init__(self, self.containers)
@@ -51,13 +51,15 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(self.image_frame[0],0,0)
 
-        self.rect = Rect(120, 200, 110, 90)
+        self.rect = self.image.get_rect()
+        self.rect = self.rect.inflate(-30, -25)
+        self.rect.move_ip(250, 0)
         self.pos = [self.rect.left + 25 , self.rect.top + 20]
         self.origtop = self.rect.top
         self.health = 100
         self.angle = 45
         self.power = Constant.MAXPOWER * self.fireF
-        self.typeOfBullet = EBulletType.FIREBALL
+        self.typeOfBullet = EBulletType.BASIC
         self.moveWithScreen = False
         self.mask = pygame.mask.from_surface(self.image)
         self.whichplayer = whichplayer
@@ -312,6 +314,7 @@ class Player(pygame.sprite.Sprite):
 
                 self.rect.move_ip(0, Constant.DOWNPERFRAME)
                 self.pos[1] += Constant.DOWNPERFRAME
+        pygame.draw.rect(Player.screen, 0x000000, self.rect)
 
     def drawRadar(self):
         pos1 = (self.rect.centerx, self.rect.centery)

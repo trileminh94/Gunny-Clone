@@ -1,13 +1,4 @@
 import pygame
-from common.constant import Constant
-from common.utils import Utils
-from sprites.live_bar import Live_bar
-from sprites.power_bar import Power_bar
-from sprites.energy_bar import Energy_bar
-
-import math
-from random import randint
-from pygame.locals import *
 __author__ = 'tri'
 
 
@@ -45,8 +36,12 @@ class BasicCreep(pygame.sprite.Sprite):
 
         if self.down_able:
                 self.rect = self.rect.move(0, self.move_speed_y)
+        pygame.draw.rect(BasicCreep.screen, 0x000000, self.rect)
 
     def redirect(self):
+        # if isinstance(self, CreepASpecial):
+        #     if self.y > self.base_line:
+        #         return
         self.frame = 0
         self.move_speed_x = -self.move_speed_x
         if self.move_speed_x > 0:

@@ -18,6 +18,7 @@ from sprites.screeps.creep_c import CreepC
 from sprites.screeps.creep_d import CreepD
 from sprites.screeps.creep_e import CreepE
 from sprites.screeps.creep_f import CreepF
+from sprites.screeps.creep_a_special import CreepASpecial
 from sprites.item.coreItem import coreItem
 
 
@@ -162,7 +163,7 @@ def main(screen):
     # Init creeps
     #*************************************
     BasicCreep.screen = screen
-
+    Player.screen = screen
     #*************************************
     # Init item
     #*************************************
@@ -180,37 +181,49 @@ def main(screen):
     items.add(item3)
     items.add(item4)
     #items.add(item5)
-    
 
 
-    # CreepB(200, 100, 0).down_able = False
-    #creep_a1 = CreepA(1500, 100, 1, 1300, 1700)
-    #creep_a1.down_able = False
-    # CreepC(300, 100, 1).down_able = False
-    # CreepD(250, 100, 0).down_able = False
-    # CreepE(800, 100, 1).down_able = False
-    # CreepF(600, 150, 1).down_able = False
+    # CreepManager.create_creep(creeps, 'A', 365, 332, 365, 510, 0, 1)
+    # CreepManager.create_creep(creeps, 'A', 611, 332, 576, 989, 0, 1)
+    # CreepManager.create_creep(creeps, 'A', 874, 332, 576, 989, 1, 1)
+    # CreepManager.create_creep(creeps, 'D', 1472+10, 316-50, 1472+10, 1588, 1, 1)
+    # CreepManager.create_creep(creeps, 'D', 1218+10, 380-50, 1218+10, 1374, 1, 1)
+    #
+    # CreepManager.create_creep(creeps, 'B', 1280+20, 508-30, 1280+20, 1374-20, 1, 1)
+    # CreepManager.create_creep(creeps, 'B', 1474+20, 508-30, 1474+20, 1628-50, 1, 1)
+    # CreepManager.create_creep(creeps, 'B', 1664+45, 508-30, 1664+45, 1782-20, 1, 1)
+    #
+    # CreepManager.create_creep(creeps, 'A', 2592+45, 442-48, 2592+45, 2876-20, 1, 1)
+    # CreepManager.create_creep(creeps, 'F', 2592+45, 100, 2592+45, 2876-20, 1, 4)
+    #
+    # CreepManager.create_creep(creeps, 'B', 3302+45, 442 - 30, 3302+45-20, 3548-20, 1, 2)
+    # CreepManager.create_creep(creeps, 'F', 3312+45, 300, 3302+45-20, 3548-20, 1, 4)
+    # CreepManager.create_creep(creeps, 'F', 3400, 200, 3302+45-20, 3548-20, 0, 3)
+    # CreepManager.create_creep(creeps, 'F', 3390, 70, 3302+45-20, 3548-20, 0, 3)
+    #
+    # CreepManager.create_creep(creeps, 'A', 3840+55, 442 - 15, 3840+50, 4000-20-20, 0, 1)
+    #
+    # CreepManager.create_creep(creeps, 'A', 4706+55, 362, 4706, 4862-20, 0, 1)
+    #
+    # CreepManager.create_creep(creeps, 'C', 5365, 162, 5365, 6000, 0, 4)
+    # CreepManager.create_creep(creeps, 'C', 5365, 62, 5365, 6000, 0, 4)
+    #
+    # CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
 
-    CreepManager.create_creep(creeps, 'A', 365, 332, 365, 510, 0, 1)
-    CreepManager.create_creep(creeps, 'A', 611, 384-52, 576, 989, 0, 1)
-    CreepManager.create_creep(creeps, 'A', 874, 384-52, 576, 989, 1, 1)
-
-    # for i in range(0, 100):
-    #     CreepManager.create_creep(creeps, 'A', 1000, 332, 1000, 1500, 0, 1)
-    #     CreepManager.create_creep(creeps, 'A', 1000, 384-52, 1000, 1500, 0, 1)
-    #     CreepManager.create_creep(creeps, 'A', 1000, 384-52, 1000, 1500, 1, 1)
+    CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 382, 4907, 5033, 0, 1)
 
     tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table()
     camera_left = 0
     camera_right = Constant.SCREENRECT.width
     hCount = 1
 
+    player.typeOfBullet = EBulletType.BASIC
 
     while player.health > -10:
-        print
-        # CREEP MANAGER
-        CreepManager.update(creeps, player.pos[0], player.rect.left)
 
+        # CREEP MANAGER
+        CreepManager.update(creeps, player.pos[0], player.pos[1], player.rect.left)
+        CreepManager.create_creep_dynamic(player.pos[0], creeps)
         if player.state == Constant.DIE_STATE:
             player.health -= 0.1
 
@@ -280,9 +293,16 @@ def main(screen):
         player.check(key_state)
 
         if player1_down_to_up and not player.fire_down and player.enegery >= 25:
-            butllet = Bullet(player.angle, player.power, player.rect)
-            shoot_sound.play()
-            player.enegery -= butllet.energy_cost
+            if player.typeOfBullet == EBulletType.BASIC:
+                butllet = Bullet(player.angle, player.power, player.rect, "fireball.png")
+                shoot_sound.play()
+                player.enegery -= butllet.energy_cost
+            else:
+                butllet = Bullet(player.angle, player.power, player.rect, "simple.png")
+                butllet = Bullet(player.angle+10, player.power, player.rect, "simple.png")
+                butllet = Bullet(player.angle-10, player.power, player.rect, "simple.png")
+                shoot_sound.play()
+                player.enegery -= butllet.energy_cost
 
 
         # *************************************************************
@@ -295,14 +315,17 @@ def main(screen):
             if tile.isBlock == True and player.pos[1] <= tile.pos[1] and player.pos[1] + Constant.PLAYERHEIGHT >= tile.pos[1] \
                 and player.pos[1] > tile.pos[1] - Constant.TILE_HEIGHT:
                 """ Player goes to the right """
-                if player.direction == 1:
+                if player.direction == 1 and not player.isBlockByWall:
                     if player.pos[0] + Constant.PLAYERWIDTH >= tile.pos[0] \
                             and player.pos[0] + Constant.PLAYERWIDTH  <= tile.pos[0] + Constant.TILE_WIDTH:
-                        print player.pos, tile.id
+
                         player.isBlockByWall = True
+
+
                 else:
-                    if player.pos[0]  >= tile.pos[0] and player.pos[0] <= tile.pos[0] + Constant.TILE_WIDTH:
+                    if player.pos[0]  >= tile.pos[0] and player.pos[0] <= tile.pos[0] + Constant.TILE_WIDTH and not player.isBlockByWall:
                         player.isBlockByWall = True
+
 
         if not player.isBlockByWall and player.state == Constant.MOVE_STATE:
             if (((player.pos[0] + player.direction * player.speed) >= 0 ) and (player.pos[0] + player.direction * player.speed <= Constant.SCREENRECT.width * 8)):
@@ -314,10 +337,17 @@ def main(screen):
             else:
                 player.moveWithScreen = True
 
-        dict_collide = pygame.sprite.groupcollide(bombs, creeps, True, True)
+        dict_collide = pygame.sprite.groupcollide(bombs, creeps, True, False)
         for key in dict_collide.keys():
             boom_sound.play()
             Explosion(key)
+            for creep in dict_collide[key]:
+                if not isinstance(creep, CreepASpecial):
+                    creep.kill()
+                else:
+                    creep.check_die()
+
+            #dict_collide[key].kill()
 
         # # Detect collision with ground
         # for bomb in pygame.sprite.spritecollide(ground, bombs, False):

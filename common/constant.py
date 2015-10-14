@@ -46,7 +46,7 @@ class Constant:
     PLAYER1JUMPKEY = K_j
 
     MAXPOWER = 800
-    GRAVITY = 200
+    GRAVITY = 400
     POWERBARRECT1 = Rect(0, SCREENRECT.height - 25, 400, 20)
     POWERBARRECT2 = Rect(SCREENRECT.width - 400, SCREENRECT.height - 25, 400, 20)
     POWERBARCOLOR = (255, 51, 51)
