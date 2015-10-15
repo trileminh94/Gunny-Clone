@@ -17,6 +17,7 @@ class CreepManager(pygame.sprite.Sprite):
     pos1 = False
     pos2 = False
     pos3 = False
+    pos4 = False
     creep_special1 = None
     def __init__(self):
         pass
@@ -24,6 +25,7 @@ class CreepManager(pygame.sprite.Sprite):
         CreepManager.pos1 = False
         CreepManager.pos2 = False
         CreepManager.pos3 = False
+        CreepManager.pos4 = False
         CreepManager.creep_special1 = None
     init = staticmethod(init)
 
@@ -75,6 +77,10 @@ class CreepManager(pygame.sprite.Sprite):
         if not CreepManager.pos3 and x_pos_player_world > 4300:
             CreepManager.create_creep(creeps_group, 'C', 5172, 320, 3272, 5176, 1, 10)
             CreepManager.pos3 = True
+        if not CreepManager.pos4 and x_pos_player_world > 5279:
+            pass
+            # for i in range(0, 7):
+            #     CreepManager.create_creep(creeps_group, 'C', 5400 + i*30, 100+15*i, 5400, 5800, i%2, 10)
 
     create_creep_dynamic = staticmethod(create_creep_dynamic)
 

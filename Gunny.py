@@ -378,38 +378,34 @@ def main(screen):
     money_item = money(6144, 160, "money")
     items.add(money_item)
 
-
-
-
-
-    CreepManager.create_creep(creeps, 'A', 365, 332, 365, 480, 0, 1)
-    CreepManager.create_creep(creeps, 'A', 611, 332, 576, 989, 0, 1)
-    CreepManager.create_creep(creeps, 'A', 874, 332, 576, 989, 1, 1)
-    CreepManager.create_creep(creeps, 'D', 1472+10, 316-50, 1472+10, 1588, 1, 1)
-    CreepManager.create_creep(creeps, 'D', 1218+10, 380-50, 1218+10, 1374, 1, 1)
-
-    CreepManager.create_creep(creeps, 'B', 1280+20, 508-30, 1280+20, 1374-20, 1, 1)
-    CreepManager.create_creep(creeps, 'B', 1474+20, 508-30, 1474+20, 1628-50, 1, 1)
-    CreepManager.create_creep(creeps, 'B', 1664+45, 508-30, 1664+45, 1782-20, 1, 1)
-
-    CreepManager.create_creep(creeps, 'A', 2592+45, 442-48, 2592+45, 2876-20, 1, 1)
-    CreepManager.create_creep(creeps, 'F', 2592+45, 100, 2592+45, 2876-20, 1, 4)
-
-    CreepManager.create_creep(creeps, 'B', 3302+45, 442 - 30, 3302+45-20, 3548-20, 1, 2)
-    CreepManager.create_creep(creeps, 'F', 3312+45, 300, 3302+45-20, 3548-20, 1, 4)
-    CreepManager.create_creep(creeps, 'F', 3400, 200, 3302+45-20, 3548-20, 0, 3)
-    CreepManager.create_creep(creeps, 'F', 3390, 70, 3302+45-20, 3548-20, 0, 3)
-
-    CreepManager.create_creep(creeps, 'A', 3840+55, 442 - 15, 3840+50, 4000-20-20, 0, 1)
-
-    CreepManager.create_creep(creeps, 'A', 4706+55, 362, 4706, 4862-20, 0, 1)
-
-    CreepManager.create_creep(creeps, 'C', 5365, 162, 5365, 6000, 0, 4)
-    CreepManager.create_creep(creeps, 'C', 5365, 62, 5365, 6000, 0, 4)
-
-    CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
-
-    CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 381, 4907, 5033, 0, 1)
+    # CreepManager.create_creep(creeps, 'A', 365, 332, 365, 480, 0, 1)
+    # CreepManager.create_creep(creeps, 'A', 611, 332, 576, 989, 0, 1)
+    # CreepManager.create_creep(creeps, 'A', 874, 332, 576, 989, 1, 1)
+    # CreepManager.create_creep(creeps, 'D', 1472+10, 316-50, 1472+10, 1588, 1, 1)
+    # CreepManager.create_creep(creeps, 'D', 1218+10, 380-50, 1218+10, 1374, 1, 1)
+    #
+    # CreepManager.create_creep(creeps, 'B', 1280+20, 508-30, 1280+20, 1374-20, 1, 1)
+    # CreepManager.create_creep(creeps, 'B', 1474+20, 508-30, 1474+20, 1628-50, 1, 1)
+    # CreepManager.create_creep(creeps, 'B', 1664+45, 508-30, 1664+45, 1782-20, 1, 1)
+    #
+    # CreepManager.create_creep(creeps, 'A', 2592+45, 442-48, 2592+45, 2876-20, 1, 1)
+    # CreepManager.create_creep(creeps, 'F', 2592+45, 100, 2592+45, 2876-20, 1, 4)
+    #
+    # CreepManager.create_creep(creeps, 'B', 3302+45, 442 - 30, 3302+45-20, 3548-20, 1, 2)
+    # CreepManager.create_creep(creeps, 'F', 3312+45, 300, 3302+45-20, 3548-20, 1, 4)
+    # CreepManager.create_creep(creeps, 'F', 3400, 200, 3302+45-20, 3548-20, 0, 3)
+    # CreepManager.create_creep(creeps, 'F', 3390, 70, 3302+45-20, 3548-20, 0, 3)
+    #
+    # CreepManager.create_creep(creeps, 'A', 3840+55, 442 - 15, 3840+50, 4000-20-20, 0, 1)
+    #
+    # CreepManager.create_creep(creeps, 'A', 4706+55, 362, 4706, 4862-20, 0, 1)
+    #
+    # CreepManager.create_creep(creeps, 'C', 5365, 162, 5365, 6000, 0, 4)
+    # CreepManager.create_creep(creeps, 'C', 5365, 62, 5365, 6000, 0, 4)
+    #
+    # CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
+    #
+    # CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 381, 4907, 5033, 0, 1)
 
     tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table()
     invisible_tiles = (((9,14), (9,15), (9, 16),(9, 17)),
@@ -432,6 +428,7 @@ def main(screen):
     player.typeOfBullet = EBulletType.BASIC
     mymonster = monster(7400, 270, "monster")
     items.add(mymonster)
+    player.sound_money = pygame.mixer.Sound('resources/data/yahoo.ogg')
     # Main loop
     while player.health > -10:
         print 'player.x = ', player.pos[0]
@@ -514,19 +511,25 @@ def main(screen):
 
         if player1_down_to_up and not player.fire_down and player.enegery >= 25:
             if player.typeOfBullet == EBulletType.BASIC:
-                butllet = Bullet(player.angle, player.power, player.rect, "fireball.png")
+                butllet = Bullet(player.angle, player.power, player, "fireball.png")
                 shoot_sound.play()
                 player.enegery -= butllet.energy_cost
             else:
-                butllet = Bullet(player.angle, player.power, player.rect, "simple.png")
-                butllet = Bullet(player.angle+10, player.power, player.rect, "simple.png")
-                butllet = Bullet(player.angle-10, player.power, player.rect, "simple.png")
+                butllet = Bullet(player.angle, player.power, player, "simple.png")
+                butllet = Bullet(player.angle+10, player.power, player, "simple.png")
+                butllet = Bullet(player.angle-10, player.power, player, "simple.png")
                 shoot_sound.play()
                 player.enegery -= butllet.energy_cost
 
         # *************************************************************
         # CHECK COLLISION HERE!
         # *************************************************************
+        for b in bombs.sprites():
+            b.update_pos(player.pos[0], player.rect.x)
+
+        for b in monsterbombs.sprites():
+            b.update_pos(player.pos[0], player.rect.x)
+
         """ COLLIDE WITH SPECIAL OBJECT"""
         for tile in tiles:
             if tile.id ==  (11, 21) and Utils.check_collision(player, tile):
@@ -619,6 +622,8 @@ def main(screen):
             else:
                 player.moveWithScreen = True
 
+
+
         dict_collide = pygame.sprite.groupcollide(bombs, creeps, True, False)
         for key in dict_collide.keys():
             boom_sound.play()
@@ -650,7 +655,8 @@ def main(screen):
             if isinstance(item, berry):
                 player.typeOfBullet = EBulletType.THREE
                 continue
-            item.playEffect()
+            #item.playEffect()
+            player.sound_money.play()
             player.money += 1
             player.enegery += 5
 

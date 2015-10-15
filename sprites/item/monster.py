@@ -24,6 +24,9 @@ class monster(coreItem):
 		self.y = y
 		self.pos_creep_screen = 0
 		self.velocity = 1
+		self.pos = [self.x, self.y]
+		self.shotable = False
+
 		#self.rect.x =  7550;
 
 
@@ -47,16 +50,20 @@ class monster(coreItem):
 
 	def update_pos(self, x_pos_player_world, pos_player_screen):
 		self.pos_creep_screen = self.x - x_pos_player_world + pos_player_screen
+		#if x_pos_player_world > 5000:
+		self.shotable = True
 
 	def shot(self):
+		if not self.shotable:
+			return
 		self.shoot_timer += 1
 		if(self.shoot_timer > self.TIME_TO_SHOOT):
-			bullet1 = MonsterBullet(20, 170, self.rect, "fireball.png")
-			bullet2 = MonsterBullet(60, 200, self.rect, "fireball.png")
-			bullet3 = MonsterBullet(60, 230, self.rect, "fireball.png")
-			bullet4 = MonsterBullet(100, 270, self.rect, "fireball.png")
-			bullet5 = MonsterBullet(140, 200, self.rect, "fireball.png")
-			bullet6 = MonsterBullet(160, 140, self.rect, "fireball.png")
+			bullet1 = MonsterBullet(20, 170, self, "fireball.png")
+			bullet2 = MonsterBullet(60, 200, self, "fireball.png")
+			bullet3 = MonsterBullet(60, 230, self, "fireball.png")
+			bullet4 = MonsterBullet(100, 270, self, "fireball.png")
+			bullet5 = MonsterBullet(140, 200, self, "fireball.png")
+			bullet6 = MonsterBullet(160, 140, self, "fireball.png")
 			self.shoot_timer = 0
 
 	def move(self):

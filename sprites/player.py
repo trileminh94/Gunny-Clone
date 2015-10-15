@@ -76,6 +76,8 @@ class Player(pygame.sprite.Sprite):
         Power_bar(self)
         self.money = 0
 
+        self.sound_money = Utils.load_sound('yahoo.ogg')
+
     def lost_blood(self, power):
         self.health-= power
         if(self.health <= 0):
