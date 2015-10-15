@@ -181,6 +181,7 @@ def main(screen):
     # Load the sound effects
     boom_sound = Utils.load_sound('boom.wav')
     shoot_sound = Utils.load_sound('1.wav')
+
     if pygame.mixer:
         music = 'resources/data/1037.wav'
         pygame.mixer.music.load(music)
@@ -434,9 +435,6 @@ def main(screen):
     items.add(mymonster)
     # Main loop
     while player.health > -10:
-        print 'player.x = ', player.pos[0]
-        #mymonster.update_pos(player.pos[0], player.rect.left)
-        print 'monster rect= ', mymonster.rect
 
         # CREEP MANAGER
         CreepManager.update(creeps, player.pos[0], player.pos[1], player.rect.left)
