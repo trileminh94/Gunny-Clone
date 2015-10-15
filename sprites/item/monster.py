@@ -4,6 +4,7 @@ from coreItem import coreItem
 from common.constant import Constant
 from sprites.bullet import Bullet
 from sprites.MonsterBullet import MonsterBullet
+from sprites.live_bar import Live_bar
 from pygame.locals import *
 
 class monster(coreItem):
@@ -24,8 +25,12 @@ class monster(coreItem):
 		self.y = y
 		self.pos_creep_screen = 0
 		self.velocity = 1
+
 		self.pos = [self.x, self.y]
 		self.shotable = False
+
+
+		Live_bar(None, self, 0)
 
 		#self.rect.x =  7550;
 

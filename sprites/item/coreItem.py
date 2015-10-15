@@ -58,7 +58,9 @@ class coreItem(pygame.sprite.Sprite):
 		self.rect.move_ip(x,y)
 		self.max_right = x + self.move_length
 		self.max_left = x - self.move_length
-		self.sound =  Utils.load_sound("yahoo.ogg")
+
+		self.sound = Utils.load_sound('Ding.ogg')
+
 		self.pos_creep_screen = 0
 
 	def animation(self):

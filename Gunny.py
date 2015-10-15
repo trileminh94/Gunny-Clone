@@ -181,6 +181,7 @@ def main(screen):
     # Load the sound effects
     boom_sound = Utils.load_sound('boom.wav')
     shoot_sound = Utils.load_sound('1.wav')
+
     if pygame.mixer:
         music = 'resources/data/1037.wav'
         pygame.mixer.music.load(music)
@@ -378,34 +379,34 @@ def main(screen):
     money_item = money(6144, 160, "money")
     items.add(money_item)
 
-    # CreepManager.create_creep(creeps, 'A', 365, 332, 365, 480, 0, 1)
-    # CreepManager.create_creep(creeps, 'A', 611, 332, 576, 989, 0, 1)
-    # CreepManager.create_creep(creeps, 'A', 874, 332, 576, 989, 1, 1)
-    # CreepManager.create_creep(creeps, 'D', 1472+10, 316-50, 1472+10, 1588, 1, 1)
-    # CreepManager.create_creep(creeps, 'D', 1218+10, 380-50, 1218+10, 1374, 1, 1)
-    #
-    # CreepManager.create_creep(creeps, 'B', 1280+20, 508-30, 1280+20, 1374-20, 1, 1)
-    # CreepManager.create_creep(creeps, 'B', 1474+20, 508-30, 1474+20, 1628-50, 1, 1)
-    # CreepManager.create_creep(creeps, 'B', 1664+45, 508-30, 1664+45, 1782-20, 1, 1)
-    #
-    # CreepManager.create_creep(creeps, 'A', 2592+45, 442-48, 2592+45, 2876-20, 1, 1)
-    # CreepManager.create_creep(creeps, 'F', 2592+45, 100, 2592+45, 2876-20, 1, 4)
-    #
-    # CreepManager.create_creep(creeps, 'B', 3302+45, 442 - 30, 3302+45-20, 3548-20, 1, 2)
-    # CreepManager.create_creep(creeps, 'F', 3312+45, 300, 3302+45-20, 3548-20, 1, 4)
-    # CreepManager.create_creep(creeps, 'F', 3400, 200, 3302+45-20, 3548-20, 0, 3)
-    # CreepManager.create_creep(creeps, 'F', 3390, 70, 3302+45-20, 3548-20, 0, 3)
-    #
-    # CreepManager.create_creep(creeps, 'A', 3840+55, 442 - 15, 3840+50, 4000-20-20, 0, 1)
-    #
-    # CreepManager.create_creep(creeps, 'A', 4706+55, 362, 4706, 4862-20, 0, 1)
-    #
-    # CreepManager.create_creep(creeps, 'C', 5365, 162, 5365, 6000, 0, 4)
-    # CreepManager.create_creep(creeps, 'C', 5365, 62, 5365, 6000, 0, 4)
-    #
-    # CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
-    #
-    # CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 381, 4907, 5033, 0, 1)
+    CreepManager.create_creep(creeps, 'A', 365, 332, 365, 480, 0, 1)
+    CreepManager.create_creep(creeps, 'A', 611, 332, 576, 989, 0, 1)
+    CreepManager.create_creep(creeps, 'A', 874, 332, 576, 989, 1, 1)
+    CreepManager.create_creep(creeps, 'D', 1472+10, 316-50, 1472+10, 1588, 1, 1)
+    CreepManager.create_creep(creeps, 'D', 1218+10, 380-50, 1218+10, 1374, 1, 1)
+
+    CreepManager.create_creep(creeps, 'B', 1280+20, 508-30, 1280+20, 1374-20, 1, 1)
+    CreepManager.create_creep(creeps, 'B', 1474+20, 508-30, 1474+20, 1628-50, 1, 1)
+    CreepManager.create_creep(creeps, 'B', 1664+45, 508-30, 1664+45, 1782-20, 1, 1)
+
+    CreepManager.create_creep(creeps, 'A', 2592+45, 442-48, 2592+45, 2876-20, 1, 1)
+    CreepManager.create_creep(creeps, 'F', 2592+45, 100, 2592+45, 2876-20, 1, 4)
+
+    CreepManager.create_creep(creeps, 'B', 3302+45, 442 - 30, 3302+45-20, 3548-20, 1, 2)
+    CreepManager.create_creep(creeps, 'F', 3312+45, 300, 3302+45-20, 3548-20, 1, 4)
+    CreepManager.create_creep(creeps, 'F', 3400, 200, 3302+45-20, 3548-20, 0, 3)
+    CreepManager.create_creep(creeps, 'F', 3390, 70, 3302+45-20, 3548-20, 0, 3)
+
+    CreepManager.create_creep(creeps, 'A', 3840+55, 442 - 15, 3840+50, 4000-20-20, 0, 1)
+
+    CreepManager.create_creep(creeps, 'A', 4706+55, 362, 4706, 4862-20, 0, 1)
+
+    CreepManager.create_creep(creeps, 'C', 5365, 162, 5365, 6000, 0, 4)
+    CreepManager.create_creep(creeps, 'C', 5365, 62, 5365, 6000, 0, 4)
+
+    CreepManager.create_creep(creeps, 'B', 6505, 316, 6505, 6645, 0, 4)
+
+    CreepManager.create_creep(creeps, 'A_SPECIAL', 4917, 381, 4907, 5033, 0, 1)
 
     tileset = TileCache("resources/image/TileSet/ImageSheet.png", Constant.TILE_WIDTH, Constant.TILE_HEIGHT).load_tile_table()
     invisible_tiles = (((9,14), (9,15), (9, 16),(9, 17)),
@@ -431,9 +432,6 @@ def main(screen):
     player.sound_money = pygame.mixer.Sound('resources/data/yahoo.ogg')
     # Main loop
     while player.health > -10:
-        print 'player.x = ', player.pos[0]
-        #mymonster.update_pos(player.pos[0], player.rect.left)
-        print 'monster rect= ', mymonster.rect
 
         # CREEP MANAGER
         CreepManager.update(creeps, player.pos[0], player.pos[1], player.rect.left)
@@ -527,8 +525,7 @@ def main(screen):
         for b in bombs.sprites():
             b.update_pos(player.pos[0], player.rect.x)
 
-        for b in monsterbombs.sprites():
-            b.update_pos(player.pos[0], player.rect.x)
+
 
         """ COLLIDE WITH SPECIAL OBJECT"""
         for tile in tiles:
@@ -638,7 +635,7 @@ def main(screen):
         for key in dict_collide1:
             boom_sound.play()
             Explosion(key)
-            player.lost_blood(50)
+            player.lost_blood(70)
         #check va cham cua monster voi dan cua player
         if mymonster:
             dict_collide2 = pygame.sprite.spritecollide(mymonster,bombs, True)
@@ -659,6 +656,9 @@ def main(screen):
             player.sound_money.play()
             player.money += 1
             player.enegery += 5
+
+        for b in monsterbombs.sprites():
+           b.update_pos(player.pos[0], player.rect.x)
 
         dirty = render_group.draw(screen)  # Draw all sprite, return list of rect
         pygame.display.update(dirty)    # Draw only changed rect

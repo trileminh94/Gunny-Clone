@@ -54,7 +54,7 @@ class MonsterBullet(Bullet):
 		self.x = self.start_x
 		self.y = self.start_y
 		self.energy_cost = 10
-		self.pos_creep_screen = 0
+		self.pos_creep_screen = -100
 
 	def update(self):
 		# self.t += 1.0/Constant.FPS
@@ -67,7 +67,9 @@ class MonsterBullet(Bullet):
 		#self.rect.move_ip(self.x - old_x, self.y - old_y)
 		# self.x -= old_x
 		# self.y -= old_y
+
 		self.rect = pygame.Rect(self.pos_creep_screen, self.y, self.rect.width, self.rect.height) # TODO Dang la tao 1 object moi, hoi lau
+
 
 		self.frame += self.frame_rate
 		self.image = self.images[int(round(self.frame)) % self.frame_length]
