@@ -1,2 +1,3 @@
-# game2
-clone gunny
+# Gunny Clone
+
+Use python to build a game like gunny
